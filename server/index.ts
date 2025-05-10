@@ -1,0 +1,86 @@
+import Elysia from "elysia";
+import homePlugin from "./plugin/home";
+import qrCodePlugin from "./plugin/qrCode";
+import regPlugin from "./plugin/registration";
+import { setupI18n } from "./functions/translation";
+import { cors } from "@elysiajs/cors";
+
+import categoriesPlugin from "./plugin/categories";
+import suppPlugin from "./plugin/supplier";
+import { rateLimitMiddleware } from "./functions/security/rateLimiting";
+import { loginPlugin } from "./plugin/login";
+import { prodPlugin } from "./plugin/products";
+import automateTasks from "./plugin/autoSales";
+import { mailPlugin } from "./plugin/email/smtp";
+import cookie from "@elysiajs/cookie";
+import { CustomersPlugin } from "./plugin/customer";
+import analyticsRoute from "./plugin/analytics";
+import { authPlugin } from "./plugin/authPlugin";
+import settingsPlugin from "./plugin/settings";
+import googlePlugin from "./plugin/google";
+// import { csrfProtection } from "./plugin/CSRF";
+
+const startTime = Date.now(); // Start time tracking
+
+
+// initialize translation before start the server
+await setupI18n();
+new Elysia()
+    // use cookie for JWT
+    .use(cookie())
+
+    // Proper CORS handling
+    .use(
+        cors({
+            origin: ["http://localhost:5173"], // Allow only frontend origin
+            allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"],
+            credentials: true, // Allow cookies
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow specific methods
+            maxAge: 3600, // Cache preflight response for 1 hour
+        })
+    )
+
+    // Security headers
+    .onRequest(({ set }) => {
+        set.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'";
+        set.headers["X-Frame-Options"] = "DENY";
+        set.headers["X-Content-Type-Options"] = "nosniff";
+
+    })
+
+    // Handle CORS for preflight requests (OPTIONS method)
+    .options("/*", ({ set }) => {
+        set.headers["Access-Control-Allow-Origin"] = "http://localhost:5173";
+        set.headers["Access-Control-Allow-Credentials"] = "true";
+        set.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+        set.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+        return new Response(null, { status: 204 }); // 204 No Content for preflight
+    })
+
+    // 💥 Add it here (before plugins that handle POST/PUT/etc.)
+    // .use(csrfProtection)
+    // .onRequest(rateLimitMiddleware)
+
+    .use(homePlugin)
+    .use(regPlugin)
+    .use(loginPlugin)
+    .use(categoriesPlugin)
+    .use(suppPlugin)
+    .use(prodPlugin)
+    .use(qrCodePlugin)
+    .use(automateTasks)
+    .use(mailPlugin)
+    .use(CustomersPlugin)
+    .use(analyticsRoute)
+    .use(authPlugin)
+    .use(settingsPlugin)
+    .use(googlePlugin)
+
+.listen(process.env.PORT ?? 3000) // am using Render.
+const endTime = Date.now(); // Start time tracking
+
+console.log(`Server Execution Time: ${endTime - startTime}ms`);
+
+
+
+console.log("Server is running in the link http://localhost:3000")

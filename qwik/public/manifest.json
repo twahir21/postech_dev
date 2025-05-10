@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "PosTech",
+  "lang": "sw",
+  "short_name": "PosTech home",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "PosTech - Mfumo bora wa POS unaorahisisha mauzo na usimamizi wa biashara kwa kutumia QR Code na teknolojia ya kisasa.",
+
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://www.mypostech.store/assets/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
+    },
+    {
+      "src": "https://www.mypostech.store/assets/thumbnail.png",
+      "sizes": "412x412",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://www.mypostech.store/assets/thumbnail2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity", "finance"],
+  "screenshots": [
+    {
+      "src": "https://www.mypostech.store/assets/mfumo.png",
+      "sizes": "640x360",
+      "type": "image/png",
+      "label": "Dashboard kuu ya Postech"
+    }
+  ]
+}
+
+
