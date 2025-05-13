@@ -18,6 +18,7 @@ import analyticsRoute from "./plugin/analytics";
 import { authPlugin } from "./plugin/authPlugin";
 import settingsPlugin from "./plugin/settings";
 import googlePlugin from "./plugin/google";
+import paymentPlugin from "./plugin/payment";
 // import { csrfProtection } from "./plugin/CSRF";
 
 const startTime = Date.now(); // Start time tracking
@@ -75,6 +76,7 @@ new Elysia()
     .use(authPlugin)
     .use(settingsPlugin)
     .use(googlePlugin)
+    .use(paymentPlugin)
 
 .listen(process.env.PORT ?? 3000) // am using Render.
 const endTime = Date.now(); // Start time tracking

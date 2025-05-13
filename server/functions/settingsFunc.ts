@@ -24,8 +24,8 @@ export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: str
 
         return {
         success: true,
-        shopName: fetchShop[0],
-        email: fetchEmail[0]
+        data: [{ shopName: fetchShop[0], email: fetchEmail[0]}],
+        message: await getTranslation(lang, "success")
         }
 
 

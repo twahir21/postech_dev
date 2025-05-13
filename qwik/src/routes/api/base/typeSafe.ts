@@ -19,3 +19,14 @@ export interface CrudItem {
     contact: string
     createdAt: string;
   }
+
+  export interface categoriesPost {
+    id: string,
+    generalName: string
+  }
+
+  export interface supplierData {
+    id: string,
+    company: string,
+    contact: string
+  }

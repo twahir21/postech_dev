@@ -1,7 +1,8 @@
 import { component$, useStore, $, useContext } from "@builder.io/qwik";
-import { fetchWithLang } from "~/routes/function/fetchLang";
 import { Translate } from "./Language";
 import { RefetchContext } from "./context/refreshContext";
+import { CrudService } from "~/routes/api/base/oop";
+import type { categoriesPost, supplierData } from "~/routes/api/base/typeSafe";
 
 export const SupplierComponent = component$((props: {lang: string}) => {
   const formState = useStore({
@@ -58,54 +59,42 @@ export const SupplierComponent = component$((props: {lang: string}) => {
       return;
     }
 
-    if (formState.isLoading) return; // prevent multiple reqs
+      if (formState.isLoading) return; // prevent multiple reqs
 
-    try {
       formState.isLoading = true; // Start loading ...
       // Send category only if it's not empty
       if (formState.category.trim()) {
-        const categoryResponse = await fetchWithLang("http://localhost:3000/categories", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ generalName: formState.category }),
-        });
+        const categoryPostApi = new CrudService<categoriesPost>("categories");
         categoryRefetch.value = true;
-        await categoryResponse.json();
+        const result = await categoryPostApi.create({ generalName: formState.category });
+        if (!result.success) {
+          return;
+        }
       }
 
       // Send supplier data
-      const supplierResponse = await fetchWithLang("http://localhost:3000/suppliers", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ company: formState.name.trim().toLowerCase(), contact: formState.contact.trim() }),
-      });
+      const supplierDataApi = new CrudService<supplierData>("suppliers");
+
       supplierRefetch.value = true;
       categoryRefetch.value = true;
-
-
-      const supplierData = await supplierResponse.json();
+      const result = await supplierDataApi.create({ company: formState.name.trim().toLowerCase(), contact: formState.contact.trim() });
 
       formState.modal = {
         isOpen: true,
-        message: supplierData.success ? supplierData.message || "Umefanikiwa" : supplierData ||"Tatizo limejitokeza",
-        isSuccess: supplierData.success,
+        message: result.message || "Tayari!",
+        isSuccess: result.success,
       };
       
-      if (supplierData.success) {
+      if (result.success) {
         formState.name = "";
         formState.contact = "";
         formState.category = "";
         formState.errors = { name: "", contact: "" };
         formState.valid = { name: false, contact: false };
       }
-    } catch (error) {
-      console.error("Form submission failed:", error);
-      formState.modal = { isOpen: true, message: "Tatizo la mtandao. Tafadhali jaribu tena", isSuccess: false };
-    } finally {
+
       formState.isLoading = false; // end loading ...
-    }
+    
   });
 
   return (
@@ -116,7 +105,7 @@ export const SupplierComponent = component$((props: {lang: string}) => {
         </h2>
       <form onSubmit$={handleSubmit} class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Jina la Supplier</label>
+          <label class="block text-sm font-medium text-gray-700">Jina la Msambazaji</label>
           <input
             type="text"
             class="w-full mt-1 p-2 border rounded-lg"

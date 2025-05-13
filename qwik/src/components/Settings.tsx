@@ -1,5 +1,6 @@
 // src/components/SettingsPage.tsx
 import { component$, useSignal, useStore, useResource$, $ } from '@builder.io/qwik';
+import { CrudService } from '~/routes/api/base/oop';
 import { fetchWithLang } from '~/routes/function/fetchLang';
 
 export const SettingsComponent = component$(() => {
@@ -43,6 +44,22 @@ export const SettingsComponent = component$(() => {
   // logic for shopName and email
   useResource$(async () => {
     if (store.isLoading) return; // prevent multiple reqs
+    interface shopInfo {
+      id: string,
+      email: { email: string},
+      shopName: { shopName: string}
+    }
+    const shopApi = new CrudService<shopInfo>("shop");
+    
+    const result = await shopApi.get();
+    console.log("DATA: ", result);
+
+    if (!result.success) {
+      return;
+    }
+    console.log("ShopInfo: ", result.data[0].email.email)
+    // store.email = result.data[0].email;
+    // store.shopName = result.data.shopName;
     try {
       store.isLoading = true; // Start loading ...
       const response = await fetchWithLang("http://localhost:3000/shop", {

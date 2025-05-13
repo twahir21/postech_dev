@@ -32,3 +32,5 @@ curl -H "Cookie: auth_token= eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI2OGFhYWI3Ny1lYm
 ## you can do both local and online development 
 using conditional rendering like if .env has dev set secure none and domain undefined in cookie
 and remove cors, ratelimiting and more.
+
+## use binary in product for maximum speed especially bun. Node also has pkg.
