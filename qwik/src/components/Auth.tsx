@@ -83,25 +83,42 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
 
   const handleSubmit = $(async () => {
-    if (!state.isLogin) {
-      const token = await getRecaptchaToken();
-
-      if (!token) {
-        state.modal = { 
-          isOpen: true, 
-          message: 'Tafadhali hakiki reCAPTCHA!', 
-          isSuccess: false
-        };
-        return;
-      }
-  
-      console.log(token);
-    }
     if (state.isLoading) return; // prevent multiple reqs
     if (Object.values(state.valid).every((valid) => valid)) {     
       const endpoint = state.isLogin ? `login` : `register`;
       state.isLoading = true; // Start loading ...
       try {
+        // recaptcha
+        if (!state.isLogin) {
+          const token = await getRecaptchaToken();
+    
+          if (!token) {
+            state.modal = { 
+              isOpen: true, 
+              message: 'Tafadhali hakiki reCAPTCHA!', 
+              isSuccess: false
+            };
+            return;
+          }
+      
+          const recaptchaPayload = {token};
+          interface recaptcha {
+            id?: string;
+            token: string
+          }
+          // send token
+          const sendToken = new CrudService<recaptcha>("verify-captcha");
+          const isVerified = await sendToken.create(recaptchaPayload);
+
+          if (!isVerified.success) {
+            state.modal = { 
+              isOpen: true, 
+              message: 'Hujaruhusiwa reCAPTCHA imekuzuia', 
+              isSuccess: false
+            };
+            return;
+          }
+        }
         const payload = {
           ...(state.isLogin ? {} : { name: state.name, phoneNumber: state.phoneNumber }),
           email: state.email,

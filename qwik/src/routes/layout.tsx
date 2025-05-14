@@ -49,11 +49,12 @@ export const onGet: RequestHandler = async ({ url, cookie, request, redirect, er
   rateLimitMap.set(ip, record);
 
   // Auth logic
-  const isPublic = url.pathname.startsWith("/auth");
-  if (isPublic) return;
+  const isPrivate = url.pathname.startsWith("/private");
+  if (isPrivate) {
+    const token = cookie.get("auth_token")?.value;
+    if (!token) throw redirect(302, "/auth");
+  }
 
-  const token = cookie.get("auth_token")?.value;
-  if (!token) throw redirect(302, "/auth");
 };
 
 export default component$(() => {

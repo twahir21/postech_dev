@@ -60,8 +60,15 @@ const googlePlugin = new Elysia()
     }
   })
 
-  .post('/verify-captcha', async ({ body }: { body: { 'g-recaptcha': string } }) => {
-    const token = body['g-recaptcha'];
+  .post('/verify-captcha', async ({ body }: { body: { token: string } }) => {
+    const token = body.token;
+
+    if (!token) {
+      return {
+        success: false,
+        message: "Tokeni ya reCAPTCHA haipo! jaribu tena"
+      }
+    }
     
     try {
       const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
@@ -70,7 +77,7 @@ const googlePlugin = new Elysia()
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: new URLSearchParams({
-          secret: process.env.GOOGLE_CLIENT_SECRET!, // Secret key from Google
+          secret: process.env.GOOGLE_RECAPTCHA_SECRET_KEY!, // Secret key from Google
           response: token
         }).toString()
       });
@@ -79,9 +86,9 @@ const googlePlugin = new Elysia()
     
       if (result.success) {
         // Passed the captcha
-        return { success: true };
+        return { success: true, message: "Success" };
       } else {
-        return { success: false, errors: result['error-codes'] };
+        return { success: false, message: result['error-codes'] };
       }
     } catch (error) {
       return {
