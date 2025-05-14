@@ -28,6 +28,7 @@ const frontendURL = process.env.NODE_ENV  === 'development'
                     ? process.env.FRONTEND_URL_DEV!
                     : process.env.FRONTEND_URL!
 
+
 // initialize translation before start the server
 await setupI18n();
 new Elysia()
@@ -35,32 +36,22 @@ new Elysia()
     .use(cookie())
 
     // Proper CORS handling
-    // .use(
-    //     cors({
-    //         origin: ['http://localhost:3000'], // Allow only frontend origin
-    //         allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"],
-    //         credentials: true, // Allow cookies
-    //         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow specific methods
-    //         maxAge: 3600, // Cache preflight response for 1 hour
-    //     })
-    // )
+    .use(
+        cors({
+          allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"],
+          credentials: true,
+          methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+          maxAge: 3600,
+          origin: frontendURL,
 
-    // // Security headers
-    // .onRequest(({ set }) => {
-    //     set.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'";
-    //     set.headers["X-Frame-Options"] = "DENY";
-    //     set.headers["X-Content-Type-Options"] = "nosniff";
-
-    // })
-
-    // // Handle CORS for preflight requests (OPTIONS method)
-    // .options("/*", ({ set }) => {
-    //     set.headers["Access-Control-Allow-Origin"] = frontendURL;
-    //     set.headers["Access-Control-Allow-Credentials"] = "true";
-    //     set.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
-    //     set.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
-    //     return new Response(null, { status: 204 }); // 204 No Content for preflight
-    // })
+        })
+      )
+      .onRequest(({ set }) => {
+        set.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'";
+        set.headers["X-Frame-Options"] = "DENY";
+        set.headers["X-Content-Type-Options"] = "nosniff";
+      }
+    )
 
     // 💥 Add it here (before plugins that handle POST/PUT/etc.)
     // .use(csrfProtection)

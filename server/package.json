@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@elysiajs/cookie": "^0.8.0",
-    "@elysiajs/cors": "^1.2.0",
+    "@elysiajs/cors": "1.2.0",
     "@elysiajs/jwt": "^1.2.0",
     "@neondatabase/serverless": "^1.0.0",
     "@types/adm-zip": "^0.5.7",
@@ -30,7 +30,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.42.0",
-    "elysia": "^1.2.25",
+    "elysia": "1.2.25",
     "i18next": "^24.2.3",
     "i18next-fs-backend": "^2.6.0",
     "lru-cache": "^11.0.2",
