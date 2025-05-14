@@ -1,13 +1,14 @@
 import type { headTypes, registerRequest } from "../types/types"; 
 import { mainDb } from "../database/schema/connections/mainDb";
-import { shops, shopUsers, users } from "../database/schema/shop";
+import { emailVerifications, shops, users } from "../database/schema/shop";
 import { hashPassword } from "./security/hash";
 import { getTranslation } from "./translation";
 import { eq } from "drizzle-orm"; // Ensure this is imported for querying
 import { sanitizeString } from "./security/xss";
-import { MemoryCache } from "./utils/memoryCache";
 import { shopCheckCache, userCheckCache } from "./utils/caches";
 import { cacheStatsTracker } from "./utils/Stats";
+import { v4 as uuidv4 } from 'uuid';
+
 
 
 export const regPost = async ({ body, headers }: { body: registerRequest; headers: headTypes }) => {
@@ -23,7 +24,8 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
         email = sanitizeString(email.trim());
         password = sanitizeString(password.trim());
         phoneNumber = sanitizeString(phoneNumber.trim());
-
+        
+        // Check if the email or user is already registered
         // 🧠 Try memory cache first
         const [existingUserCached, existingShopCached] = await Promise.all([
             userCheckCache.get(`user:${email}`),
@@ -46,7 +48,6 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             };
           }
 
-        // Check if the email or user is already registered
         // 🚦 Run DB checks in parallel (avoid select() and run one per time)
         // 🔍 If not cached, fetch from DB
         // save is missed
@@ -73,6 +74,22 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             message: await getTranslation(lang, "shopExistsErr")
             };
         }
+        // verify email
+        // Step 1: generate token
+        const token = uuidv4();
+
+        // Step 2: store in DB
+        await mainDb.insert(emailVerifications).values({
+            token,
+            email: body.email,
+            expiresAt: Date.now() + 20 * 60 * 1000,
+            used: false
+        });
+
+
+        // Step 3: send email with magic link
+        const link = `https://your-app.com/verify-email?token=${token}`;
+
         // Hash the password
         const hashedPassword = await hashPassword(password);
 

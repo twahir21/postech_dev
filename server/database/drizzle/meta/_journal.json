@@ -8,6 +8,13 @@
       "when": 1747186380731,
       "tag": "0000_handy_harrier",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1747255831865,
+      "tag": "0001_legal_epoch",
+      "breakpoints": true
     }
   ]
 }

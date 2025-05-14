@@ -234,3 +234,15 @@ import {
     date: timestamp("date").defaultNow(),
   });
   
+
+  // ------------------------------
+  // Email Verification Token Table
+  // ------------------------------
+  export const emailVerifications = pgTable("email_verifications", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    token: uuid("token").defaultRandom().notNull().unique(), 
+    email: text("email").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    used: boolean("used").notNull().default(false),
+    createdAt: timestamp("created_at").defaultNow()
+  });
