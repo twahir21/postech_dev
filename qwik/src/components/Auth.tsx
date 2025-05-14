@@ -74,9 +74,27 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
     validateField(field, sanitizedValue);
   });
 
+  const getRecaptchaToken = $(() => {
+    const tokenInput = document.getElementById('g-recaptcha-token') as HTMLInputElement | null;
+    if (!tokenInput) return;
+    return tokenInput.value;
+  });
+  
 
 
   const handleSubmit = $(async () => {
+    const token = await getRecaptchaToken();
+
+    if (!token) {
+      state.modal = { 
+        isOpen: true, 
+        message: 'Tafadhali hakiki reCAPTCHA!', 
+        isSuccess: false
+      };
+      return;
+    }
+
+    console.log(token);
     if (state.isLoading) return; // prevent multiple reqs
     if (Object.values(state.valid).every((valid) => valid)) {     
       const endpoint = state.isLogin ? `login` : `register`;
@@ -241,15 +259,19 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
         <script
           dangerouslySetInnerHTML={`
-          var onloadCallback = function() {
-            grecaptcha.render('html_element', {
-              'sitekey' : '6LfiETQrAAAAAKO2-kg1mBvKls6462H1kWzpD2eF'
-            });
-          };
+            var onloadCallback = function() {
+              grecaptcha.render('html_element', {
+                'sitekey': '6LfiETQrAAAAAKO2-kg1mBvKls6462H1kWzpD2eF',
+                'callback': function(response) {
+                  document.getElementById('g-recaptcha-token').value = response;
+                }
+              });
+            };
           `}
         />
         {!state.isLogin && <div id="html_element"></div>}
-        
+        <input type="hidden" id="g-recaptcha-token" name="g-recaptcha" />
+
 
 
         {/* Submit Button */}

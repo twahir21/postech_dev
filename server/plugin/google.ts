@@ -3,6 +3,7 @@ import { redirect } from "elysia";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+
 const frontendURL = process.env.NODE_ENV === 'development'
                     ? process.env.FRONTEND_URL_DEV!
                     : process.env.FRONTEND_URL!
@@ -35,35 +36,61 @@ const googlePlugin = new Elysia()
       }),
     });
 
-    const { access_token, id_token } = await tokenRes.json();
+    try {
+      const { access_token, id_token } = await tokenRes.json();
 
-    const userInfo = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-      headers: { Authorization: `Bearer ${access_token}` },
-    }).then(res => res.json());
-
-    // ⬇️ Upsert user into your DB, then create a session token
-    const { email, name, picture, sub: googleId } = userInfo;
-
-    // Create JWT or session cookie here...
-    console.log(email, name, picture);
-
-    return `Logged in as ${email}`;
+      const userInfo = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${access_token}` },
+      }).then(res => res.json());
+  
+      // ⬇️ Upsert user into your DB, then create a session token
+      const { email, name, picture, sub: googleId } = userInfo;
+  
+      // Create JWT or session cookie here...
+      console.log(email, name, picture);
+  
+      return `Logged in as ${email}`;
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error 
+                ? error.message
+                : "Google failed"
+      }
+    }
   })
 
-  .post('/verify-recaptcha', async ({ body }) => {
-    const secret = process.env.RECAPTCHA_SECRET_KEY;
-    const token = body.token;
-
-    const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        secret,
-        response: token
-      })
-    });
-
-    const data = await res.json();
-    return { success: data.success };
+  .post('/verify-captcha', async ({ body }: { body: { 'g-recaptcha': string } }) => {
+    const token = body['g-recaptcha'];
+    
+    try {
+      const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          secret: process.env.GOOGLE_CLIENT_SECRET!, // Secret key from Google
+          response: token
+        }).toString()
+      });
+    
+      const result = await res.json();
+    
+      if (result.success) {
+        // Passed the captcha
+        return { success: true };
+      } else {
+        return { success: false, errors: result['error-codes'] };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error 
+                ? error.message
+                : "Imeshindwa kuhakiki reCAPTCHA!"
+      }
+    }
   })
+  
 export default googlePlugin;

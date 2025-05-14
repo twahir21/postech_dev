@@ -49,9 +49,10 @@ class CrudService<T extends CrudItem> {
 
   async create(data: Partial<T>): Promise<CrudResponse<T>> {
     try {
-      const res = await fetchWithLang(this.baseUrl, {
+      console.log(this.baseUrl)
+      const res = await fetch(this.baseUrl, {
         method: 'POST',
-        mode: "cors", // allow cors if server permit (prevent cors errors)
+        mode: "no-cors", // allow cors if server permit (prevent cors errors)
         headers: {
           'Content-Type': 'application/json'
         },
