@@ -1,5 +1,5 @@
 {
-  "id": "a26a550c-91a9-4eee-b16a-8b8f97e9c891",
+  "id": "c09d6ae6-2438-42f7-bf24-213e41d729ec",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -508,7 +508,7 @@
         },
         "stock": {
           "name": "stock",
-          "type": "integer",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true,
           "default": 0
@@ -527,7 +527,7 @@
         },
         "min_stock": {
           "name": "min_stock",
-          "type": "integer",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true,
           "default": 0
@@ -668,7 +668,7 @@
         },
         "quantity": {
           "name": "quantity",
-          "type": "integer",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true,
           "default": 0
@@ -790,7 +790,7 @@
         },
         "quantity": {
           "name": "quantity",
-          "type": "integer",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true,
           "default": 0
@@ -869,7 +869,7 @@
         },
         "quantity": {
           "name": "quantity",
-          "type": "integer",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true,
           "default": 0
@@ -888,7 +888,7 @@
         },
         "discount": {
           "name": "discount",
-          "type": "integer",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true,
           "default": 0
@@ -1302,7 +1302,23 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_suppliers_shop_id": {
+          "name": "idx_suppliers_shop_id",
+          "columns": [
+            {
+              "expression": "shop_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "suppliers_shop_id_shops_id_fk": {
           "name": "suppliers_shop_id_shops_id_fk",

@@ -17,7 +17,7 @@ export const SettingsComponent = component$(() => {
     newPassword?: string;
     confirmPassword?: string;
     isTrial?: boolean;
-    trialEnds?: string; // You could use `Date` if you want stricter typing
+    trialEnds?: string;
     isLoading?:boolean;
     isPassword?:boolean;
     isDelete?:boolean;

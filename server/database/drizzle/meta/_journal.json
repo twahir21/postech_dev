@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1745826167962,
-      "tag": "0000_spicy_kang",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1746375087653,
-      "tag": "0001_slow_forge",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1746406268824,
-      "tag": "0002_puzzling_shadow_king",
+      "when": 1747186380731,
+      "tag": "0000_handy_harrier",
       "breakpoints": true
     }
   ]

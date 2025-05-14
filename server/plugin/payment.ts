@@ -11,10 +11,10 @@ const paymentPlugin = new Elysia()
             name: 'jwt',
             secret: JWT_SECRET,
         }))
-        .post("/generate-token", async ({ jwt, cookie, headers }) => {
+        .get("/generate-token", async ({ jwt, cookie, headers }) => {
             const { userId, shopId } = await extractId({ jwt, cookie });
     
-            return genTokenPay({ userId, shopId, headers });
+            return await genTokenPay({ userId, shopId, headers });
         })
 
 

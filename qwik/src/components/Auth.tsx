@@ -1,6 +1,7 @@
 import { $, component$, useStore } from '@builder.io/qwik';
-import { fetchWithLang } from '~/routes/function/fetchLang';
 import svgGoogle from "/google.svg"
+import { env } from '~/routes/api/base/config';
+import { CrudService } from '~/routes/api/base/oop';
 
 interface AuthFormProps {
   isLogin?: boolean;
@@ -60,6 +61,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
   // Update field values & validate
   type StateField = keyof Pick<typeof state, "name" | "email" | "username" | "password" | "phoneNumber">;
+  const backendURL = env.mode === 'development' ? env.backendURL_DEV : env.backendURL;
 
   const handleInputChange = $((field: StateField, value: string) => {
     let sanitizedValue = value.trim();
@@ -76,8 +78,8 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
   const handleSubmit = $(async () => {
     if (state.isLoading) return; // prevent multiple reqs
-    if (Object.values(state.valid).every((valid) => valid)) {
-      const endpoint = state.isLogin ? 'http://localhost:3000/login' : 'http://localhost:3000/register';
+    if (Object.values(state.valid).every((valid) => valid)) {     
+      const endpoint = state.isLogin ? `login` : `register`;
       state.isLoading = true; // Start loading ...
       try {
         const payload = {
@@ -87,34 +89,44 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
           password: state.password,
         };
 
-        const response = await fetchWithLang(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          credentials: 'include'
-        });
+        interface authTypes {
+          id?: string;
+          email: string;
+          username: string;
+          password: string;
+          name?: string;
+          phoneNumber?: string;
+        }
 
-        const result = await response.json();
+        const authApi = new CrudService<authTypes>(endpoint);
 
-        if (!response.ok || !result.success) {
+        const result = await authApi.create(payload);
+
+        if (!result.success) {
           state.modal = { 
             isOpen: true, 
             message: result.message || 'Hitilafu imetokea wakati wa kutuma', 
             isSuccess: false 
           };
           return;
-        } 
+        }
+
         state.modal = { 
           isOpen: true, 
           message: result.message || 'Umefanikiwa', 
           isSuccess: true 
         };
 
+
         // 🔄 Conditional redirect logic
         if (state.isLogin) {
           localStorage.setItem("username", state.username || "Guest");
           // Set token cookie manually is not allowed for production in frontend
-          window.location.href = "http://localhost:5173"; // Redirect to home
+          const frontendURL = env.mode === 'development'
+                              ? env.frontendURL_DEV
+                              : env.frontendURL;
+
+          window.location.href = frontendURL; // Redirect to home
         } else {
           // After registration, redirect to login
           setTimeout(() => {
@@ -261,7 +273,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
         {/* Google OAuth Button */}
         <button
-          onClick$={() => window.location.href = "http://localhost:3000/auth/google"}
+          onClick$={() => window.location.href = `${backendURL}/auth/google`}
           class={`w-full flex items-center justify-center gap-2 ${state.isLogin ? 'bg-green-200 hover:bg-green-300' : 'bg-yellow-100 hover:bg-yellow-200'} text-gray-900 p-2 transition rounded-4xl border-2 border-gray-600`}
         >
           <img src={svgGoogle} alt="Google Logo" class="w-5 h-5" />

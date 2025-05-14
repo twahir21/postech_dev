@@ -11,6 +11,10 @@ import { eq } from "drizzle-orm";
 
 dotenv.config();
 
+const frontendURL = process.env.NODE_ENV === 'development'
+                    ? process.env.FRONTEND_URL_DEV!
+                    : process.env.FRONTEND_URL!
+
 const {
   JWT_TOKEN,
 } = process.env;
@@ -122,7 +126,7 @@ const qrCodePlugin = new Elysia()
           },
         };
 
-        const url = new URL("http://localhost:5173/scan-qrcode");
+        const url = new URL(`${frontendURL}/scan-qrcode`);
 
         Object.keys(prodData.product).forEach((key) => {
           const value = prodData.product[key as keyof typeof prodData.product];

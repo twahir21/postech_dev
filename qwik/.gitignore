@@ -13,7 +13,7 @@ lerna-debug.log*
 # Caches
 
 *.md
-*.sh
+
 *.log
 
 

@@ -1,11 +1,15 @@
 import { fetchWithLang } from "~/routes/function/fetchLang";
 import type { CrudItem, CrudResponse } from "./typeSafe";
+import { env } from "./config";
+
+const backendURL = env.mode === 'development' ? env.backendURL_DEV : env.backendURL;
+
 
 class CrudService<T extends CrudItem> {
   private readonly baseUrl: string;
 
   constructor(basePath: string) {
-    this.baseUrl = `http://localhost:3000/${basePath}`;
+    this.baseUrl = `${backendURL}/${basePath}`;
   }
 
   async get(): Promise<CrudResponse<T[]>> {

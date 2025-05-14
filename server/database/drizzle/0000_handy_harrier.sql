@@ -55,10 +55,10 @@ CREATE TABLE "products" (
 	"name" text NOT NULL,
 	"category_id" uuid,
 	"price_sold" integer NOT NULL,
-	"stock" integer DEFAULT 0 NOT NULL,
+	"stock" double precision DEFAULT 0 NOT NULL,
 	"shop_id" uuid NOT NULL,
 	"supplier_id" uuid NOT NULL,
-	"min_stock" integer DEFAULT 0 NOT NULL,
+	"min_stock" double precision DEFAULT 0 NOT NULL,
 	"status" text DEFAULT 'available' NOT NULL,
 	"unit" text,
 	"created_at" timestamp DEFAULT now(),
@@ -71,7 +71,7 @@ CREATE TABLE "purchases" (
 	"product_id" uuid NOT NULL,
 	"supplier_id" uuid NOT NULL,
 	"shop_id" uuid NOT NULL,
-	"quantity" integer DEFAULT 0 NOT NULL,
+	"quantity" double precision DEFAULT 0 NOT NULL,
 	"price_bought" integer NOT NULL,
 	"total_cost" integer DEFAULT 0 NOT NULL,
 	"purchase_date" timestamp DEFAULT now(),
@@ -81,7 +81,7 @@ CREATE TABLE "purchases" (
 CREATE TABLE "returns" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"product_id" uuid NOT NULL,
-	"quantity" integer DEFAULT 0 NOT NULL,
+	"quantity" double precision DEFAULT 0 NOT NULL,
 	"shop_id" uuid NOT NULL,
 	"reason" text NOT NULL,
 	"return_date" timestamp DEFAULT now()
@@ -90,10 +90,10 @@ CREATE TABLE "returns" (
 CREATE TABLE "sales" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"product_id" uuid NOT NULL,
-	"quantity" integer DEFAULT 0 NOT NULL,
+	"quantity" double precision DEFAULT 0 NOT NULL,
 	"price_sold" integer NOT NULL,
 	"total_sales" integer NOT NULL,
-	"discount" integer DEFAULT 0 NOT NULL,
+	"discount" double precision DEFAULT 0 NOT NULL,
 	"shop_id" uuid NOT NULL,
 	"sale_type" text DEFAULT 'cash' NOT NULL,
 	"customer_id" uuid,
@@ -180,4 +180,5 @@ CREATE INDEX "idx_sales_product_shop" ON "sales" USING btree ("product_id","shop
 CREATE UNIQUE INDEX "unique_user_role" ON "shop_users" USING btree ("shop_id","user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "unique_username_per_shop" ON "shop_users" USING btree ("shop_id","user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "unique_supplier_product" ON "supplier_price_history" USING btree ("supplier_id","product_id","shop_id");--> statement-breakpoint
+CREATE INDEX "idx_suppliers_shop_id" ON "suppliers" USING btree ("shop_id");--> statement-breakpoint
 CREATE INDEX "idx_email" ON "users" USING btree ("email");

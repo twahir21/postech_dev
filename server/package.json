@@ -10,7 +10,6 @@
     "builder": "bun install && bun run clean && bunx drizzle-kit generate && bunx drizzle-kit push && bun build index.ts --outfile build/server --target bun --compile --minify-whitespace --minify-syntax --sourcemap"
   },
   "devDependencies": {
-    "@types/pg": "^8.11.11",
     "depcheck": "^1.4.7",
     "drizzle-kit": "^0.30.5"
   },
@@ -36,8 +35,6 @@
     "i18next-fs-backend": "^2.6.0",
     "lru-cache": "^11.0.2",
     "nodemailer": "^6.10.0",
-    "pg": "^8.14.1",
-    "postgres": "^3.4.5",
     "qrcode": "^1.5.4",
     "sharp": "^0.33.5",
     "xss": "^1.0.15",

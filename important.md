@@ -34,3 +34,12 @@ using conditional rendering like if .env has dev set secure none and domain unde
 and remove cors, ratelimiting and more.
 
 ## use binary in product for maximum speed especially bun. Node also has pkg.
+
+## with neon don't use pg at all and uninstall it 
+- it will kill u if u didnt recognize because it uses tcp port 5432 and connect url to it
+- so it will always fail when trying to update schema to remote neon database 
+- because it assumes it runs with local postgres
+- you will not neon db at all even if string is correct
+- use bun remove @types/pg and bun remove pg 
+- but they are useful for local postgres db
+- then use drizzle to use neon http

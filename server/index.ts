@@ -7,7 +7,7 @@ import { cors } from "@elysiajs/cors";
 
 import categoriesPlugin from "./plugin/categories";
 import suppPlugin from "./plugin/supplier";
-import { rateLimitMiddleware } from "./functions/security/rateLimiting";
+// import { rateLimitMiddleware } from "./functions/security/rateLimiting";
 import { loginPlugin } from "./plugin/login";
 import { prodPlugin } from "./plugin/products";
 import automateTasks from "./plugin/autoSales";
@@ -23,6 +23,10 @@ import paymentPlugin from "./plugin/payment";
 
 const startTime = Date.now(); // Start time tracking
 
+// LOAD DATA PER ENV
+const frontendURL = process.env.NODE_ENV  === 'development' 
+                    ? process.env.FRONTEND_URL_DEV!
+                    : process.env.FRONTEND_URL!
 
 // initialize translation before start the server
 await setupI18n();
@@ -33,7 +37,7 @@ new Elysia()
     // Proper CORS handling
     .use(
         cors({
-            origin: ["http://localhost:5173"], // Allow only frontend origin
+            origin: [frontendURL], // Allow only frontend origin
             allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"],
             credentials: true, // Allow cookies
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow specific methods
@@ -51,7 +55,7 @@ new Elysia()
 
     // Handle CORS for preflight requests (OPTIONS method)
     .options("/*", ({ set }) => {
-        set.headers["Access-Control-Allow-Origin"] = "http://localhost:5173";
+        set.headers["Access-Control-Allow-Origin"] = frontendURL;
         set.headers["Access-Control-Allow-Credentials"] = "true";
         set.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
         set.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
@@ -83,6 +87,4 @@ const endTime = Date.now(); // Start time tracking
 
 console.log(`Server Execution Time: ${endTime - startTime}ms`);
 
-
-
-console.log("Server is running in the link http://localhost:3000")
+console.log("Server is running ... ")

@@ -20,7 +20,7 @@ export const loginPlugin = new Elysia()
             secret: JWT_SECRET,  // Secret for JWT
         })
     )
-    .post('/login', async ({ body, jwt, cookie, headers }) => {
+    .post('/login', async ({ body, jwt, cookie: {name}, headers }) => {
         const lang = headers["accept-language"]?.split(",")[0] || "sw";
     
         try {
@@ -86,7 +86,7 @@ export const loginPlugin = new Elysia()
                 .limit(1);
     
             if (!shop.length) {
-                return { success: false, message: 'No shop assigned to this user' };
+                return { success: false, message: 'Hakuna duka lililosajiliwa kwa ajili yako' };
             }
     
             const shopData = shop[0];
@@ -110,17 +110,19 @@ export const loginPlugin = new Elysia()
                     message: await getTranslation(lang, "noToken")
                 };
             }
+
+            console.log(cookie.name)
     
             // Set secure cookie
-            cookie.auth_token.set({
-                value: token,
-                httpOnly: true,
-                secure: false,
-                sameSite: 'none',
-                maxAge: 7 * 86400,
-                path: '/',
-                domain: undefined
-            });
+            // cookie.auth_token.set({
+            //     value: token,
+            //     httpOnly: true,
+            //     secure: false,
+            //     sameSite: 'none',
+            //     maxAge: 7 * 86400,
+            //     path: '/',
+            //     domain: undefined
+            // });
     
             // 🧠 Store result in cache for future logins
             const payload = {

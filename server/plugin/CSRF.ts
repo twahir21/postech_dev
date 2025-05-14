@@ -1,9 +1,10 @@
 import { Elysia } from "elysia"
 
-const allowedOrigins = [
-  "https://www.mypostech.store",
-  "http://localhost:5173",
-]
+const frontendURL = process.env.NODE_ENV === 'development'
+                    ? process.env.FRONTEND_URL_DEV!
+                    : process.env.FRONTEND_URL!
+
+const allowedOrigins = [`${frontendURL}`]
 
 export const csrfProtection = (app: Elysia) =>
   app.onBeforeHandle(({ request, set }) => {
