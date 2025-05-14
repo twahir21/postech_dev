@@ -43,3 +43,5 @@ and remove cors, ratelimiting and more.
 - use bun remove @types/pg and bun remove pg 
 - but they are useful for local postgres db
 - then use drizzle to use neon http
+
+# version is very important ? sometimes wrong version can kill projects

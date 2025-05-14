@@ -4,7 +4,6 @@ import { env } from "./config";
 
 const backendURL = env.mode === 'development' ? env.backendURL_DEV : env.backendURL;
 
-
 class CrudService<T extends CrudItem> {
   private readonly baseUrl: string;
 
@@ -49,10 +48,9 @@ class CrudService<T extends CrudItem> {
 
   async create(data: Partial<T>): Promise<CrudResponse<T>> {
     try {
-      console.log(this.baseUrl)
-      const res = await fetch(this.baseUrl, {
+      const res = await fetchWithLang(this.baseUrl, {
         method: 'POST',
-        mode: "no-cors", // allow cors if server permit (prevent cors errors)
+        mode: "cors", // allow cors if server permit (prevent cors errors)
         headers: {
           'Content-Type': 'application/json'
         },
@@ -60,7 +58,8 @@ class CrudService<T extends CrudItem> {
         credentials: 'include'
       });
 
-      return await res.json();
+      return await res.json()
+      
     } catch (err) {
       return {
         success: false,
@@ -73,7 +72,6 @@ class CrudService<T extends CrudItem> {
     try {
       const res = await fetchWithLang(`${this.baseUrl}/${id}`, {
         method: 'PUT',
-        mode: "cors", // allow cors if server permit (prevent cors errors)
         headers: {
           'Content-Type': 'application/json'
         },
@@ -94,7 +92,7 @@ class CrudService<T extends CrudItem> {
     try {
       const res = await fetchWithLang(`${this.baseUrl}/${id}`, {
         method: 'DELETE',
-        mode: "cors", // allow cors if server permit (prevent cors errors)
+        // mode: "cors", // allow cors if server permit (prevent cors errors) is set by default 
         credentials: 'include'
       });
 

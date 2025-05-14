@@ -83,18 +83,20 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
 
   const handleSubmit = $(async () => {
-    const token = await getRecaptchaToken();
+    if (!state.isLogin) {
+      const token = await getRecaptchaToken();
 
-    if (!token) {
-      state.modal = { 
-        isOpen: true, 
-        message: 'Tafadhali hakiki reCAPTCHA!', 
-        isSuccess: false
-      };
-      return;
+      if (!token) {
+        state.modal = { 
+          isOpen: true, 
+          message: 'Tafadhali hakiki reCAPTCHA!', 
+          isSuccess: false
+        };
+        return;
+      }
+  
+      console.log(token);
     }
-
-    console.log(token);
     if (state.isLoading) return; // prevent multiple reqs
     if (Object.values(state.valid).every((valid) => valid)) {     
       const endpoint = state.isLogin ? `login` : `register`;
