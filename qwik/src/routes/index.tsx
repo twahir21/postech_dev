@@ -1,5 +1,5 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { Link, type DocumentHead } from "@builder.io/qwik-city";
 import type { ContactTypes } from "./api/base/typeSafe";
 import { contactApi, warmUpApi } from "./api/base/api";
 
@@ -265,8 +265,8 @@ export default component$(() => {
           <a href="#features" class="block text-gray-800 dark:text-gray-200 hover:text-indigo-500">Kwa Nini Sisi?</a>
           <a href="#contact" class="block text-gray-800 dark:text-gray-200 hover:text-indigo-500">Wasiliana</a>
           <div class="flex gap-3 mt-3">
-            <a href='http://localhost:5173/auth?reg=false ' class="w-full border border-gray-900 text-center px-4 py-2 rounded-md hover:bg-gray-900 hover:text-white transition">Ingia</a>
-            <a href='http://localhost:5173/auth?reg=true ' class="w-full bg-gray-900 text-white text-center px-4 py-2 rounded-md hover:bg-gray-800 transition">Anza</a>
+            <Link href='/auth?reg=false ' class="w-full border border-gray-900 text-center px-4 py-2 rounded-md hover:bg-gray-900 hover:text-white transition">Ingia</Link>
+            <Link href='/auth?reg=true ' class="w-full bg-gray-900 text-white text-center px-4 py-2 rounded-md hover:bg-gray-800 transition">Anza</Link>
           </div>
           <button onClick$={toggleTheme}
             class="w-full mt-2 flex justify-center items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg hover:brightness-110 active:scale-95 transition duration-300">
@@ -290,8 +290,8 @@ export default component$(() => {
                 Mfumo wa kisasa wa POS ulio na uwezo wa kuboresha na kurahisisha mauzo kwa ku scan special QR Codes hivyo kufanya mahesabu ya biashara kiotomatiki.
                 </p>
                 <div class="flex space-x-4">
-                <a href= 'http://localhost:5173/auth?reg=true' class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base">Anza Kutumia</a>
-                <a href= 'http://localhost:5173/auth?reg=false' class="border border-gray-900 dark:border-gray-100 px-6 py-3 rounded-lg shadow-md hover:bg-gray-900 hover:text-white transition text-sm sm:text-base md:text-base">Ingia</a>
+                <Link href= '/auth?reg=true' class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base">Anza Kutumia</Link>
+                <Link href= '/auth?reg=false' class="border border-gray-900 dark:border-gray-100 px-6 py-3 rounded-lg shadow-md hover:bg-gray-900 hover:text-white transition text-sm sm:text-base md:text-base">Ingia</Link>
                 </div>
             </div>
         </section>
