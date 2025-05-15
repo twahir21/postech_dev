@@ -163,7 +163,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
                               ? env.frontendURL_DEV
                               : env.frontendURL;
 
-          window.location.href = frontendURL; // Redirect to home
+          window.location.href = `${frontendURL}/private`; // Redirect to dashboard
         } else {
           // After registration, redirect to login
           setTimeout(() => {

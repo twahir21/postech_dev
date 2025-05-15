@@ -20,7 +20,7 @@ export const loginPlugin = new Elysia()
             secret: JWT_SECRET,  // Secret for JWT
         })
     )
-    .post('/login', async ({ body, jwt, cookie, headers }) => {
+    .post('/login', async ({ body, jwt, cookie: { auth_token }, headers }) => {
         const lang = headers["accept-language"]?.split(",")[0] || "sw";
     
         try {
@@ -114,15 +114,16 @@ export const loginPlugin = new Elysia()
             console.log(cookie.name)
     
             // Set secure cookie
-            // cookie.auth_token.set({
-            //     value: token,
-            //     httpOnly: true,
-            //     secure: false,
-            //     sameSite: 'none',
-            //     maxAge: 7 * 86400,
-            //     path: '/',
-            //     domain: undefined
-            // });
+            auth_token.set({
+                value: token,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'development' ? false : true,
+                sameSite: 'none',
+                maxAge: 7 * 86400,
+                path: '/',
+                domain: process.env.NODE_ENV === 'development' 
+                        ? undefined: ".mypostech.store"
+            });
     
             // 🧠 Store result in cache for future logins
             const payload = {
