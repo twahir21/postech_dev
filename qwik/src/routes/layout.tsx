@@ -53,13 +53,11 @@ export const onGet: RequestHandler = async ({ url, cookie, request, redirect, er
   const isPrivate = url.pathname.startsWith("/private") || url.pathname.startsWith("/api/translate");
   if (isPrivate) {
     const token = cookie.get('auth_token')?.value;
-    console.log("SSR token: ", token)
     const tokenPayload = {token}
 
     const verifyApi = new CrudService<{ id?: string; token: string }>("verify-cookie");
     
     const isVerified = await verifyApi.postEarly(tokenPayload);
-    console.log(isVerified, url.pathname)
     if (!isVerified.success) throw redirect(302, "/auth");
   }
 

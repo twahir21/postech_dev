@@ -12,6 +12,7 @@ import { SuppCrudComponent } from "~/components/Supp";
 import { SettingsComponent } from "~/components/Settings";
 import { MainGraph } from "~/components/reports/MainGraph";
 import { OthersComponent } from "~/components/Others";
+import { CrudService } from "../api/base/oop";
 
 // Example translations (you can fetch these from an API or external file)
 const translations: Record<string, Record<string, string>> = {
@@ -151,11 +152,14 @@ export default component$(() => {
   // Logout function
   const navigateLogout = useNavigate();
 
-  const logout = $(() => {
-    console.log(document.cookie);
+  const logout = $(async () => {
     // Delete the authentication cookie do not do with plain JavaScript frontend
-    document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    const logoutApi = new CrudService("delete-cookie");
 
+    const logoutRes = await logoutApi.get();
+    if (!logoutRes.success) return;
+
+    console.log(logoutRes)
     // Optionally clear any localStorage items related to the user
     localStorage.removeItem("username");
 
