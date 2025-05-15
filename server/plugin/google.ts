@@ -4,11 +4,11 @@ import { redirect } from "elysia";
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 
-const frontendURL = process.env.NODE_ENV === 'development'
-                    ? process.env.FRONTEND_URL_DEV!
-                    : process.env.FRONTEND_URL!
+const backendURL = process.env.NODE_ENV === 'development'
+                    ? process.env.BACKEND_URL_DEV!
+                    : process.env.BACKEND_URL!
 
-const REDIRECT_URI = `${frontendURL}/auth/google/callback`;
+const REDIRECT_URI = `${backendURL}/auth/google/callback`;
 
 const googlePlugin = new Elysia()
 

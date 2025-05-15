@@ -100,21 +100,6 @@ export interface DecodedToken {
     userId: string;
     shopId: string;
   }
-
-export interface AuthCookie {
-    auth_token: {
-        set: (options: {
-            value: string;
-            httpOnly: boolean;
-            secure: boolean;
-            sameSite: 'lax' | 'strict' | 'none';
-            maxAge: number;
-            path?: string;
-            domain?: string;
-        }) => void;
-    };
-};
-
   
   
 export  interface CookieTypes {

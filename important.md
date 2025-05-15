@@ -50,3 +50,6 @@ and remove cors, ratelimiting and more.
 
 # always set cookie as lax if in localhost and have diff port
 # protect SPA pages like dashboard with SSR cookie.get and send for auth
+
+# checksum is digital fingerprint to ensure data is not forged, use crypto and HMAC
+# to receive payment in clickpesa activate tigo and airtel
