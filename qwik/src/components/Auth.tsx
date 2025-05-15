@@ -113,7 +113,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
           if (!isVerified.success) {
             state.modal = { 
               isOpen: true, 
-              message: 'Hujaruhusiwa reCAPTCHA imekuzuia', 
+              message: isVerified.message || 'Hujaruhusiwa reCAPTCHA imekuzuia', 
               isSuccess: false
             };
             return;

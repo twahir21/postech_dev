@@ -120,40 +120,89 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             to: body.email,
             subject: "Hakiki barua pepe",
             html: `
-                <!DOCTYPE html>
-                <html lang="sw">
-                <head>
-                    <meta charset="UTF-8" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                    <title>Thibitisha Barua Pepe</title>
-                    <script src="https://cdn.tailwindcss.com"></script>
-                    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-                    <style>
-                    body {
-                        font-family: 'Quicksand', sans-serif;
-                    }
-                    </style>
-                </head>
-                <body class="bg-slate-200 p-4 text-gray-800 min-h-screen flex items-center justify-center">
-                    <div class="max-w-md mx-auto bg-white border-2 border-slate-700 rounded-3xl shadow-md overflow-hidden">
-                    <div class="text-center py-8 px-6 bg-gradient-to-t from-teal-300 to-teal-800">
-                        <img src="${frontendURL}/thumbail.png" alt="App Logo" class="w-20 mx-auto mb-4">
-                        <h2 class="text-white text-2xl font-semibold">Thibitisha Barua Pepe Yako</h2>
-                    </div>
-                    <div class="px-6 py-8 text-center">
-                        <p class="mb-6 text-base">Habari! Tafadhali bonyeza kitufe hapa chini kuthibitisha anwani yako ya barua pepe <span class="text-red-500">kabla ya dakika 20.</span></p>
-                        <a href="${link}"
-                        class="inline-block px-6 py-3 rounded-full border-2 border-slate-700 bg-green-200 text-gray-900 font-bold hover:bg-green-300 transition">
-                        Thibitisha Barua Pepe
-                        </a>
-                        <div class="mt-8 text-sm text-gray-500">
-                        <p>Ikiwa hukutuma ombi la akaunti au ujumbe huu, tafadhali puuza barua pepe hii.</p>
-                        </div>
-                    </div>
-                    </div>
-                </body>
-                </html>
-            `,
+            <!DOCTYPE html>
+            <html lang="sw">
+            <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>Thibitisha Barua Pepe</title>
+            <style>
+                body {
+                font-family: 'Quicksand', sans-serif;
+                background-color: #e2e8f0;
+                padding: 1rem;
+                color: #1f2937;
+                font-size: 14px;
+                margin: 0;
+                }
+                .container {
+                max-width: 28rem;
+                margin: 0 auto;
+                background: white;
+                border: 2px solid #334155;
+                border-radius: 1.5rem;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                overflow: hidden;
+                }
+                .header {
+                text-align: center;
+                padding: 2rem 1.5rem;
+                background: linear-gradient(to top, #5eead4, #115e59);
+                }
+                .header img {
+                width: 5rem;
+                margin: 0 auto 1rem;
+                }
+                .header h2 {
+                color: white;
+                font-size: 1.5rem;
+                font-weight: 600;
+                margin: 0;
+                }
+                .content {
+                padding: 2rem 1.5rem;
+                text-align: center;
+                }
+                .content p {
+                margin-bottom: 1.5rem;
+                font-size: 14px;
+                }
+                .content a {
+                display: inline-block;
+                padding: 0.75rem 1.5rem;
+                border: 2px solid #334155;
+                background-color: #bbf7d0;
+                color: #111827;
+                font-weight: bold;
+                border-radius: 9999px;
+                text-decoration: none;
+                }
+                .footer {
+                margin-top: 2rem;
+                font-size: 12px;
+                color: #6b7280;
+                }
+            </style>
+            </head>
+            <body>
+            <div class="container">
+                <div class="header">
+                    <img src="${frontendURL}/thumbail.png" alt="App Logo">
+                    <h2>Thibitisha Barua Pepe Yako</h2>
+                </div>
+                <div class="content">
+                <p>Habari! Tafadhali bonyeza kitufe hapa chini kuthibitisha anwani yako ya barua pepe 
+                    <span style="color: #ef4444;">kabla ya dakika 20</span>.
+                </p>
+                <a href="${link}">Thibitisha Barua Pepe</a>
+                <div class="footer">
+                    <p>Ikiwa hukutuma ombi la akaunti au ujumbe huu, tafadhali puuza barua pepe hii.</p>
+                </div>
+                </div>
+            </div>
+            </body>
+            </html>
+            `
         });
 
         return {

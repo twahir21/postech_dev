@@ -15,6 +15,13 @@
       "when": 1747255831865,
       "tag": "0001_legal_epoch",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1747269699380,
+      "tag": "0002_needy_marauders",
+      "breakpoints": true
     }
   ]
 }
