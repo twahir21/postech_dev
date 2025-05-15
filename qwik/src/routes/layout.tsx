@@ -3,6 +3,7 @@ import type { RequestHandler } from "@builder.io/qwik-city";
 import { RefetchContext } from "~/components/context/refreshContext";
 import { globalStoreContext } from "~/components/context/store/globalStore";
 import type { globalStoreTypes } from "~/components/context/store/globalStore";
+import { CrudService } from "./api/base/oop";
 
 
 
@@ -13,7 +14,7 @@ const RATE_LIMIT = 100;
 const TIME_WINDOW = 10 * 1000; // 10 sec
 const BLOCK_DURATION = 5 * 60 * 1000; // 5 min
 
-export const onGet: RequestHandler = async ({ url, cookie, request, redirect, error }) => {
+export const onGet: RequestHandler = async ({ url, request, redirect, error }) => {
   const ip =
     request.headers.get("x-forwarded-for") ||
     request.headers.get("cf-connecting-ip") ||
@@ -49,10 +50,12 @@ export const onGet: RequestHandler = async ({ url, cookie, request, redirect, er
   rateLimitMap.set(ip, record);
 
   // Auth logic
-  const isPrivate = url.pathname.startsWith("/private");
+  const isPrivate = url.pathname.startsWith("/private") || url.pathname.startsWith("/api/translate");
   if (isPrivate) {
-    const token = cookie.get("auth_token")?.value;
-    if (!token) throw redirect(302, "/auth");
+    const verifyApi = new CrudService("verify-cookie");
+    const isVerified = await verifyApi.getEarly();
+    console.log(isVerified, url.pathname)
+    if (!isVerified.success) throw redirect(302, "/auth");
   }
 
 };

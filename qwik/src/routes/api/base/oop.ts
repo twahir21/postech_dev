@@ -11,13 +11,28 @@ class CrudService<T extends CrudItem> {
     this.baseUrl = `${backendURL}/${basePath}`;
   }
 
+  async getEarly(): Promise<CrudResponse<T[]>> {
+    try {
+      const res = await fetch(this.baseUrl, 
+        { 
+          method: 'GET', 
+          credentials: 'include',
+        });
+      return await res.json();
+    } catch (err) {
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : "Imeshindwa kupata taarifa kutoka kwenye seva"
+      };
+    }
+  }
+
   async get(): Promise<CrudResponse<T[]>> {
     try {
       const res = await fetchWithLang(this.baseUrl, 
         { 
           method: 'GET', 
           credentials: 'include',
-          mode: "cors", // allow cors if server permit (prevent cors errors)
 
         });
       return await res.json();
@@ -33,7 +48,6 @@ class CrudService<T extends CrudItem> {
     try {
       const res = await fetchWithLang(`${this.baseUrl}/${id}`, {
         method: 'GET',
-        mode: "cors", // allow cors if server permit (prevent cors errors)
         credentials: 'include'
       });
 
@@ -50,7 +64,6 @@ class CrudService<T extends CrudItem> {
     try {
       const res = await fetchWithLang(this.baseUrl, {
         method: 'POST',
-        mode: "cors", // allow cors if server permit (prevent cors errors)
         headers: {
           'Content-Type': 'application/json'
         },
