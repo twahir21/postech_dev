@@ -47,3 +47,6 @@ and remove cors, ratelimiting and more.
 # version is very important ? sometimes wrong version can kill projects
 
 # i do have one cron job when user visit index.tsx remove it when traffic is high.
+
+# always set cookie as lax if in localhost and have diff port
+# protect SPA pages like dashboard with SSR cookie.get and send for auth

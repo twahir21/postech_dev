@@ -148,6 +148,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
           return;
         }
 
+
         state.modal = { 
           isOpen: true, 
           message: result.message || 'Umefanikiwa', 
@@ -192,7 +193,6 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
       }
     }
   });
-
   return (
     <div class="flex items-center justify-center min-h-screen bg-gray-300">
       <div class="bg-white p-6 rounded-lg shadow-md w-96 flex flex-col items-center relative mr-4 ml-4">

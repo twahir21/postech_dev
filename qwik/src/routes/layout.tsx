@@ -14,7 +14,7 @@ const RATE_LIMIT = 100;
 const TIME_WINDOW = 10 * 1000; // 10 sec
 const BLOCK_DURATION = 5 * 60 * 1000; // 5 min
 
-export const onGet: RequestHandler = async ({ url, request, redirect, error }) => {
+export const onGet: RequestHandler = async ({ url, cookie, request, redirect, error }) => {
   const ip =
     request.headers.get("x-forwarded-for") ||
     request.headers.get("cf-connecting-ip") ||
@@ -52,8 +52,13 @@ export const onGet: RequestHandler = async ({ url, request, redirect, error }) =
   // Auth logic
   const isPrivate = url.pathname.startsWith("/private") || url.pathname.startsWith("/api/translate");
   if (isPrivate) {
-    const verifyApi = new CrudService("verify-cookie");
-    const isVerified = await verifyApi.getEarly();
+    const token = cookie.get('auth_token')?.value;
+    console.log("SSR token: ", token)
+    const tokenPayload = {token}
+
+    const verifyApi = new CrudService<{ id?: string; token: string }>("verify-cookie");
+    
+    const isVerified = await verifyApi.postEarly(tokenPayload);
     console.log(isVerified, url.pathname)
     if (!isVerified.success) throw redirect(302, "/auth");
   }
@@ -75,8 +80,9 @@ export default component$(() => {
     customerRefetch,
     qrCodeRefetch,
     supplierRefetch,
-    categoryRefetch
+    categoryRefetch,
   });
+
 
   // globalStore
 const globalStore = useStore<globalStoreTypes>({

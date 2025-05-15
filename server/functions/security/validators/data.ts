@@ -350,3 +350,15 @@ export const emailData = t.Object({
         }
     })
 });
+
+export const authToken = t.Object({
+    token: t.String({
+        minLength: 3,
+        error() {
+            return {
+                success: false,
+                message: "Tokeni sio sahihi"
+            }
+        }
+    })
+})

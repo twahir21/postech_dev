@@ -44,7 +44,6 @@ export const loginPlugin = new Elysia()
                 return {
                     success: true,
                     message: `${await getTranslation(lang, "loginSuccess")} ${username}`,
-                    token: cached.token,
                     ...cached.payload
                 };
             }
@@ -110,15 +109,13 @@ export const loginPlugin = new Elysia()
                     message: await getTranslation(lang, "noToken")
                 };
             }
-
-            console.log(cookie.name)
     
             // Set secure cookie
             auth_token.set({
                 value: token,
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'development' ? false : true,
-                sameSite: 'none',
+                sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
                 maxAge: 7 * 86400,
                 path: '/',
                 domain: process.env.NODE_ENV === 'development' 
@@ -133,14 +130,12 @@ export const loginPlugin = new Elysia()
             };
     
             loginCache.set(cacheKey, {
-                token,
                 payload
             });
     
             return {
                 success: true,
                 message: `${await getTranslation(lang, "loginSuccess")} ${username}`,
-                token,
                 ...payload
             };
         } catch (error) {

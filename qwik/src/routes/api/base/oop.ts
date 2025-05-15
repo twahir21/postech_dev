@@ -11,21 +11,27 @@ class CrudService<T extends CrudItem> {
     this.baseUrl = `${backendURL}/${basePath}`;
   }
 
-  async getEarly(): Promise<CrudResponse<T[]>> {
+  async postEarly(data: Partial<T>): Promise<CrudResponse<T>> {
     try {
-      const res = await fetch(this.baseUrl, 
-        { 
-          method: 'GET', 
-          credentials: 'include',
-        });
-      return await res.json();
+      const res = await fetch(this.baseUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+
+      return await res.json()
+      
     } catch (err) {
       return {
         success: false,
-        message: err instanceof Error ? err.message : "Imeshindwa kupata taarifa kutoka kwenye seva"
+        message: err instanceof Error ? err.message : "Imeshindwa kuhifadhi taarifa"
       };
     }
   }
+
 
   async get(): Promise<CrudResponse<T[]>> {
     try {
