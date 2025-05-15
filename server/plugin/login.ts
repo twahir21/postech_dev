@@ -20,7 +20,7 @@ export const loginPlugin = new Elysia()
             secret: JWT_SECRET,  // Secret for JWT
         })
     )
-    .post('/login', async ({ body, jwt, cookie: {name}, headers }) => {
+    .post('/login', async ({ body, jwt, cookie, headers }) => {
         const lang = headers["accept-language"]?.split(",")[0] || "sw";
     
         try {

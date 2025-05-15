@@ -1,4 +1,4 @@
-import type { AuthCookie, CookieTypes, DecodedToken, ExtractedId, jwtTypes } from "../../types/types";
+import type { AuthCookie, CookieTypes, DecodedToken,  jwtTypes } from "../../types/types";
 
 
 export function isDecodedToken(token: unknown): token is DecodedToken {
@@ -17,7 +17,7 @@ export function isDecodedToken(token: unknown): token is DecodedToken {
   }
   
   
-  export const extractId = async ({ jwt, cookie }: { jwt: jwtTypes; cookie: CookieTypes }): Promise<ExtractedId> => {
+  export const extractId = async ({ jwt, cookie }: { jwt: jwtTypes; cookie: CookieTypes })=> {
     const token = cookie.auth_token?.value;
     if (!token) {
       return {

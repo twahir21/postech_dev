@@ -242,6 +242,10 @@ import {
     id: uuid("id").defaultRandom().primaryKey(),
     token: uuid("token").defaultRandom().notNull().unique(), 
     email: text("email").notNull(),
+    shopName: text("shop_name").notNull(),
+    username: text("username").notNull(),
+    phone: text("phone").notNull(),
+    password: text("password").notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     used: boolean("used").notNull().default(false),
     createdAt: timestamp("created_at").defaultNow()

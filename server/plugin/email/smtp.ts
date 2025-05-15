@@ -46,7 +46,6 @@ mailPlugin.post("/sendMail", async ({ body }: { body: email }) => {
             from: `"${name}" <${zohoEmail}>`,
             to: process.env.TO_EMAIL,
             subject: "PosTech message",
-            text: `Name: ${name}\nEmail: ${email}\nMessage:\n${message}`,
             html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p>${message}</p>`,
         });
 

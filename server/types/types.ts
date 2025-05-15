@@ -95,13 +95,6 @@ export interface pswdType {
     newPassword: string;
 }
 
-// Define return type for extractId
-export interface ExtractedId {
-    userId: string;
-    shopId: string;
-    success?: boolean;
-    message?: string;
-}
 
 export interface DecodedToken {
     userId: string;
