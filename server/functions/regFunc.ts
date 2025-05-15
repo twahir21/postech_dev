@@ -156,46 +156,6 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             `,
         });
 
-        // // Save user to database and get the user ID
-        // const user = await mainDb.insert(users)
-        //     .values({
-        //         username,
-        //         email,
-        //         password: hashedPassword,
-        //         phoneNumber
-        //     })
-        //     .returning({ id: users.id }) // Ensure ID is returned correctly
-        //     .then(res => res[0]); // Extract first row
-
-        // if (!user) {
-        //     return {
-        //         success: false,
-        //         message: sanitizeString(await getTranslation(lang, "userErr")),
-        //     };
-        // }
-
-        // // Save shop to database and get the shop ID
-        // const shop = await mainDb.insert(shops)
-        //     .values({
-        //         name,
-        //     })
-        //     .returning({ id: shops.id }) // Ensure ID is returned correctly
-        //     .then(res => res[0]); // Extract first row
-
-        // if (!shop) {
-        //     return {
-        //         success: false,
-        //         message: sanitizeString(await getTranslation(lang, "shopCreateErr")),
-        //     };
-        // }
-
-        // // Save to shop_users table
-        // await mainDb.insert(shopUsers).values({
-        //     shopId: shop.id,
-        //     userId: user.id,
-        //     role: "owner", // Since this is the shop creator
-        // });
-
         return {
             success: true,
             message: "Ingia kwenye email yako kuhakiki",

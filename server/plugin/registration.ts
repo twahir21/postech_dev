@@ -36,7 +36,7 @@ const regPlugin = new Elysia()
             }
 
             // check if not expired
-            if (result[0].expiresAt > new Date(Date.now())){
+            if (new Date() > result[0].expiresAt) {
                 return {
                     success: false,
                     message: "Token imeisha muda wake"
@@ -44,7 +44,52 @@ const regPlugin = new Elysia()
             }
 
             // now save to production database
-            // redirect to login
+            // mark token as used
+            await mainDb.update(emailVerifications).set({
+                used: true
+            }).where(eq(emailVerifications.token, token));
+
+            // Save user to database and get the user ID
+            const user = await mainDb.insert(users)
+                .values({
+                    username: result[0].username,
+                    email,
+                    password: hashedPassword,
+                    phoneNumber
+                })
+                .returning({ id: users.id }) // Ensure ID is returned correctly
+                .then(res => res[0]); // Extract first row
+
+            if (!user) {
+                return {
+                    success: false,
+                    message: sanitizeString(await getTranslation(lang, "userErr")),
+                };
+            }
+
+            // Save shop to database and get the shop ID
+            const shop = await mainDb.insert(shops)
+                .values({
+                    name,
+                })
+                .returning({ id: shops.id }) // Ensure ID is returned correctly
+                .then(res => res[0]); // Extract first row
+
+            if (!shop) {
+                return {
+                    success: false,
+                    message: sanitizeString(await getTranslation(lang, "shopCreateErr")),
+                };
+            }
+
+            // Save to shop_users table
+            await mainDb.insert(shopUsers).values({
+                shopId: shop.id,
+                userId: user.id,
+                role: "owner", // Since this is the shop creator
+            });
+            
+            // automatic login
         } catch (error) {
             return {
                 success: false,

@@ -45,3 +45,5 @@ and remove cors, ratelimiting and more.
 - then use drizzle to use neon http
 
 # version is very important ? sometimes wrong version can kill projects
+
+# i do have one cron job when user visit index.tsx remove it when traffic is high.
