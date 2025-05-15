@@ -4,7 +4,7 @@ import { registerData } from "../functions/security/validators/data";
 import type { headTypes } from "../types/types";
 import { getTranslation } from "../functions/translation";
 import { mainDb } from "../database/schema/connections/mainDb";
-import { emailVerifications } from "../database/schema/shop";
+import { emailVerifications, shops, shopUsers, users } from "../database/schema/shop";
 import { eq } from "drizzle-orm";
 
 const regPlugin = new Elysia()
@@ -53,9 +53,9 @@ const regPlugin = new Elysia()
             const user = await mainDb.insert(users)
                 .values({
                     username: result[0].username,
-                    email,
-                    password: hashedPassword,
-                    phoneNumber
+                    email: result[0].email,
+                    password: result[0].password,
+                    phoneNumber: result[0].phone
                 })
                 .returning({ id: users.id }) // Ensure ID is returned correctly
                 .then(res => res[0]); // Extract first row
@@ -63,14 +63,14 @@ const regPlugin = new Elysia()
             if (!user) {
                 return {
                     success: false,
-                    message: sanitizeString(await getTranslation(lang, "userErr")),
+                    message: await getTranslation(lang, "userErr"),
                 };
             }
 
             // Save shop to database and get the shop ID
             const shop = await mainDb.insert(shops)
                 .values({
-                    name,
+                    name: result[0].shopName,
                 })
                 .returning({ id: shops.id }) // Ensure ID is returned correctly
                 .then(res => res[0]); // Extract first row
@@ -78,7 +78,7 @@ const regPlugin = new Elysia()
             if (!shop) {
                 return {
                     success: false,
-                    message: sanitizeString(await getTranslation(lang, "shopCreateErr")),
+                    message: await getTranslation(lang, "shopCreateErr"),
                 };
             }
 
