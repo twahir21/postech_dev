@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
-import { paymentSaaS } from "../database/schema/shop";
+import { paymentSaaS, users } from "../database/schema/shop";
 import type { headTypes } from "../types/types";
 import { getTranslation } from "./translation";
 import { createPayloadChecksum, decrypt, encrypt, generateOrderRef } from "./utils/clickpesa";
@@ -160,10 +160,16 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
         }
         const checksum = await createPayloadChecksum(checksumKey, payload);
 
+        // select phoneNumber
+        const phoneData = await mainDb.select({phoneNumber: users.phoneNumber})
+                            .from(users).where(eq(users.id, userId));
+
+        const phoneNumber = phoneData[0].phoneNumber;
+
         const USSDpayload = {
             ...payload,
             checksum,
-            phoneNumber: "xxx",
+            phoneNumber
         }
         
 
