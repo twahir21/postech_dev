@@ -127,12 +127,20 @@ export default component$(() => {
   };
 
   // Load selected language from localStorage when component is visible
-  useVisibleTask$(() => {
+  useVisibleTask$(async () => {
     if (!localStorage.getItem("selectedLanguage")) localStorage.setItem("selectedLanguage", "en");
     const savedLanguage = localStorage.getItem("selectedLanguage");
     if (savedLanguage) {
       store.selectedLanguage = savedLanguage;
     }
+
+    // get username and set it to localstorage
+    const getNameApi = new CrudService<{ id?: string; username: string}>("me");
+    const getName = await getNameApi.get();
+    if (!getName.success) return;
+    const username = getName.data[0].username;
+    console.log(username)
+    if (!localStorage.getItem("username")) localStorage.setItem("username", username); // set username if not exist
   });
 
     // Update username from localStorage when the component becomes visible

@@ -2,8 +2,11 @@ import { Elysia } from 'elysia';
 import cookie from '@elysiajs/cookie';
 import jwt from '@elysiajs/jwt';
 import { authToken } from '../functions/security/validators/data';
-import { isDecodedToken } from '../functions/security/jwtToken';
+import { extractId, isDecodedToken } from '../functions/security/jwtToken';
 import { getTranslation } from '../functions/translation';
+import { mainDb } from '../database/schema/connections/mainDb';
+import { users } from '../database/schema/shop';
+import { eq } from 'drizzle-orm';
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -54,6 +57,28 @@ export const authPlugin = new Elysia()
                 message: "umefanikiwa kutoka"
             }
         } catch (error) {
+            return {
+                success: false,
+                message: error instanceof Error
+                            ? error.message
+                            : await getTranslation(lang, "serverErr")
+            }
+        }
+    }).get("/me", async ({ jwt, cookie, headers }) => {
+        const lang = headers["accept-language"]?.split(",")[0] || "sw";
+        try{
+            const { userId, shopId } = await extractId({ jwt, cookie });
+            if (!userId) return;
+            const usernameInfo = await mainDb
+                                    .select({ username: users.username})
+                                    .from(users).where(eq(users.id, userId));
+            const username = usernameInfo[0].username;
+            return {
+                success: true,
+                data: [{ username }],
+                message: "successful"
+            }
+        }catch (error) {
             return {
                 success: false,
                 message: error instanceof Error
