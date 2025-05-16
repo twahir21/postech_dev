@@ -1,4 +1,6 @@
 // utils/checksum.ts
+import { randomBytes, createCipheriv, createDecipheriv } from "crypto";
+
 
 export const createPayloadChecksum = async (
     checksumKey: string,
@@ -65,4 +67,40 @@ export const generateOrderRef = () => {
   
   // Example:
 //   console.log(generateOrderRef()); // ORDKX1F4D9G7V3Z
-  
+const ENCRYPTION_KEY = process.env.CLICKPESA_ENCRYPT; // Exactly 32 characters
+
+if(!ENCRYPTION_KEY) throw new Error ("encryption key is not available")
+
+const key = Buffer.from(ENCRYPTION_KEY, "base64"); // 32 bytes
+
+export const encrypt = (data: string): string => {
+  const iv = randomBytes(12); // 96 bits for AES-GCM
+  const cipher = createCipheriv("aes-256-gcm", key, iv);
+
+  const encrypted = Buffer.concat([cipher.update(data, "utf8"), cipher.final()]);
+  const authTag = cipher.getAuthTag();
+
+  return Buffer.concat([iv, authTag, encrypted]).toString("base64");
+};
+
+export const decrypt = (encryptedData: string): string => {
+  const buffer = Buffer.from(encryptedData, "base64");
+
+  const iv = buffer.subarray(0, 12);
+  const authTag = buffer.subarray(12, 28);
+  const encrypted = buffer.subarray(28);
+
+  const decipher = createDecipheriv("aes-256-gcm", key, iv);
+  decipher.setAuthTag(authTag);
+
+  const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
+  return decrypted.toString("utf8");
+};
+
+
+// const gatewayToken = "sk_live_xxx";
+// const encrypted = encrypt(gatewayToken);
+// Save `encrypted` to DB
+// Later, to retrieve:
+// const decrypted = decrypt(encrypted);
+// console.log(decrypted); // "sk_live_xxx"

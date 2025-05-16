@@ -228,7 +228,7 @@ import {
   // -----------------------
   export const askedProducts = pgTable("asked_products", {
     id: uuid("id").defaultRandom().primaryKey(),
-    shopId: uuid("shop_id").notNull().references(() => shops.id), // NEW: Links product to a shop
+    shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     productName: text("product_name").notNull(),
     quantityRequested: integer("quantity_requested").notNull().default(0),
     date: timestamp("date").defaultNow(),
@@ -250,3 +250,13 @@ import {
     used: boolean("used").notNull().default(false),
     createdAt: timestamp("created_at").defaultNow()
   });
+
+  // ------------------------------
+  // Payment table Table
+  // ------------------------------
+  export const paymentSaaS = pgTable("payment_saas", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
+    token: text("token_clickpesa").notNull(),
+    orderId: text("order_id"),
+  })
