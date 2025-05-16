@@ -1,17 +1,27 @@
 import Elysia from "elysia";
 import { regPost } from "../functions/regFunc";
 import { registerData } from "../functions/security/validators/data";
-import type { headTypes } from "../types/types";
 import { getTranslation } from "../functions/translation";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { emailVerifications, shops, shopUsers, users } from "../database/schema/shop";
 import { eq } from "drizzle-orm";
+import cookie from "@elysiajs/cookie";
+import jwt from "@elysiajs/jwt";
+
+const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
+
 
 const regPlugin = new Elysia()
-
+    .use(cookie()) // Use cookie plugin
+    .use(
+        jwt({
+            name: 'jwt',
+            secret: JWT_SECRET,  // Secret for JWT
+        })
+    )
     .post("/register", regPost, { body: registerData })
 
-    .get("/verify-email", async ({ headers, query }) =>  {
+    .get("/verify-email", async ({ headers, query, cookie: { auth_token }, jwt }) =>  {
         const lang = headers["accept-language"]?.split(",")[0] || "sw";
         const token = query.token;
 
@@ -57,7 +67,7 @@ const regPlugin = new Elysia()
                     password: result[0].password,
                     phoneNumber: result[0].phone
                 })
-                .returning({ id: users.id }) // Ensure ID is returned correctly
+                .returning({ id: users.id, username: users.username }) // Ensure ID is returned correctly
                 .then(res => res[0]); // Extract first row
 
             if (!user) {
@@ -83,13 +93,46 @@ const regPlugin = new Elysia()
             }
 
             // Save to shop_users table
-            await mainDb.insert(shopUsers).values({
+            const credetials = await mainDb.insert(shopUsers).values({
                 shopId: shop.id,
                 userId: user.id,
                 role: "owner", // Since this is the shop creator
-            });
+            }).returning({ userId: shopUsers.userId, shopId: shopUsers.shopId});
             
             // automatic login
+            if (credetials.length === 0) return;
+
+            const { userId, shopId } = credetials[0];
+            // Generate JWT
+            const jwtToken = await jwt.sign({ 
+                userId,
+                shopId
+            });
+    
+            if (!jwtToken) {
+                return {
+                    success: false,
+                    message: await getTranslation(lang, "noToken")
+                };
+            }
+    
+            // Set secure cookie
+            auth_token.set({
+                value: token,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'development' ? false : true,
+                sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
+                maxAge: 7 * 86400,
+                path: '/',
+                domain: process.env.NODE_ENV === 'development' 
+                        ? undefined: ".mypostech.store"
+            });
+
+            const username = user.username;
+            return {
+                success: true,
+                message: `${await getTranslation(lang, "loginSuccess")} ${username}`,
+            }
         } catch (error) {
             return {
                 success: false,

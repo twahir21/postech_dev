@@ -156,21 +156,15 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
         };
 
 
-        // 🔄 Conditional redirect logic
-        if (state.isLogin) {
-          localStorage.setItem("username", state.username || "Guest");
-          // Set token cookie manually is not allowed for production in frontend
-          const frontendURL = env.mode === 'development'
-                              ? env.frontendURL_DEV
-                              : env.frontendURL;
+        // registration do auto login
+        localStorage.setItem("username", state.username || "Guest");
+        // Set token cookie manually is not allowed for production in frontend
+        const frontendURL = env.mode === 'development'
+                            ? env.frontendURL_DEV
+                            : env.frontendURL;
 
-          window.location.href = `${frontendURL}/private`; // Redirect to dashboard
-        } else {
-          // After registration, redirect to login
-          setTimeout(() => {
-            state.isLogin = true; // Switch to login mode
-          }, 1000);
-        }
+        window.location.href = `${frontendURL}/private`; // Redirect to dashboard
+      
 
         // ✅ Reset state after successful submission
         state.name = '';
