@@ -11,19 +11,19 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://www.mypostech.store/assets/favicon.ico",
+      "src": "https://www.mypostech.store/favicon.ico",
       "sizes": "48x48",
       "type": "image/x-icon",
       "purpose": "any"
     },
     {
-      "src": "https://www.mypostech.store/assets/thumbnail.png",
+      "src": "https://www.mypostech.store/thumbnail.png",
       "sizes": "412x412",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://www.mypostech.store/assets/thumbnail2.png",
+      "src": "https://www.mypostech.store/thumbnail2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
@@ -32,7 +32,7 @@
   "categories": ["business", "productivity", "finance"],
   "screenshots": [
     {
-      "src": "https://www.mypostech.store/assets/mfumo.png",
+      "src": "https://www.mypostech.store/mfumo.png",
       "sizes": "640x360",
       "type": "image/png",
       "label": "Dashboard kuu ya Postech"
