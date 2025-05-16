@@ -222,9 +222,10 @@ export default component$(() => {
       useVisibleTask$(async () => {
         const result = await warmUpApi.get();
         if (!result.success){
+          console.log("Failed to warm: ", result)
           return;
         }
-
+        console.log("Warm up: ", result)
         return;
       });
 

@@ -54,3 +54,6 @@ and remove cors, ratelimiting and more.
 # checksum is digital fingerprint to ensure data is not forged, use crypto and HMAC
 # to receive payment in clickpesa activate tigo and airtel
 # bun without server cant read process.env.something
+
+# when you can't push changes to database with drizzle-orm , then neon is idle it will make errors
+try to ping first or warmup (wakeup database) by making req using server then you can push changes easily.
