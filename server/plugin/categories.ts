@@ -16,6 +16,8 @@ const categoriesPlugin = new Elysia()
 
     .post("/categories", async ({ jwt, cookie, body, headers}) => {
         const { userId, shopId } = await extractId({ jwt, cookie});
+        if (!shopId || !userId) return;
+
 
         return await categPost({
             body: body as categoriesTypes,
@@ -29,12 +31,16 @@ const categoriesPlugin = new Elysia()
 
     .get("/categories", async ({ jwt, cookie, headers}) => {
         const { userId, shopId } = await extractId({ jwt, cookie});
+        if (!shopId || !userId) return;
+
 
         return await categGet({ headers, shopId })
     })
 
     .put("/categories", async ({ jwt, cookie, headers, query, body}) => {
         const {userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         const { categoryId } = query;
 
@@ -50,6 +56,8 @@ const categoriesPlugin = new Elysia()
 
     .delete("/categories", async ({ jwt, cookie, headers, query}) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         const { categoryId } = query;
 

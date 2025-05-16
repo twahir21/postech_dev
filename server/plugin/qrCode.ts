@@ -29,6 +29,8 @@ const qrCodePlugin = new Elysia()
   .get("/check-isQrCode", async ({ jwt, cookie }) => {
     try {
       const { userId, shopId } = await extractId({ jwt, cookie });
+      if (!shopId || !userId) return;
+
 
       // Fetch all products where isQRCode is false
       const productList = await mainDb
@@ -60,6 +62,8 @@ const qrCodePlugin = new Elysia()
   .get("/generate-qrcode", async ({ jwt, cookie, set }) => {
     try {
       const { userId, shopId } = await extractId({ jwt, cookie });
+      if (!shopId || !userId) return;
+
 
       // Fetch all products where isQRCode is false
       const productList = await mainDb

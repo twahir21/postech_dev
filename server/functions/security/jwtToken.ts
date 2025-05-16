@@ -34,12 +34,16 @@ export function isDecodedToken(token: unknown): token is DecodedToken {
         message: "Huna ruhusa! - Token sio sahihi"
       }
     }
+    const { userId, shopId } = decoded
 
+    if (!shopId || !userId) {
+      return {
+        success: false,
+        message: "shopId au userId haipo"
+      }
+    }
   
     // ✅ Now fully type-safe
-    return {
-      userId: decoded.userId,
-      shopId: decoded.shopId,
-    };
+    return { userId, shopId}
   };
   

@@ -15,6 +15,8 @@ const settingsPlugin = new Elysia()
     .get("/shop", async ({ jwt, cookie, headers }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
 
+        if (!shopId || !userId) return;
+
         return await shopSettingsFunc({
             shopId, userId, headers
         });
@@ -22,6 +24,8 @@ const settingsPlugin = new Elysia()
     
     .put("/shop", async ({ jwt, cookie, headers, body }) => {
     const { userId, shopId } = await extractId({ jwt, cookie });
+    if (!shopId || !userId) return;
+
     
     return await shopSettingsPut({
         shopId, userId, headers, body
@@ -33,6 +37,8 @@ const settingsPlugin = new Elysia()
     
     .put("/update-password", async ({ jwt, cookie, headers, body }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
         return await updatePassword({
             shopId, userId, headers, body
         })
@@ -42,6 +48,7 @@ const settingsPlugin = new Elysia()
     
     .delete("/delete-shop", async ({ jwt, cookie, headers }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
 
         return await deleteShop({
             shopId, userId, headers

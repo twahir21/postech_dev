@@ -16,12 +16,16 @@ const suppPlugin = new Elysia()
 
     .get("/suppliers", async ({ jwt, cookie, headers, query}) => {
             const { userId, shopId } = await extractId({ jwt, cookie });
+            if (!shopId || !userId) return;
+
 
             return suppGet ({ headers, shopId, userId, query });
         })
 
     .post("/suppliers", async ({ jwt, cookie, headers, body}) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         return suppPost ({ shopId, body: body as suppTypes, headers })
     }, {
@@ -48,6 +52,7 @@ const suppPlugin = new Elysia()
         if (!supplierId) {
             return { success: false, message: "Product ID is required." };
         }
+        if (!shopId || !userId) return;
 
         return suppDel ({ supplierId, headers, shopId });
     })

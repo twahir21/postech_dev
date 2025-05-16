@@ -17,6 +17,8 @@ const analyticsRoute = new Elysia()
   .get('/analytics', async ({ jwt, cookie, headers }) => {
 
     const { userId, shopId } = await extractId({ jwt, cookie });
+    if (!shopId || !userId) return;
+
 
     return await getAnalytics({
       userId,
@@ -28,6 +30,8 @@ const analyticsRoute = new Elysia()
 
   .get('/sales', async ({ jwt, cookie, headers, query }) => {
     const { userId, shopId } = await extractId({ jwt, cookie });
+    if (!shopId || !userId) return;
+
 
     return await salesAnalytics({
       userId,
@@ -41,6 +45,8 @@ const analyticsRoute = new Elysia()
 
   .get('/export-sales', async ({ jwt, cookie, headers, set }) => {
     const { shopId, userId } = await extractId({ jwt, cookie });
+    if (!shopId || !userId) return;
+
 
     return await exportSales({
       shopId,
@@ -52,6 +58,8 @@ const analyticsRoute = new Elysia()
 
   .get("/graph", async ({ jwt, cookie, headers }) => {
     const { userId, shopId } = await extractId({ jwt, cookie });
+    if (!shopId || !userId) return;
+
 
     return await graphFunc({
       userId, shopId, headers
@@ -60,6 +68,8 @@ const analyticsRoute = new Elysia()
 
   .get("/debts", async ({ jwt, cookie, headers }) => {
     const { userId, shopId } = await extractId({ jwt, cookie });
+    if (!shopId || !userId) return;
+
 
     return await debtsFunc({
       shopId, userId, headers

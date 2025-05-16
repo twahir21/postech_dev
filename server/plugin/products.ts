@@ -15,11 +15,15 @@ export const prodPlugin = new Elysia()
     }))
     .get("/products", async ({ jwt, cookie, headers, query }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         return await prodGet({ userId, shopId, headers, query, set: { status: 200 } });
     })
     .post("/products", async ({ jwt, cookie, body, headers }) => {
         const { userId, shopId} = await extractId({ jwt, cookie});
+        if (!shopId || !userId) return;
+
 
 
         if (!(body as productTypes).categoryId || !(body as productTypes).supplierId) {
@@ -39,6 +43,8 @@ export const prodPlugin = new Elysia()
     })
     .delete("/products/:id", async ({ jwt, cookie, set, params, headers }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         const productId = params.id;
         if (!productId) {
@@ -51,6 +57,8 @@ export const prodPlugin = new Elysia()
     })
     .put("/products/:id", async ({ jwt, cookie, set, params, body, headers }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         const productId = params.id;
         if (!productId) {
@@ -70,6 +78,8 @@ export const prodPlugin = new Elysia()
     })
     .post("/get-data", async ({ jwt, cookie, body, headers }) => {
         const { userId, shopId} = await extractId({ jwt, cookie});
+        if (!shopId || !userId) return;
+
 
         return await QrPost({ 
             body: body as QrData, 

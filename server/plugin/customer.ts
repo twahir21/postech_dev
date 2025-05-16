@@ -15,16 +15,22 @@ export const CustomersPlugin = new Elysia()
     }))
     .get("/customers", async ({ jwt, cookie, headers, query }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
         
         return await customerGet({ userId, shopId, headers, query});
     })
     .get("/getCustomers", async ({ jwt, cookie, headers }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         return await customerFetch({ userId, shopId, headers});
     })
     .post("/customers", async ({ jwt, cookie, body, headers }) => {
         const { userId, shopId} = await extractId({ jwt, cookie});
+        if (!shopId || !userId) return;
+
 
         return await customerPost({ 
             body: body as CustomerTypes, 
@@ -37,6 +43,8 @@ export const CustomersPlugin = new Elysia()
     })
     .delete("/customers/:id", async ({ jwt, cookie, set, params, headers }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         const customerId = params.id;
         if (!customerId) {
@@ -49,6 +57,8 @@ export const CustomersPlugin = new Elysia()
     })
     .put("/customers/:id", async ({ jwt, cookie, set, params, body, headers }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
 
         const customerId = params.id;
         if (!customerId) {
