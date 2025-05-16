@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import Elysia, { redirect } from "elysia";
 import { regPost } from "../functions/regFunc";
 import { registerData } from "../functions/security/validators/data";
 import { getTranslation } from "../functions/translation";
@@ -10,6 +10,9 @@ import jwt from "@elysiajs/jwt";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
+const frontendURL = process.env.NODE_ENV === 'development'
+                    ? process.env.FRONTEND_URL_DEV!
+                    : process.env.FRONTEND_URL!
 
 const regPlugin = new Elysia()
     .use(cookie()) // Use cookie plugin
@@ -128,11 +131,8 @@ const regPlugin = new Elysia()
                         ? undefined: ".mypostech.store"
             });
 
-            const username = user.username;
-            return {
-                success: true,
-                message: `${await getTranslation(lang, "loginSuccess")} ${username}`,
-            }
+            return redirect(`${frontendURL}/private`, 302);
+            
         } catch (error) {
             return {
                 success: false,
