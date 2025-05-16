@@ -7,7 +7,9 @@
     "dev": "bun run index.ts",
     "clean": "rm -rf build",
     "orm": "bun drizzle-kit studio",
-    "builder": "bun install && bun run clean && bunx drizzle-kit generate && bunx drizzle-kit push && bun build index.ts --outfile build/server --target bun --compile --minify-whitespace --minify-syntax --sourcemap"
+    "prod": "bun server",
+    "migrate": "bunx drizzle-kit generate && bunx drizzle-kit push",
+    "builder": "bun install && bun run clean && bun build index.ts --outfile build/server --target bun --minify-whitespace --minify-syntax --sourcemap"
   },
   "devDependencies": {
     "depcheck": "^1.4.7",
