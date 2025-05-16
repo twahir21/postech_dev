@@ -1,5 +1,4 @@
 import { $, component$, useStore } from '@builder.io/qwik';
-import svgGoogle from "/google.svg"
 import { env } from '~/routes/api/base/config';
 import { CrudService } from '~/routes/api/base/oop';
 
@@ -311,7 +310,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
           onClick$={() => window.location.href = `${backendURL}/auth/google`}
           class={`w-full flex items-center justify-center gap-2 ${state.isLogin ? 'bg-green-200 hover:bg-green-300' : 'bg-yellow-100 hover:bg-yellow-200'} text-gray-900 p-2 transition rounded-4xl border-2 border-gray-600`}
         >
-          <img src={svgGoogle} alt="Google Logo" class="w-5 h-5" />
+          <img src="/google.svg" alt="Google Logo" class="w-5 h-5" />
           {state.isLogin ? "Ingia na Google" : "Jisajili na Google"}
         </button>
 
