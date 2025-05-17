@@ -310,7 +310,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
         {/* Google OAuth Button */}
         <button
-          onClick$={() => window.location.href = `${backendURL}/auth/google`}
+          onClick$={() => navigation(`${backendURL}/auth/google`)}
           class={`w-full flex items-center justify-center gap-2 ${state.isLogin ? 'bg-green-200 hover:bg-green-300' : 'bg-yellow-100 hover:bg-yellow-200'} text-gray-900 p-2 transition rounded-4xl border-2 border-gray-600`}
         >
           <img src="/google.svg" alt="Google Logo" class="w-5 h-5" />

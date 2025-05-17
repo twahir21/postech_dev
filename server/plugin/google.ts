@@ -7,6 +7,7 @@ import { hashPassword } from "../functions/security/hash";
 import { randomBytes } from 'crypto';
 import cookie from "@elysiajs/cookie";
 import jwt from "@elysiajs/jwt";
+import { createUser } from "../functions/utils/oauth";
 
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
@@ -82,17 +83,7 @@ const googlePlugin = new Elysia()
          $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
         */
 
-        const generateShopName = (name: string) => {
-          const base = name.trim().split(' ')[0];
-          const suffix = Math.floor(Math.random() * 10000);
-          return `${base}'s Shop_${suffix}`; // e.g., John's Shop_4567
-        };
         const generatePassword = () => randomBytes(6).toString('base64').slice(0, 7);
-        const generateUsername = (name: string) => {
-          const base = name.trim().split(' ')[0];
-          const suffix = Math.floor(Math.random() * 1000);
-          return `${base}_${suffix}`; // e.g., John_457
-        };
         const generatePhone = () => {
           const preffix = '255';
           const generateUnique10Digit = (() => {
@@ -115,10 +106,17 @@ const googlePlugin = new Elysia()
         }
 
 
-        const shopName = generateShopName(name);
         const password = generatePassword();
         const hashedPassword = await hashPassword(password);
-        const username = generateUsername(name);
+        const usernameRes = await createUser(name, 'user');
+        const shopNameRes = await createUser(name, 'shop')
+
+        const username = usernameRes.success ? usernameRes.data : undefined;
+        const shopName = shopNameRes.success ? shopNameRes.data : undefined;
+
+
+        if (!username || !shopName) return;
+
         const phoneNumber = generatePhone();
 
         // Save user to database and get the user ID

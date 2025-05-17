@@ -22,7 +22,6 @@ export default component$(() => {
     input: "",
     showCalculator: false,
     username: "",
-    fetchedName: ""
   });
 
   const toggleSidebar = $(() => {
@@ -44,15 +43,6 @@ export default component$(() => {
     }
   });
 
-  $(async () => {
-    // get username and set it to localstorage
-    const getNameApi = new CrudService<{ id?: string; username: string}>("me");
-    const getName = await getNameApi.get();
-    if (!getName.success) return;
-    const username = getName.data[0].username;
-    store.fetchedName = username;
-  })
-
   const navigate = $((page: string) => {
     store.currentPage = page;
     if (window.innerWidth < 768) store.isSidebarOpen = false; // Close on mobile
@@ -61,8 +51,12 @@ export default component$(() => {
 
 
   // Load selected language from localStorage when component is visible
-  useVisibleTask$(() => {
-    if (!localStorage.getItem("username")) localStorage.setItem("username", store.fetchedName); // set username if not exist
+  useVisibleTask$(async () => {
+    const getNameApi = new CrudService<{ id?: string; username: string}>("me");
+    const getName = await getNameApi.get();
+    if (!getName.success) return;
+    const username = getName.data[0].username;
+    if (!localStorage.getItem("username")) localStorage.setItem("username", username); // set username if not exist
   });
 
     // Update username from localStorage when the component becomes visible
