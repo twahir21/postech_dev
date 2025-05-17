@@ -6,7 +6,6 @@ import { getTranslation } from "./translation";
 
 export const homeGet = async({ headers }: {headers: headTypes}) => {
 
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     // warm up the database
     try{
@@ -21,7 +20,7 @@ export const homeGet = async({ headers }: {headers: headTypes}) => {
             success: false,
             message: error instanceof Error
                     ? error.message
-                    :  ("Hitilafu kwenye seva"")
+                    :  "Hitilafu imetokea kwenye seva"
         }
     }
 }

@@ -3,7 +3,6 @@ import cookie from '@elysiajs/cookie';
 import jwt from '@elysiajs/jwt';
 import { authToken } from '../functions/security/validators/data';
 import { extractId, isDecodedToken } from '../functions/security/jwtToken';
-import { getTranslation } from '../functions/translation';
 import { mainDb } from '../database/schema/connections/mainDb';
 import { users } from '../database/schema/shop';
 import { eq } from 'drizzle-orm';
@@ -14,8 +13,7 @@ export const authPlugin = new Elysia()
     .use(cookie())
     .use(jwt({ name: 'jwt', secret: JWT_SECRET }))
     .post('/verify-cookie', async ({ jwt, body, headers }) => {
-        const lang = headers["accept-language"]?.split(",")[0] || "sw";
-
+    
         try {
             const token = body.token as string;
     
@@ -33,15 +31,14 @@ export const authPlugin = new Elysia()
                 success: false,
                 message: error instanceof Error
                             ? error.message
-                            : ("Hitilafu kwenye seva"")
+                            : "Hitilafu kwenye seva"
             }
         }
     }, {
         body: authToken
     })
     .get("/delete-cookie", async ({ headers, cookie }) => {
-        const lang = headers["accept-language"]?.split(",")[0] || "sw";
-        try {
+            try {
             cookie.auth_token.set({
                 value: "",
                 httpOnly: true,
@@ -61,12 +58,11 @@ export const authPlugin = new Elysia()
                 success: false,
                 message: error instanceof Error
                             ? error.message
-                            : ("Hitilafu kwenye seva"")
+                            : "Hitilafu kwenye seva"
             }
         }
     }).get("/me", async ({ jwt, cookie, headers }) => {
-        const lang = headers["accept-language"]?.split(",")[0] || "sw";
-        try{
+            try{
             const { userId, shopId } = await extractId({ jwt, cookie });
             if (!userId) return;
             const usernameInfo = await mainDb
@@ -83,7 +79,7 @@ export const authPlugin = new Elysia()
                 success: false,
                 message: error instanceof Error
                             ? error.message
-                            : ("Hitilafu kwenye seva"")
+                            : "Hitilafu kwenye seva"
             }
         }
     })

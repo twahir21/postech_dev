@@ -1,14 +1,12 @@
 import { eq, and, sql, lte, asc, desc, ilike, gte } from 'drizzle-orm';
-import { getTranslation } from '../functions/translation';
 import { mainDb } from '../database/schema/connections/mainDb';
 import { askedProducts, categories, customers, debtPayments, debts, expenses, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, suppliers, users } from '../database/schema/shop';
 import { formatDistanceToNow } from "date-fns";
 import type { exportSet, headTypes, ProductQuery, SalesQuery } from '../types/types';
 
 
-export const getAnalytics = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes}) => {
-        const lang = headers["accept-language"]?.split(",")[0] || "sw";
-    
+export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId: string}) => {
+        
       try {
     
     
@@ -289,14 +287,13 @@ export const getAnalytics = async ({ userId, shopId, headers }: { userId: string
           success: false,
           message: error instanceof Error
                   ? error.message
-                  : ("Hitilafu kwenye seva"")
+                  : "Hitilafu kwenye seva"
         }    
       }
 }
 
 export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId: string, shopId: string, headers: headTypes, query: SalesQuery}) => {
-        const lang = headers["accept-language"]?.split(",")[0] || "sw";
-        try {
+            try {
           // Extract user and shop IDs from JWT or cookies
     
       
@@ -408,13 +405,12 @@ export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId:
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : ("Hitilafu kwenye seva"")
+                    : "Hitilafu imetokea kwenye seva"
           }
         }
 }
 
 export const exportSales = async ({userId, shopId, headers, set } : { shopId: string, userId: string, headers: headTypes, set: exportSet }) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try {
       
           // 🔥 Fetch sales for this shop
@@ -455,13 +451,12 @@ export const exportSales = async ({userId, shopId, headers, set } : { shopId: st
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : ("Hitilafu kwenye seva"")
+                    : "Hitilafu imetokea kwenye seva"
           }
         }
 }
 
 export const graphFunc = async ({ shopId, userId, headers }: {shopId: string, userId: string, headers: headTypes}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
         try {
     
@@ -572,13 +567,12 @@ export const graphFunc = async ({ shopId, userId, headers }: {shopId: string, us
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : getTranslation("Hitilafu kwenye seva"")
+                    : "Hitilafu imetokea kwenye seva"
           }
         }
 }
 
 export const debtsFunc = async({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
         try {
     
@@ -642,7 +636,7 @@ export const debtsFunc = async({ userId, shopId, headers }: { userId: string, sh
                 success: false,
                 message: error instanceof Error
                         ? error.message
-                        : getTranslation("Hitilafu kwenye seva"")
+                        : "Hitilafu imetokea kwenye seva"
               }
         }
 }

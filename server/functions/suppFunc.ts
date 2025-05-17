@@ -11,7 +11,6 @@ import { cacheStatsTracker } from "./utils/Stats";
 
 // post 
 export const suppPost = async ({ body, headers, shopId}: { body : suppTypes, headers: headTypes, shopId: string}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try {
 
     // now extract
@@ -30,7 +29,7 @@ export const suppPost = async ({ body, headers, shopId}: { body : suppTypes, hea
     if (checkSupp.length > 0) {
         return {
             success: false,
-            message: (lang, "exists")
+            message: "Tayari taarifa zipo"
         }
     }
 
@@ -45,7 +44,7 @@ export const suppPost = async ({ body, headers, shopId}: { body : suppTypes, hea
 
     return {
         success: true,
-        message: (lang, "save")
+        message: "Umefanikiwa kuhifadhi taarifa"
     }
 
     } catch (error) {
@@ -92,7 +91,7 @@ export const suppGet = async ({
       return {
         success: true,
         test: "Is this Cached?", 
-        message: (lang, "success"),
+        message: "Umefanikiwa kupata taarifa",
         ...cached
       };
     }
@@ -123,7 +122,7 @@ export const suppGet = async ({
     if (existingSuppliers.length === 0) {
       return {
         success: false,
-        message: (lang, "notFound"),
+        message: "Hakuna kilichopatikana kwenye hifadhi",
         data: [],
         total
       };
@@ -148,7 +147,7 @@ export const suppGet = async ({
 
     return {
       success: true,
-      message: (lang, "success"),
+      message: "umefanikiwa kupata taarifa",
       data: existingSuppliers,
       total,
       page,

@@ -14,7 +14,6 @@ import nodemailer from "nodemailer";
 
 
 export const regPost = async ({ body, headers }: { body: registerRequest; headers: headTypes }) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     const frontendURL = process.env.NODE_ENV  === 'development' 
                         ? process.env.FRONTEND_URL_DEV!
                         : process.env.FRONTEND_URL!;
@@ -214,7 +213,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : sanitizeString(("Hitilafu kwenye seva""))
+                    : sanitizeString("Hitilafu imetokea kwenye seva")
         }
     }
 };

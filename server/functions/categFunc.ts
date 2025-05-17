@@ -1,6 +1,5 @@
 // implement crud
 
-import { getTranslation } from "./translation"
 import type { categoriesTypes, headTypes } from "../types/types";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { categories } from "../database/schema/shop";
@@ -11,10 +10,9 @@ import { sanitizeString } from "./security/xss";
 // post 
 export const categPost = async ({ body, headers, shopId, userId }: { body : categoriesTypes, headers: headTypes, shopId: string, userId: string}) => {
     // data is already validated
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try {
-        const idErr = (lang, "idErr");
-        const categMsg = (lang, "categMsg");
+        const idErr = "ID haipo!";
+        const categMsg = "Umefanikiwa kuhifadhi taarifa";
         
     // now extract
     if (!shopId || shopId.length < 5) {
@@ -49,21 +47,20 @@ export const categPost = async ({ body, headers, shopId, userId }: { body : cate
 
     return {
         success: true,
-        message: sanitizeString(categMsg)
+        message: categMsg
     }
     } catch (error) {
         return {
             success: false,
             message: error instanceof Error 
                     ? error.message 
-                    : sanitizeString(("Hitilafu kwenye seva""))
+                    : sanitizeString("Hitilafu imetokea kwenye seva")
         }
     }
 }
 
 // get request
 export const categGet = async ({headers, shopId} : {headers: headTypes, shopId: string}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try {
         const allCateg = await mainDb
                             .select()
@@ -73,14 +70,14 @@ export const categGet = async ({headers, shopId} : {headers: headTypes, shopId: 
         if(allCateg.length === 0) {
             return {
                 success: false,
-                message: sanitizeString((lang, "notFound")),
+                message: "Hakuna taarifa iliyopatikana",
                 data: []
             }
         }
 
         return {
             success: true,
-            message: sanitizeString((lang, "success")),
+            message: "Umefanikiwa kupata taarifa",
             data: allCateg
         }
     } catch (error) {
@@ -88,14 +85,13 @@ export const categGet = async ({headers, shopId} : {headers: headTypes, shopId: 
             success: false,
             message: error instanceof Error 
                     ? error.message 
-                    : sanitizeString(("Hitilafu kwenye seva""))
+                    : sanitizeString("Hitilafu imetokea kwenye seva")
         }
     }
 }
 
 // update
 export const categPut = async ({ body, headers, categoryId, shopId }: { body : categoriesTypes, headers: headTypes, categoryId: string, shopId: string}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try {
     
     // now extract
@@ -109,7 +105,7 @@ export const categPut = async ({ body, headers, categoryId, shopId }: { body : c
     if (!categoryId || categoryId.length < 5) {
         return {
             success: false,
-            message: (lang, "idErr")
+            message: "ID haipo"
         };
     }
 
@@ -130,13 +126,13 @@ export const categPut = async ({ body, headers, categoryId, shopId }: { body : c
     if (!updateCateg) {
         return {
             success: false,
-            message: (lang, "notFound")
+            message: "Hakuna taarifa iliyopatikana"
         }
     }
 
     return {
         success: true,
-        message: (lang, "update")
+        message: "Umefanikiwa ku-update taarifa"
     }
 
     } catch (error) {
@@ -144,14 +140,13 @@ export const categPut = async ({ body, headers, categoryId, shopId }: { body : c
             success: false,
             message: error instanceof Error 
                     ? error.message 
-                    : sanitizeString(("Hitilafu kwenye seva""))
+                    : sanitizeString("Hitilafu imetokea kwenye seva")
         }
     }
 }
 
 // delete
 export const categDel = async ({ headers, categoryId, shopId }: {headers: headTypes, categoryId: string, shopId: string}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try { 
     
@@ -159,7 +154,7 @@ export const categDel = async ({ headers, categoryId, shopId }: {headers: headTy
         if (!categoryId || categoryId.length < 5) {
             return {
                 success: false,
-                message: (lang, "idErr")
+                message: "ID haipo"
             };
         }
 
@@ -175,20 +170,20 @@ export const categDel = async ({ headers, categoryId, shopId }: {headers: headTy
         if (!categDel) {
             return {
                 success: false,
-                message: sanitizeString((lang, "notFound"))
+                message: "Taarifa haipo!"
             }
         }
 
         return{
             success: true,
-            message: sanitizeString((lang, "delMsg"))
+            message: "Umefanikiwa kufuta taarifa"
         }
     } catch (error) {
         return {
             success: false,
             message: error instanceof Error 
                     ? error.message 
-                    : sanitizeString(("Hitilafu kwenye seva""))
+                    : "Hitilafu imetokea kwenye seva"
         }
     }
 } 

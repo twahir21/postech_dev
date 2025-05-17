@@ -6,7 +6,6 @@ import { sanitizeString } from "./security/xss";
 import { hashPassword, verifyPassword } from "./security/hash";
 
 export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: string, shopId: string, headers: headTypes}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try {
         // get the concept of shop needed data
@@ -34,13 +33,12 @@ export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: str
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : ("Hitilafu kwenye seva"")
+                    : "Hitilafu imetokea kwenye seva"
         }
     }
 }
 
 export const shopSettingsPut = async ({ shopId, userId, headers, body }: {userId: string, shopId: string, headers: headTypes, body: shopTypes}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
         try {
     
@@ -65,13 +63,12 @@ export const shopSettingsPut = async ({ shopId, userId, headers, body }: {userId
                 success: false,
                 message: error instanceof Error
                         ? error.message
-                        : ("Hitilafu kwenye seva"")
+                        : "Hitilafu imetokea kwenye seva"
             }
         }
 }
 
 export const updatePassword = async ({ shopId, userId, headers, body }: {userId: string, shopId: string, headers: headTypes, body: pswdType}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try {
 
@@ -116,13 +113,12 @@ export const updatePassword = async ({ shopId, userId, headers, body }: {userId:
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : ("Hitilafu kwenye seva"")
+                    : "Hitilafu kwenye seva"
         }
     }
 }
 
 export const deleteShop = async ({ shopId, userId, headers }: {userId: string, shopId: string, headers: headTypes}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try {
     
@@ -182,7 +178,7 @@ export const deleteShop = async ({ shopId, userId, headers }: {userId: string, s
               success: false,
               message: error instanceof Error
                       ? error.message
-                      : ("Hitilafu kwenye seva"")
+                      : "Hitilafu kwenye seva"
           }
       }
 }

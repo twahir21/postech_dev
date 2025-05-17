@@ -24,8 +24,7 @@ const regPlugin = new Elysia()
     .post("/register", regPost, { body: registerData })
 
     .get("/verify-email", async ({ headers, query, cookie: { auth_token }, jwt }) =>  {
-        const lang = headers["accept-language"]?.split(",")[0] || "sw";
-        const token = query.token;
+            const token = query.token;
 
         if (!token) {
             return {

@@ -11,7 +11,6 @@ const apiKey = process.env.CLICKPESA_API_KEY!;
 
 export const genToken = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes }) => {
 
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try{
         // send req for getting token
@@ -54,13 +53,12 @@ export const genToken = async ({ userId, shopId, headers }: { userId: string, sh
             success: false,
             message: err instanceof Error   
                         ? err.message
-                        : ("Hitilafu kwenye seva"")
+                        : "Hitilafu imetokea kwenye seva"
         }
     }
 }
 export const checkUSSD = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes }) => {
 
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try{
         // get token
@@ -117,14 +115,13 @@ export const checkUSSD = async ({ userId, shopId, headers }: { userId: string, s
             success: false,
             message: err instanceof Error   
                         ? err.message
-                        : ("Hitilafu kwenye seva"")
+                        : "Hitilafu imetokea kwenye seva"
         }
     }
 }
 
 export const USSDPush = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes }) => {
 
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try{
         // get token
@@ -197,14 +194,13 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
             success: false,
             message: err instanceof Error   
                         ? err.message
-                        : ("Hitilafu kwenye seva"")
+                        : "Hitilafu imetokea kwenye seva"
         }
     }
 }
 
 export const PayStatus = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes }) => {
 
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try{
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
@@ -240,7 +236,7 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
             success: false,
             message: err instanceof Error   
                         ? err.message
-                        : ("Hitilafu kwenye seva"")
+                        : "Hitilafu imetokea kwenye seva"
         }
     }
 }

@@ -120,7 +120,7 @@ export const customerGet = async ({
       success: false,
       message: error instanceof Error
         ? error.message
-        : sanitizeString(("Hitilafu kwenye seva""))
+        : sanitizeString("Hitilafu imetokea kwenye seva")
     };
   }
 };
@@ -130,7 +130,6 @@ export const customerFetch = async ({ userId, shopId, headers }: {
     shopId: string;
     headers: headTypes;
 }) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try {
     const existingCustomer = await mainDb
@@ -155,7 +154,7 @@ return {
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : sanitizeString(("Hitilafu kwenye seva""))
+                    : sanitizeString("Hitilafu imetokea kwenye seva")
         }
       }
 
@@ -164,7 +163,6 @@ return {
 
 
 export const CustomerDel = async ({ userId, shopId, customerId, headers }: { userId: string, shopId: string, customerId: string, headers: headTypes }) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try{
         // check if product exists
         const customer = await mainDb
@@ -192,14 +190,13 @@ export const CustomerDel = async ({ userId, shopId, customerId, headers }: { use
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : sanitizeString(("Hitilafu kwenye seva""))
+                    : sanitizeString("Hitilafu imetokea kwenye seva")
         }
     }
 }
 
 
 export const customerUpdate = async ({userId, shopId, customerId, body, headers}: {userId: string, shopId: string, customerId: string, body: CustomerTypes, headers: headTypes}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try{
 
         let  { name, contact } = body as CustomerTypes;
@@ -242,7 +239,7 @@ export const customerUpdate = async ({userId, shopId, customerId, body, headers}
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : sanitizeString(("Hitilafu kwenye seva""))
+                    : sanitizeString("Hitilafu imetokea kwenye seva")
         }
     }
 }

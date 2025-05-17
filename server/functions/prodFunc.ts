@@ -8,7 +8,6 @@ import { and, desc, eq, ilike, sql } from "drizzle-orm";
 const startTime = Date.now();
 // implementing crud for products 
 export const prodPost = async ({ body, headers, shopId, userId, supplierId, categoryId }: {body: productTypes, headers: headTypes, shopId: string, userId: string, categoryId: string, supplierId: string}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try{
 
@@ -79,7 +78,7 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(("Hitilafu kwenye seva""))
+                  : sanitizeString("Hitilafu imetokea kwenye seva")
       }
     }
 }
@@ -102,7 +101,6 @@ export const prodGet = async ({
     const limit = parseInt(query.limit || "10");
     const search = query.search || "";
     const offset = (page - 1) * limit;
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
   
     // Build product filter
     const where = and(
@@ -184,7 +182,7 @@ export const prodGet = async ({
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(("Hitilafu kwenye seva""))
+                  : sanitizeString("Hitilafu imetokea kwenye seva")
       }
     }
   };
@@ -192,7 +190,6 @@ export const prodGet = async ({
 
 
 export const prodDel = async ({userId, shopId, productId, headers}: {userId: string, shopId: string, productId: string, headers: headTypes}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try{
         // check if product exists
         const product = await mainDb
@@ -225,14 +222,13 @@ export const prodDel = async ({userId, shopId, productId, headers}: {userId: str
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(("Hitilafu kwenye seva""))
+                  : sanitizeString("Hitilafu imetokea kwenye seva")
       }
     }
 }
 
 
 export const prodUpdate = async ({userId, shopId, productId, body, headers}: {userId: string, shopId: string, productId: string, body: productTypes, headers: headTypes}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try{
 
         let  {name, priceBought, priceSold, stock, minStock, unit} = body as productTypes;
@@ -333,13 +329,12 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(("Hitilafu kwenye seva""))
+                  : sanitizeString("Hitilafu imetokea kwenye seva")
       }
     }
 }
 
 export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, headers: headTypes, userId: string, shopId: string }) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try{
     // Validate product data
 

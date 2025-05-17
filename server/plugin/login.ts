@@ -20,8 +20,7 @@ export const loginPlugin = new Elysia()
         })
     )
     .post('/login', async ({ body, jwt, cookie: { auth_token }, headers }) => {
-        const lang = headers["accept-language"]?.split(",")[0] || "sw";
-    
+        
         try {
             let { username, password } = body as { username: string, password: string };
             username = sanitizeString(username.trim().toLowerCase());

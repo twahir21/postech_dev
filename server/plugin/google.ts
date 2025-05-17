@@ -57,7 +57,6 @@ const googlePlugin = new Elysia()
       }),
     });
 
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
     try {
       const { access_token, id_token } = await tokenRes.json();
