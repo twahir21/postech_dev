@@ -52,16 +52,10 @@ export default component$(() => {
 
   // Load selected language from localStorage when component is visible
   useVisibleTask$(async () => {
-    const getNameApi = new CrudService<{ id?: string; username: string}>("me");
-    const getName = await getNameApi.get();
-    if (!getName.success) return;
-    const username = getName.data[0].username;
-    if (!localStorage.getItem("username")) localStorage.setItem("username", username); // set username if not exist
-  });
-
-    // Update username from localStorage when the component becomes visible
-  useVisibleTask$(() => {
-    const username = localStorage.getItem("username") || "Guest";
+      const getNameApi = new CrudService<{ id?: string; username: string}>("me");
+      const getName = await getNameApi.get();
+      if (!getName.success) return;
+      const username = getName.data[0].username || "Mgeni";
       // Utility function to capitalize the first letter of each word
     const capitalizeWords = (username: string) => {
       return username
@@ -82,10 +76,6 @@ export default component$(() => {
 
     const logoutRes = await logoutApi.get();
     if (!logoutRes.success) return;
-
-    console.log(logoutRes)
-    // Optionally clear any localStorage items related to the user
-    localStorage.removeItem("username");
 
     // Redirect to the login page or home page
     navigateLogout("/auth");  

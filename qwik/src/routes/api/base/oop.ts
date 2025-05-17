@@ -86,9 +86,9 @@ class CrudService<T extends CrudItem> {
     }
   }
 
-  async update(id: string, data: Partial<T>): Promise<CrudResponse<T>> {
+  async update(data: Partial<T>): Promise<CrudResponse<T>> {
     try {
-      const res = await fetch(`${this.baseUrl}/${id}`, {
+      const res = await fetch(`${this.baseUrl}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -106,22 +106,6 @@ class CrudService<T extends CrudItem> {
     }
   }
 
-  async delete(id: string): Promise<CrudResponse<void>> {
-    try {
-      const res = await fetch(`${this.baseUrl}/${id}`, {
-        method: 'DELETE',
-        // mode: "cors", // allow cors if server permit (prevent cors errors) is set by default 
-        credentials: 'include'
-      });
-
-      return await res.json();
-    } catch (err) {
-      return {
-        success: false,
-        message: err instanceof Error ? err.message : "Imeshindwa kufuta taarifa"
-      };
-    }
-  }
 
   async deleteAll(): Promise<CrudResponse<void>> {
     try {

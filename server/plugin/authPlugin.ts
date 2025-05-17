@@ -69,6 +69,17 @@ export const authPlugin = new Elysia()
                                     .select({ username: users.username})
                                     .from(users).where(eq(users.id, userId));
             const username = usernameInfo[0].username;
+
+            cookie.username.set({
+                value: username,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'development' ? false : true,
+                sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
+                maxAge: 7 * 86400,
+                path: '/',
+                domain: process.env.NODE_ENV === 'development' 
+                        ? undefined: ".mypostech.store"
+            })
             return {
                 success: true,
                 data: [{ username }],

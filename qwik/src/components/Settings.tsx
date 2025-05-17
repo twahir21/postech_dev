@@ -116,32 +116,20 @@ export const SettingsComponent = component$(() => {
     }
 
     store.isPassword = true;
-    try {
       const payload = {
         currentPassword: currentPassword.value,
         newPassword: newPassword.value
       };
-  
-      const req = await fetch("http://localhost:3000/update-password", {
-        credentials: 'include',
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-  
-      if (!req.ok) {
-        console.error("Imeshindwa kutuma ombi lako kwa seva");
-      }
+      interface payloadPassword {id?: string; currentPassword: string; newPassword: string }
+      const updatePasswordAPI = new CrudService<payloadPassword>("update-password");
+      const updatePswd = await updatePasswordAPI.update(payload);
 
-      const res = await req.json();
-
-      console.log(res.message);
-
-    } finally {
       store.isPassword = false;
-    }
+      store.modal = {
+        isOpen: true,
+        isSuccess: updatePswd.success,
+        message: updatePswd.message || (updatePswd.success ? "Umefanikiwa kubadili nenosiri" : "Hitilafu imetokea wakati wa kubadili nenosiri")
+      }
   });
 
   // logic to delete the shop
