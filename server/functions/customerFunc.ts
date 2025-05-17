@@ -3,7 +3,6 @@ import type { CustomerTypes, headTypes, ProductQuery } from "../types/types";
 import { sanitizeString } from "./security/xss";
 import { customers } from "../database/schema/shop";
 import { and, eq, ilike, sql } from "drizzle-orm";
-import { getTranslation } from "./translation";
 
 export const customerPost = async ({ body, userId, shopId, headers}: {
     body: CustomerTypes;
@@ -51,7 +50,6 @@ export const customerPost = async ({ body, userId, shopId, headers}: {
     };
 }
 
-// Use Redis cache instance
 
 export const customerGet = async ({
   userId,
@@ -107,7 +105,7 @@ export const customerGet = async ({
 
     return {
       success: true,
-      message: (lang, "success"),
+      message: "Umefanikiwa kupata taarifa",
       data: existingCustomer,
       total,
       page,
@@ -231,7 +229,7 @@ export const customerUpdate = async ({userId, shopId, customerId, body, headers}
         return {
             success: true,
             data: updatedCustomers,
-            message: (lang, "success")
+            message: "Umefanikiwa ku-update taarifa"
         }
 
     }catch(error){

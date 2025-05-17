@@ -1,10 +1,8 @@
 import { eq } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { emailVerifications } from "../database/schema/shop";
-import type { headTypes } from "../types/types";
-import { getTranslation } from "./translation";
 
-export const homeGet = async({ headers }: {headers: headTypes}) => {
+export const homeGet = async() => {
 
 
     // warm up the database
@@ -13,7 +11,7 @@ export const homeGet = async({ headers }: {headers: headTypes}) => {
                 .where(eq(emailVerifications.used, true));
         return {
             success: true,
-            message: (lang, "greeting")
+            message: "Karibu kwenye seva ya Elysia na Bun!"
         }
     }catch(error) {
         return {

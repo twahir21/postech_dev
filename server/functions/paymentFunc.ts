@@ -2,7 +2,6 @@ import { eq } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { paymentSaaS, users } from "../database/schema/shop";
 import type { headTypes } from "../types/types";
-import { getTranslation } from "./translation";
 import { createPayloadChecksum, decrypt, encrypt, generateOrderRef } from "./utils/clickpesa";
 
 // credentials

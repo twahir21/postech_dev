@@ -2,7 +2,6 @@ import type { headTypes, registerRequest } from "../types/types";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { emailVerifications, shops, users } from "../database/schema/shop";
 import { hashPassword } from "./security/hash";
-import { getTranslation } from "./translation";
 import { eq } from "drizzle-orm"; // Ensure this is imported for querying
 import { sanitizeString } from "./security/xss";
 import { shopCheckCache, userCheckCache } from "./utils/caches";
@@ -53,7 +52,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             cacheStatsTracker.recordHit('userCheckCache');
             return {
               success: false,
-              message: (lang, "emailExistsErr")
+              message: "Email tayari imeshatumika"
             };
         }
 
@@ -61,7 +60,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             cacheStatsTracker.recordHit('shopCheckCache');
             return {
               success: false,
-              message: (lang, "shopExistsErr")
+              message: "Duka tayari limesajiliwa"
             };
           }
 
@@ -80,7 +79,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             userCheckCache.set(`user:${email}`, { exists: true });
             return {
             success: false,
-            message: (lang, "emailExistsErr")
+            message: "Email tayari imeshatumik"
             };
         }
     
@@ -88,7 +87,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             shopCheckCache.set(`shop:${name}`, { exists: true });
             return {
             success: false,
-            message: (lang, "shopExistsErr")
+            message: "Duka tayari limesajiliwa"
             };
         }
         // verify email

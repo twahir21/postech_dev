@@ -1,9 +1,10 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
-import { shops, users } from "../database/schema/shop";
+import { askedProducts, categories, customers, debtPayments, debts, expenses, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, suppliers, users } from "../database/schema/shop";
 import type { headTypes, pswdType, shopTypes } from "../types/types";
 import { sanitizeString } from "./security/xss";
 import { hashPassword, verifyPassword } from "./security/hash";
+import type { Cookie } from "elysia";
 
 export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: string, shopId: string, headers: headTypes}) => {
 
@@ -23,7 +24,7 @@ export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: str
         return {
         success: true,
         data: [{ shopName: fetchShop[0], email: fetchEmail[0]}],
-        message: (lang, "success")
+        message: "Umefanikiwa kupata taarifa"
         }
 
 
@@ -118,10 +119,10 @@ export const updatePassword = async ({ shopId, userId, headers, body }: {userId:
     }
 }
 
-export const deleteShop = async ({ shopId, userId, headers }: {userId: string, shopId: string, headers: headTypes}) => {
+export const deleteShop = async ({ shopId, userId, headers, cookie }: {userId: string, shopId: string, headers: headTypes, cookie: Record<string, Cookie<string | undefined>> & Record<string, string>}) => {
 
     try {
-    
+
         // ensure user is Admin 
         const isAdminCheck = await mainDb.select({role: users.role}).from(users).where(eq(users.id, userId));
   
@@ -135,41 +136,47 @@ export const deleteShop = async ({ shopId, userId, headers }: {userId: string, s
           }
         }
   
-        // //  get the concept of deleting shop
-        // await mainDb.delete(products).where(eq(products.shopId, shopId));
-        // await mainDb.delete(sales).where(eq(sales.shopId, shopId));
-        // await mainDb.delete(debts).where(eq(debts.shopId, shopId));
-        // await mainDb.delete(debtPayments).where(eq(debtPayments.shopId, shopId));
-        // await mainDb.delete(purchases).where(eq(purchases.shopId, shopId));
-        // await mainDb.delete(expenses).where(eq(expenses.shopId, shopId));
-        // await mainDb.delete(returns).where(eq(returns.shopId, shopId));
-        // await mainDb.delete(askedProducts).where(eq(askedProducts.shopId, shopId));
-        // await mainDb.delete(supplierPriceHistory).where(eq(supplierPriceHistory.shopId, shopId));
-        // await mainDb.delete(suppliers).where(eq(suppliers.shopId, shopId));
-        // await mainDb.delete(customers).where(eq(customers.shopId, shopId));
-        // await mainDb.delete(categories).where(eq(categories.shopId, shopId));
-        // await mainDb.delete(shopUsers).where(eq(shopUsers.shopId, shopId));
-        // await mainDb.delete(shops).where(eq(shops.id, shopId));
+        //  get the concept of deleting shop
+        await mainDb.delete(products).where(eq(products.shopId, shopId));
+        await mainDb.delete(sales).where(eq(sales.shopId, shopId));
+        await mainDb.delete(debts).where(eq(debts.shopId, shopId));
+        await mainDb.delete(debtPayments).where(eq(debtPayments.shopId, shopId));
+        await mainDb.delete(purchases).where(eq(purchases.shopId, shopId));
+        await mainDb.delete(expenses).where(eq(expenses.shopId, shopId));
+        await mainDb.delete(returns).where(eq(returns.shopId, shopId));
+        await mainDb.delete(askedProducts).where(eq(askedProducts.shopId, shopId));
+        await mainDb.delete(supplierPriceHistory).where(eq(supplierPriceHistory.shopId, shopId));
+        await mainDb.delete(suppliers).where(eq(suppliers.shopId, shopId));
+        await mainDb.delete(customers).where(eq(customers.shopId, shopId));
+        await mainDb.delete(categories).where(eq(categories.shopId, shopId));
+        await mainDb.delete(shopUsers).where(eq(shopUsers.shopId, shopId));
+        await mainDb.delete(shops).where(eq(shops.id, shopId));
         
-        // // Delete orphaned users
-        // await mainDb.execute(sql`
-        //   DELETE FROM users 
-        //   WHERE id IN (
-        //     SELECT users.id FROM users
-        //     LEFT JOIN shop_users ON users.id = shop_users.user_id
-        //     WHERE shop_users.id IS NULL
-        //   );
-        // `);
+        // Delete orphaned users
+        await mainDb.execute(sql`
+          DELETE FROM users 
+          WHERE id IN (
+            SELECT users.id FROM users
+            LEFT JOIN shop_users ON users.id = shop_users.user_id
+            WHERE shop_users.id IS NULL
+          );
+        `);
         
   
         // delete the coookie
-        // await deleteAuthTokenCookie(cookie);
-        // const test = cookie.auth_token
-        // const value = new Cookie("twahir").value;
-        // console.log("Cookie: ", test)
+        cookie.auth_token.set({
+          value: "",
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'development' ? false : true,
+          sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
+          maxAge: 0,
+          path: '/',
+          domain: process.env.NODE_ENV === 'development' 
+                  ? undefined: ".mypostech.store"
+      });
         return {
           success: true,
-        //   cookie
+          message: "Umefanikiwa kufuta duka"
         }
   
         

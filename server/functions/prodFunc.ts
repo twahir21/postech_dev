@@ -1,11 +1,9 @@
 import type { headTypes, ProductQuery, productTypes, QrData } from "../types/types";
-import { getTranslation } from "./translation";
 import { sanitizeNumber, sanitizeString } from "./security/xss";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { debts, expenses, products, purchases, sales, supplierPriceHistory } from "../database/schema/shop";
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
 
-const startTime = Date.now();
 // implementing crud for products 
 export const prodPost = async ({ body, headers, shopId, userId, supplierId, categoryId }: {body: productTypes, headers: headTypes, shopId: string, userId: string, categoryId: string, supplierId: string}) => {
 
@@ -70,7 +68,7 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
         return {
             success: true,
             data: {name, priceBought, priceSold, stock, minStock, shopId, userId, categoryId, supplierId, unit },
-            message: (lang, "productSuccess")
+            message: "Umefanikiwa kusajili bidhaa"
         }   
         
     }catch(error){
@@ -321,7 +319,7 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
         return {
             success: true,
             data: updatedProduct,
-            message: (lang, "success")
+            message: "Umefanikiwa ku-update bidhaa"
         }
 
     }catch(error){
