@@ -152,7 +152,7 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
         const payload = {
             amount: "10000",
             currency: "TZS",
-            orderId,
+            orderReference: orderId,
         }
         const checksum = await createPayloadChecksum(checksumKey, payload);
 
