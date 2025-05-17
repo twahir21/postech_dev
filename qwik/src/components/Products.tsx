@@ -1,7 +1,6 @@
 import { component$, useStore, useResource$, $, useContext } from '@builder.io/qwik';
 import { fetchWithLang } from '~/routes/function/fetchLang';
 import { SupplierComponent } from './Supplier';
-import { Translate } from './Language';
 import { QrPdf } from './QRPdf';
 import { fetchCategories, fetchSuppliers, globalStore } from '~/routes/function/helpers';
 import { RefetchContext } from './context/refreshContext';
@@ -39,7 +38,7 @@ interface Store {
   isLoading?: boolean
 }
 
-export const ProductComponent = component$((props: {lang: string}) => {
+export const ProductComponent = component$(() => {
   const store = useStore<Store>({
     category: [],
     supplier: [],
@@ -189,16 +188,16 @@ export const ProductComponent = component$((props: {lang: string}) => {
   return (
     <>
       <h1 class="text-xl font-bold text-gray-700 mt-6 mb-2 border-b-2 pb-2">
-        <Translate lang={props.lang} keys={['step_1']} /> 
+        Hatua ya 1:
       </h1>
-      <SupplierComponent lang={props.lang}/>
+      <SupplierComponent />
       <h1 class="text-xl font-bold text-gray-700 mt-6 mb-2 border-b-2 pb-2">
-        <Translate lang={props.lang} keys={['step_2']} /> 
+        Hatua ya 2:
       </h1>
 
       <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg mt-5 border-2 border-gray-600">
         <h2 class="text-2xl font-bold mb-4">
-          <Translate lang={props.lang} keys={['addPrd']} />
+          Ongeza Bidhaa:
         </h2>
 
         <div class="grid grid-cols-2 gap-4">
@@ -275,7 +274,7 @@ export const ProductComponent = component$((props: {lang: string}) => {
         </button>
       </div>
         
-      <QrPdf lang={props.lang}/>
+      <QrPdf />
       
         {/* Modal Popup */}
         {store.modal.isOpen && (

@@ -1,9 +1,8 @@
-import { Translate } from "./Language";
 import { component$, useStore, $, useResource$, useContext } from '@builder.io/qwik';
 import { fetchWithLang } from '~/routes/function/fetchLang';
 import { RefetchContext } from "./context/refreshContext";
 
-export const QrPdf = component$((props: { lang: string }) => {
+export const QrPdf = component$(() => {
   const store = useStore({
     isLoading: false, // Tracks if the API request is in progress
     modal: {
@@ -94,7 +93,7 @@ export const QrPdf = component$((props: { lang: string }) => {
     <>
       {/* Generate QR Codes Button */}
       <h1 class="text-xl font-bold text-gray-700 mt-6 mb-2 border-b-2 pb-2">
-        <Translate lang={props.lang} keys={['step_3']} />
+        Hatua ya 3:
       </h1>
       <button
         class={`bg-gray-700 text-white px-4 py-2 rounded mt-4 w-full hover:bg-gray-500 ${

@@ -72,7 +72,6 @@ export const suppGet = async ({
 }) => {
   console.time("start");
 
-  const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
   try {
     const page = parseInt(query.page || '1');

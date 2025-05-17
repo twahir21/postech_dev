@@ -62,7 +62,6 @@ export const customerGet = async ({
   headers: headTypes;
   query: ProductQuery;
 }) => {
-  const lang = headers["accept-language"]?.split(",")[0] || "sw";
 
   const page = parseInt(query.page || '1');
   const limit = parseInt(query.limit || '10');

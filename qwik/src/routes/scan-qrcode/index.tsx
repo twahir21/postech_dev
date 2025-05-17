@@ -3,10 +3,9 @@ import {
   useTask$,
   useStore,
   $,
-  useVisibleTask$,
 } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
-import { fetchWithLang } from "../function/fetchLang";
+import { CrudService } from "../api/base/oop";
 
 export default component$(() => {
   const location = useLocation();
@@ -39,29 +38,14 @@ export default component$(() => {
     customers: [] as { id: string; name: string }[],
   });
 
-  useVisibleTask$(() => {
-    fetchWithLang('http://localhost:3000/getCustomers', {
-      method: "GET",
-      credentials: "include", 
-      headers: {
-        "Accept-Language": "sw",
-        "Content-Type": "application/json"
-      }
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        state.customers = data.data; // Update state with fetched customers
+  useTask$(async() => {
+    interface customers {id: string; name: string}
+    const getCustomersApi = new CrudService<customers>("getCustomers");
+    const customersData = await getCustomersApi.get();
+    if(!customersData.success) return;
 
-      })
-      .catch(error => {
-        console.error("Error fetching customers:", error);
-      });
-  });
+    state.customers = customersData.data
+  })
 
   // Parse URL parameters and initialize state
   useTask$(() => {
@@ -114,7 +98,6 @@ export default component$(() => {
 const handleSubmit = $(async () => {
   if (state.isSubmitting) return; // Prevent multiple submissions
 
-  try {
     state.isSubmitting = true; // Disable the button
     state.submitTimer = 4; // Start the countdown from 4 seconds
 
@@ -153,42 +136,52 @@ const handleSubmit = $(async () => {
 
 
     // Send POST request to the backend
-    const response = await fetchWithLang("http://localhost:3000/get-data", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept-Language": "sw", // Default language
-      },
-      body: JSON.stringify(requestData),
-      credentials: "include", // Include cookies or authentication tokens
-    });
+    $(async () => {
 
-
-    // Check if the response is successful
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      interface sendData {
+        id?: string;
+        quantity: number;
+        discount: number;
+        productId: string;
+        priceSold: number;
+        priceBought: number;
+        supplierId: string;
+        customerId: string;
+        calculatedTotal: number;
+        saleType: string;
+        description: string;
+        typeDetected: string;
     }
+    
+    const sendDataApi = new CrudService<sendData>("get-data");
 
-    // Parse the response (if needed)
-    const responseData = await response.json();
+      const sendResult = await sendDataApi.create(requestData);
 
-    // Log success message
-    state.modal = {
+      if (!sendResult.success){
+        state.modal = {
+          isOpen: true,
+          message: sendResult.message || "Tatizo limejitokeza",
+          isSuccess: false
+        }
+      // Countdown timer logic
+      const interval = setInterval(() => {
+      state.submitTimer -= 1; // Decrement the timer
+      if (state.submitTimer <= 0) {
+        clearInterval(interval); // Stop the timer
+        state.isSubmitting = false; // Re-enable the button
+        state.submitTimer = 0; // Reset the timer
+      }
+      }, 1000);
+      return;
+      }
+      // Log success message
+      state.modal = {
       isOpen: true,
-      message: responseData.message || "Umefanikiwa",
+      message: sendResult.message || "Umefanikiwa",
       isSuccess: true
-      
-    }
-  } catch (error) {
-    // Handle errors
-    state.modal = {
-      isOpen: true,
-      message: "Tatizo limejitokeza",
-      isSuccess: false
-      
-    }  
-  } finally {
-    // Countdown timer logic
+      }
+
+          // Countdown timer logic
     const interval = setInterval(() => {
       state.submitTimer -= 1; // Decrement the timer
       if (state.submitTimer <= 0) {
@@ -197,7 +190,7 @@ const handleSubmit = $(async () => {
         state.submitTimer = 0; // Reset the timer
       }
     }, 1000);
-  }
+    })
 });
 
 const handleButtonClick = $((btn: string) => {
@@ -218,13 +211,13 @@ const handleButtonClick = $((btn: string) => {
   return (
     <div class="p-4 max-w-2xl mx-auto text-sm sm:text-base">
       <h1 class="text-xl sm:text-2xl font-bold mb-4 text-gray-800">
-        📦 QR Code Product Data
+        📦 Taarifa za bidhaa kutoka kwa QR Code 
       </h1>
 
       {state.isLoading ? (
         <p class="text-gray-600">Loading...</p>
       ) : Object.keys(state.query).length === 0 ? (
-        <p class="text-red-500">❌ No valid query parameters found!</p>
+        <p class="text-red-500">❌ Hakuna query parameters zilizopatikana!</p>
       ) : (
         <div class="bg-white rounded-xl shadow-lg p-4 border border-gray-200 space-y-4">
           {/* Display product details */}
@@ -328,22 +321,22 @@ const handleButtonClick = $((btn: string) => {
 
             <div>
               <label class="block text-gray-600 font-medium mb-1">
-                Type Detected
+                Aina iliyoonekana
               </label>
               <select
                 value={state.editableFields.typeDetected}
                 onChange$={(e) => handleChange(e, "typeDetected")}
                 class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
               >
-                <option value="sales">Sales</option>
-                <option value="purchases">Purchases</option>
-                <option value="expenses">Expenses</option>
+                <option value="sales">Mauzo</option>
+                <option value="purchases">Manunuzi</option>
+                <option value="expenses">Matumizi</option>
               </select>
             </div>
 
             <div>
               <label class="block text-gray-600 font-medium mb-1">
-                Sale Type
+                Aina ya Mauzo
               </label>
               <select
                 value={state.editableFields.saleType}
@@ -351,13 +344,13 @@ const handleButtonClick = $((btn: string) => {
                 class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
               >
                 <option value="cash">Cash</option>
-                <option value="debt">Debt</option>
+                <option value="debt">Deni</option>
               </select>
             </div>
 
             <div>
               <label class="block text-gray-600 font-medium mb-1">
-                Discount (%)
+                Punguzo (%)
               </label>
               <input
                 type="number"
@@ -371,7 +364,7 @@ const handleButtonClick = $((btn: string) => {
             {state.editableFields.typeDetected === "expenses" && (
               <div class="sm:col-span-2">
                 <label class="block text-gray-600 font-medium mb-1">
-                  Description
+                  Maelezo:
                 </label>
                 <textarea
                   value={state.editableFields.description}
@@ -386,7 +379,7 @@ const handleButtonClick = $((btn: string) => {
             {/* Fetch Customers */}
             {state.editableFields.saleType === "debt" && (
               <div class="sm:col-span-2">
-                <p class="text-gray-600 font-medium mb-2">Select Customer:</p>
+                <p class="text-gray-600 font-medium mb-2">Chagua Mteja:</p>
                 {state.customers.length > 0 ? (
                   <select
                     value={state.customerId || ""} // Bind the selected value to state.customerId
@@ -396,7 +389,7 @@ const handleButtonClick = $((btn: string) => {
                     }}
                     class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
                   >
-                    <option value="">-- Select a customer --</option>
+                    <option value="">-- Chagua mteja --</option>
                     {state.customers.map((customer) => (
                       <option key={customer.id} value={customer.id}>
                         {customer.name} 
@@ -404,7 +397,7 @@ const handleButtonClick = $((btn: string) => {
                     ))}
                   </select>
                 ) : (
-                  <p class="text-gray-500 italic">No customers available.</p>
+                  <p class="text-gray-500 italic">Hakuna mteja aliyepatikana.</p>
                 )}
               </div>
             )}

@@ -1,10 +1,9 @@
 import { component$, useStore, $, useComputed$, useContext } from "@builder.io/qwik";
 import { CustomersCrudComponent } from "./CustComp";
 import { fetchWithLang } from "~/routes/function/fetchLang";
-import { Translate } from "./Language";
 import { RefetchContext } from "./context/refreshContext";
 
-export const CustomerComponent =  component$((props:{lang: string}) => {
+export const CustomerComponent =  component$(() => {
   const customer = useStore({
     name: "",
     contact: "",
@@ -62,14 +61,14 @@ export const CustomerComponent =  component$((props:{lang: string}) => {
   return (
 <>
       <h1 class="text-xl font-bold text-gray-700 mt-6 mb-2 border-b-2 pb-2">
-        <Translate lang={props.lang} keys={['step_1']} /> 
+        Hatua ya 1:
       </h1>
     <div class="flex justify-center pt-4">
       <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md border-2 border-gray-600">
-        <h2 class="text-lg font-semibold mb-4 text-center"><Translate lang={props.lang} keys={['customerForm']} /> </h2>
+        <h2 class="text-lg font-semibold mb-4 text-center">Fomu ya Mteja: </h2>
         <form preventdefault:submit onSubmit$={handleSubmit}>
           <div class="mb-4">
-            <label class="block text-gray-800 mb-1"><Translate lang={props.lang} keys={['customerName']} /></label>
+            <label class="block text-gray-800 mb-1">Jina la Mteja: </label>
             <input
               type="text"
               class="w-full p-2 border border-gray-300 rounded"
@@ -79,7 +78,7 @@ export const CustomerComponent =  component$((props:{lang: string}) => {
             />
           </div>
           <div class="mb-4">
-            <label class="block text-gray-800 mb-1"><Translate lang={props.lang} keys={['contact']} /></label>
+            <label class="block text-gray-800 mb-1">Mawasiliano: </label>
             <input
               type="text"
               class="w-full p-2 border border-gray-300 rounded"
@@ -93,13 +92,13 @@ export const CustomerComponent =  component$((props:{lang: string}) => {
             class="w-full bg-gray-700 text-white p-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isFormInvalid.value}
           >
-            <Translate lang={props.lang} keys={['submit']} />
+            Tuma
           </button>
         </form>
       </div>
     </div>
 
-    <CustomersCrudComponent lang={props.lang}/>
+    <CustomersCrudComponent />
 
     {/* Modal Popup */}
     {modal.isOpen && (

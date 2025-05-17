@@ -1,9 +1,8 @@
 import { component$, useContext, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import { Translate } from "./Language";
 import { fetchWithLang } from "~/routes/function/fetchLang";
 import { RefetchContext } from "./context/refreshContext";
 
-export const RecentProductsTable = component$((props: { lang: string }) => {
+export const RecentProductsTable = component$(() => {
   const lowStockProducts = useSignal<any[]>([]);
   const errorMessage = useSignal<string | null>(null);
 
@@ -34,7 +33,7 @@ export const RecentProductsTable = component$((props: { lang: string }) => {
   return (
     <div class="overflow-x-auto">
       <h1 class="font-semibold text-1xl">
-        <Translate lang={props.lang} keys={['recently_added_products']} />
+        Bidhaa zilizopungua
       </h1>
 
       {errorMessage.value ? (
@@ -47,13 +46,13 @@ export const RecentProductsTable = component$((props: { lang: string }) => {
             <tr class="bg-gray-700 text-white">
               <th class="border border-black px-4 py-2">#</th>
               <th class="border border-black px-4 py-2">
-                <Translate lang={props.lang} keys={['product']} />
+                Bidhaa
               </th>
               <th class="border border-black px-4 py-2">
-                <Translate lang={props.lang} keys={['price']} />
+                Bei
               </th>
               <th class="border border-black px-4 py-2">
-                <Translate lang={props.lang} keys={['stock']} />
+                Hisa
               </th>
             </tr>
           </thead>

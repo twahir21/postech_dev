@@ -1,6 +1,5 @@
 import { component$, useSignal, useTask$, $, useContext } from '@builder.io/qwik';
 import { fetchWithLang } from '~/routes/function/fetchLang';
-import { Translate } from './Language';
 import { RefetchContext } from './context/refreshContext';
 
 interface Customer {
@@ -10,7 +9,7 @@ interface Customer {
   createdAt: string;
 }
 
-export const CustomersCrudComponent =  component$((props: {lang: string }) => {
+export const CustomersCrudComponent =  component$(() => {
   const customer = useSignal<Customer[]>([]);
   const total = useSignal(0);
   const search = useSignal('');
@@ -101,9 +100,9 @@ export const CustomersCrudComponent =  component$((props: {lang: string }) => {
   return (
     <div class="p-4 max-w-5xl mx-auto">
       <h1 class="text-xl font-bold text-gray-700 mt-6 mb-2 border-b-2 pb-2">
-        <Translate lang={props.lang} keys={['step_2']} /> 
+        Hatua ya 2:
       </h1>
-      <h1 class="text-xl font-bold mb-4 text-center"> <Translate lang={props.lang} keys={['customers']} /> </h1>
+      <h1 class="text-xl font-bold mb-4 text-center"> Wateja </h1>
 
       <input
         class="w-full mb-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -117,9 +116,9 @@ export const CustomersCrudComponent =  component$((props: {lang: string }) => {
         <table class="w-full text-sm text-left">
           <thead class="bg-gray-100 font-semibold text-gray-600">
             <tr>
-              <th class="p-3 border-b border-gray-200"><Translate lang={props.lang} keys={['name']} /></th>
-              <th class="p-3 border-b border-gray-200"><Translate lang={props.lang} keys={['contact']} /></th>
-              <th class="p-3 border-b border-gray-200"><Translate lang={props.lang} keys={['action']} /></th>
+              <th class="p-3 border-b border-gray-200">Jina: </th>
+              <th class="p-3 border-b border-gray-200">Mawasiliano: </th>
+              <th class="p-3 border-b border-gray-200">Kitendo: </th>
             </tr>
           </thead>
           <tbody>
@@ -221,7 +220,7 @@ export const CustomersCrudComponent =  component$((props: {lang: string }) => {
       <h2 class="text-lg font-semibold">Edit Customers</h2>
 
       <div class="mt-4">
-        <label class="block text-sm"><Translate lang={props.lang} keys={['name']} /></label>
+        <label class="block text-sm">Jina:</label>
         <input
           type="text"
           class="w-full p-2 border border-gray-300 rounded"
@@ -230,7 +229,7 @@ export const CustomersCrudComponent =  component$((props: {lang: string }) => {
         />
       </div>
       <div class="mt-4">
-      <label class="block text-sm"><Translate lang={props.lang} keys={['contact']} /></label>
+      <label class="block text-sm">Mawasiliano: </label>
       <input
           type="number"
           class="w-full p-2 border border-gray-300 rounded"

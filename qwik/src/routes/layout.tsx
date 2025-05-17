@@ -50,7 +50,7 @@ export const onGet: RequestHandler = async ({ url, cookie, request, redirect, er
   rateLimitMap.set(ip, record);
 
   // Auth logic
-  const isPrivate = url.pathname.startsWith("/private") || url.pathname.startsWith("/api/translate");
+  const isPrivate = url.pathname.startsWith("/private");
   if (isPrivate) {
     const token = cookie.get('auth_token')?.value;
     const tokenPayload = {token}

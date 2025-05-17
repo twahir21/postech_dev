@@ -8,7 +8,7 @@ type SalesData = {
 };
 
 
-export const Graph = component$((props: {lang: string, data: SalesData[] }) => {
+export const Graph = component$((props: { data: SalesData[] }) => {
   useVisibleTask$(async () => {
     await fetchWithLang("http://localhost:3000/analytics", {
       credentials: 'include'

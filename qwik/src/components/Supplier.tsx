@@ -1,10 +1,9 @@
 import { component$, useStore, $, useContext } from "@builder.io/qwik";
-import { Translate } from "./Language";
 import { RefetchContext } from "./context/refreshContext";
 import { CrudService } from "~/routes/api/base/oop";
 import type { categoriesPost, supplierData } from "~/routes/api/base/typeSafe";
 
-export const SupplierComponent = component$((props: {lang: string}) => {
+export const SupplierComponent = component$(() => {
   const formState = useStore({
     name: "",
     contact: "",
@@ -101,7 +100,7 @@ export const SupplierComponent = component$((props: {lang: string}) => {
     <>
         <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg mt-5 border-2 border-gray-600">
       <h2 class="text-xl font-bold mb-4">
-        <Translate lang={props.lang} keys={['addSupp']}/>
+        Ongeza Msambazaji:
         </h2>
       <form onSubmit$={handleSubmit} class="space-y-4">
         <div>

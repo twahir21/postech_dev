@@ -2,9 +2,8 @@ import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qw
 import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
 import { fetchWithLang } from "~/routes/function/fetchLang";
-import { Translate } from "./Language";
 
-export const HomeComponent = component$((props: { lang: string }) => {
+export const HomeComponent = component$(() => {
 
   const analyticsStore = useStore({
     profit: "0" as string,
@@ -122,7 +121,7 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-blue-200 text-blue-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="profit" class="pr-1.5">💵</span> 
-          <Translate lang={props.lang} keys={['total_profit']} />
+          Faida ya Jumla
         </h3>
         <p class="text-xl font-bold">{analyticsStore.profit}/=</p>
       </div>
@@ -131,7 +130,7 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-green-200 text-green-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="sales" class="pr-1.5">📈</span> 
-          <Translate lang={props.lang} keys={['total_sales']} />
+          Mauzo ya Jumla
         </h3>
         <p class="text-xl font-bold">{analyticsStore.sales}/=</p>
       </div>
@@ -140,7 +139,7 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-red-200 text-red-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="expenses" class="pr-1.5">💸</span> 
-          <Translate lang={props.lang} keys={['total_expenses']} />
+          Matumizi ya jumla
         </h3>
         <p class="text-xl font-semibold">{analyticsStore.expenses}/=</p>
       </div>
@@ -149,7 +148,7 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-yellow-200 text-yellow-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="product" class="pr-1.5">🛒</span> 
-          <Translate lang={props.lang} keys={['most_profitable_product']} />
+          Bidhaa yenye faida kubwa
         </h3>
         <p class="text-lg font-semibold">
           {analyticsStore.profitableProductname} ({analyticsStore.profitableProductProfit}/=)
@@ -160,13 +159,13 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-purple-200 text-purple-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="sold" class="pr-1.5">🔥</span> 
-          <Translate lang={props.lang} keys={['most_sold_product']} />
+          Bidhaa inayouzwa sana
         </h3>
         <p class="text-sm font-semibold">
-          Quantity: {analyticsStore.mostPrdQuantity} – ({analyticsStore.mostPrdQuantitytimes} units)
+          Kiasi: {analyticsStore.mostPrdQuantity} – ({analyticsStore.mostPrdQuantitytimes} units)
         </p>
         <p class="text-sm font-semibold">
-          Frequent: {analyticsStore.mostFreqPrd} – ({analyticsStore.mostFreqPrdquantity} times)
+          Mara: {analyticsStore.mostFreqPrd} – ({analyticsStore.mostFreqPrdquantity} )
         </p>
       </div>
 
@@ -174,7 +173,7 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-gray-200 text-gray-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="debt" class="pr-1.5">💳</span> 
-          <Translate lang={props.lang} keys={['most_debt_user']} />
+          Mwenye deni Kubwa
         </h3>
         <p class="text-lg font-semibold">{analyticsStore.mostDebt} – ({analyticsStore.amountDebt}/=)</p>
       </div>
@@ -183,7 +182,7 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-teal-200 text-teal-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="long-debt" class="pr-1.5">⏳</span> 
-          <Translate lang={props.lang} keys={['long_debt_user']} />
+          Mdeni wa muda mrefu
         </h3>
         <p class="text-lg font-semibold">{analyticsStore.longDebt} – ({analyticsStore.amount}/=)</p>
         <p class="text-xs text-gray-600 italic">(Last payment: {analyticsStore.daysDebt})</p>
@@ -193,7 +192,7 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-orange-200 text-orange-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="low-stock" class="pr-1.5">⚠️</span> 
-          <Translate lang={props.lang} keys={['low_stock']} />
+          Hisa ya chini zaidi
         </h3>
         <p class="text-lg font-semibold">
           {analyticsStore.lowestPrdName} – ({analyticsStore.lowestPrdStock} units)
@@ -204,9 +203,9 @@ export const HomeComponent = component$((props: { lang: string }) => {
       <div class="bg-indigo-200 text-indigo-800 p-4 rounded shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="countdown" class="pr-1.5">⏰</span> 
-          <Translate lang={props.lang} keys={['saas_subscription']} />
+          Kulipia Huduma
         </h3>
-        <p class="text-lg font-semibold">Expires in 20 days</p>
+        <p class="text-lg font-semibold">Zimebaki siku 20</p>
       </div>
 
         {/* Total Return */}
@@ -238,8 +237,8 @@ export const HomeComponent = component$((props: { lang: string }) => {
 
 
       </div>
-      {isGraphReady.value && <Graph lang={props.lang} data={netSalesStore} />}
-      <RecentProductsTable lang={props.lang}/>
+      {isGraphReady.value && <Graph data={netSalesStore} />}
+      <RecentProductsTable />
     </>
   );
 });
