@@ -28,12 +28,11 @@ export const SuppCrudComponent =  component$(() => {
     const result = await fetchSupplierApi.get();
 
     if (!result.success) {
-      // give popup
-      modal.isOpen = true;
-      modal.isSuccess = false,
-      modal.message = result.message || "Hitilafu wakati wa kutuma ombi lako";
-      return;
+    // reset loading
+    isLoading.value = false;
+    return;
     }
+    
     supplier.value = result.data;
     // reset loading
     isLoading.value = false;
@@ -88,7 +87,7 @@ export const SuppCrudComponent =  component$(() => {
       <input
         class="w-full mb-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         type="text"
-        placeholder="🔍 Tafuta kwa jina la muuzaji ..."
+        placeholder="🔍 Tafuta kwa jina la msambazaji ..."
         bind:value={search}
       />
 
@@ -112,7 +111,7 @@ export const SuppCrudComponent =  component$(() => {
             ) : supplier.value.length === 0 ? (
               <tr>
                 <td colSpan={7} class="p-4 text-center text-gray-500">
-                Hakuna muuzaji yoyote, msajili kwanza ....
+                Hakuna msambazaji yoyote, msajili kwanza ....
                 </td>
               </tr>
               )
@@ -148,7 +147,7 @@ export const SuppCrudComponent =  component$(() => {
         {isLoading.value ? (
           <div class="text-center text-gray-500 p-4">Loading...</div>
         ) : supplier.value.length === 0 ? (
-          <div class="text-center text-gray-500 p-4">Hakuna muuzaji yeyote, msajili kwanza ...</div>
+          <div class="text-center text-gray-500 p-4">Hakuna msambazaji yeyote, msajili kwanza ...</div>
         ) : (
           supplier.value.map((supplier) => (
             <div key={supplier.id} class="border rounded-lg p-3 bg-white shadow-sm">

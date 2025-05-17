@@ -1,7 +1,6 @@
 // src/components/SettingsPage.tsx
 import { component$, useSignal, useStore, useResource$, $ } from '@builder.io/qwik';
 import { CrudService } from '~/routes/api/base/oop';
-import { fetchWithLang } from '~/routes/function/fetchLang';
 
 export const SettingsComponent = component$(() => {
   const currentPassword = useSignal('');
@@ -62,7 +61,7 @@ export const SettingsComponent = component$(() => {
     // store.shopName = result.data.shopName;
     try {
       store.isLoading = true; // Start loading ...
-      const response = await fetchWithLang("http://localhost:3000/shop", {
+      const response = await fetch("http://localhost:3000/shop", {
         credentials: 'include'
       });
   
@@ -95,7 +94,7 @@ export const SettingsComponent = component$(() => {
         shopName: store.shopName
       };
   
-      const req = await fetchWithLang("http://localhost:3000/shop", {
+      const req = await fetch("http://localhost:3000/shop", {
         credentials: 'include',
         method: "PUT",
         headers: {
@@ -132,7 +131,7 @@ export const SettingsComponent = component$(() => {
         newPassword: newPassword.value
       };
   
-      const req = await fetchWithLang("http://localhost:3000/update-password", {
+      const req = await fetch("http://localhost:3000/update-password", {
         credentials: 'include',
         method: "PUT",
         headers: {
@@ -162,7 +161,7 @@ export const SettingsComponent = component$(() => {
 
       store.isDelete = true;
       try {
-        const req = await fetchWithLang("http://localhost:3000/delete-shop", {
+        const req = await fetch("http://localhost:3000/delete-shop", {
           credentials: 'include',
           method: "DELETE",
           headers: {

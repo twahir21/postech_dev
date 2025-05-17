@@ -1,6 +1,7 @@
 import { component$, useStore, $, useResource$, useContext } from '@builder.io/qwik';
-import { fetchWithLang } from '~/routes/function/fetchLang';
 import { RefetchContext } from "./context/refreshContext";
+import { CrudService } from '~/routes/api/base/oop';
+import { env } from '~/routes/api/base/config';
 
 export const QrPdf = component$(() => {
   const store = useStore({
@@ -18,29 +19,18 @@ export const QrPdf = component$(() => {
   // check if QrCode is needed
   useResource$(async ({ track }) => {
     track(() => qrCodeRefetch.value);
-    try {
-      const response = await fetchWithLang('http://localhost:3000/check-isQrCode', {
-        method: 'GET',
-        credentials: 'include',
-      });
 
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.message || 'Failed to fetch QR code status.');
-      }
-
-      const data = await response.json();
-      if (data.success) {
+      const checkQrCodeApi = new CrudService("check-isQrCode");
+      const isQrcodeOk = await checkQrCodeApi.get();
+      if (!isQrcodeOk.success){
+        store.isButtonDisabled = true; // Disable the button if no QR codes are needed
+      }else{
         store.isButtonDisabled = false; // Enable the button if QR codes are needed
       }
-      else {
-        store.isButtonDisabled = true; // Disable the button if no QR codes are needed
-      }
+
       qrCodeRefetch.value = false;
-    } catch (error) {
-      console.log("Err", error);
-    }
-  })
+    
+  });
 
   // Handle Generate QR Codes Button Click
   const generateQRCodes = $(async () => {
@@ -48,7 +38,9 @@ export const QrPdf = component$(() => {
       store.isLoading = true; // Set loading state to true
 
       // Call the backend API to generate QR codes
-      const response = await fetchWithLang('http://localhost:3000/generate-qrcode', {
+      const backend = env.mode === 'development' ? env.backendURL_DEV : env.backendURL;
+
+      const response = await fetch(`${backend}/generate-qrcode`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -75,12 +67,11 @@ export const QrPdf = component$(() => {
         isSuccess: true,
       };
     } catch (error) {
-      console.error('Error generating QR codes:', error);
 
       // Show error message
       store.modal = {
         isOpen: true,
-        message: 'An error occurred while generating QR codes.',
+        message: error instanceof Error ? error.message: 'Tatizo kwenye seva wakati wa kutengeneza QR codes.',
         isSuccess: false,
       };
     } finally {
@@ -129,7 +120,7 @@ export const QrPdf = component$(() => {
               class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
               onClick$={() => (store.modal.isOpen = false)}
             >
-              Close
+              Funga
             </button>
           </div>
         </div>

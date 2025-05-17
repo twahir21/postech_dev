@@ -1,5 +1,4 @@
 import { component$, useStore, useResource$, $, useContext } from '@builder.io/qwik';
-import { fetchWithLang } from '~/routes/function/fetchLang';
 import { SupplierComponent } from './Supplier';
 import { QrPdf } from './QRPdf';
 import { fetchCategories, fetchSuppliers, globalStore } from '~/routes/function/helpers';
@@ -159,7 +158,7 @@ export const ProductComponent = component$(() => {
     
       // Send data to backend
 
-      const response = await fetchWithLang('http://localhost:3000/products', {
+      const response = await fetch('http://localhost:3000/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productPayload),

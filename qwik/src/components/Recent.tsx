@@ -1,5 +1,5 @@
 import { component$, useContext, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import { fetchWithLang } from "~/routes/function/fetchLang";
+import { fetch } from "~/routes/function/fetchLang";
 import { RefetchContext } from "./context/refreshContext";
 
 export const RecentProductsTable = component$(() => {
@@ -11,7 +11,7 @@ export const RecentProductsTable = component$(() => {
   useVisibleTask$(async ({ track }) => {
     track(() => productRefetch.value);
     try {
-      const response = await fetchWithLang("http://localhost:3000/analytics", {
+      const response = await fetch("http://localhost:3000/analytics", {
         method: "GET",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

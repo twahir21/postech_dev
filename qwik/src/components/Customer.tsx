@@ -1,6 +1,6 @@
 import { component$, useStore, $, useComputed$, useContext } from "@builder.io/qwik";
 import { CustomersCrudComponent } from "./CustComp";
-import { fetchWithLang } from "~/routes/function/fetchLang";
+import { fetch } from "~/routes/function/fetchLang";
 import { RefetchContext } from "./context/refreshContext";
 
 export const CustomerComponent =  component$(() => {
@@ -32,7 +32,7 @@ export const CustomerComponent =  component$(() => {
     const name = customer.name.trim().toLowerCase();
     const contact = customer.contact.trim().toLowerCase();
 
-    const response = await fetchWithLang("http://localhost:3000/customers", {
+    const response = await fetch("http://localhost:3000/customers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

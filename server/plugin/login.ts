@@ -20,94 +20,119 @@ export const loginPlugin = new Elysia()
         })
     )
     .post('/login', async ({ body, jwt, cookie: { auth_token }, headers }) => {
-        
+
         try {
             let { username, password } = body as { username: string, password: string };
             username = sanitizeString(username.trim().toLowerCase());
             password = sanitizeString(password.trim());
-    
+
             if (!username || !password) {
-                return { 
-                    success: false, 
+                return {
+                    success: false,
                     message: "Taarifa ulizoweka sio sahihi"
                 };
             }
-    
+
             // 🧠 Generate a unique cache key based on username
             const cacheKey = `LoginData:${username}`;
-    
+
             // ✅ Try cache first
             const cached = loginCache.get(cacheKey);
             if (cached && typeof cached === 'object') {
+                // Generate JWT
+                const token = await jwt.sign({
+                    userId: cached.payload.userId,
+                    shopId: cached.payload.shopId
+                });
+
+                if (!token) {
+                    return {
+                        success: false,
+                        message: "Hakuna tokeni, hujaruhusiwa"
+                    };
+                }
+
+                // Set secure cookie
+                auth_token.set({
+                    value: token,
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'development' ? false : true,
+                    sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
+                    maxAge: 7 * 86400,
+                    path: '/',
+                    domain: process.env.NODE_ENV === 'development'
+                        ? undefined: ".mypostech.store"
+                });
+
                 return {
                     success: true,
                     message: `Umefanikiwa kuingia kama ${username}`,
                     ...cached.payload
                 };
             }
-    
+
             // ❌ Not in cache → fetch from DB
             const user = await mainDb
-                .select({ 
-                    id: users.id, 
-                    username: users.username, 
-                    password: users.password 
+                .select({
+                    id: users.id,
+                    username: users.username,
+                    password: users.password
                 })
                 .from(users)
                 .where(eq(users.username, username))
                 .limit(1);
-    
+
             if (!user.length) {
-                return { 
-                    success: false, 
+                return {
+                    success: false,
                     message: "Mtumiaji hayupo!"
                 };
             }
-    
+
             const userData = user[0];
-    
+
             // Verify password
             const isValidPassword = await argon2.verify(userData.password, password);
             if (!isValidPassword) {
                 return { success: false, message: "Taarifa ulizoweka sio sahihi" };
             }
-    
+
             // Fetch associated shopId
             const shop = await mainDb
-                .select({ 
+                .select({
                     shopId: shopUsers.shopId,
                     isPaid: shopUsers.isPaid
                 })
                 .from(shopUsers)
                 .where(eq(shopUsers.userId, userData.id))
                 .limit(1);
-    
+
             if (!shop.length) {
                 return { success: false, message: 'Hakuna duka lililosajiliwa kwa ajili yako' };
             }
-    
+
             const shopData = shop[0];
-    
+
             if (!shopData.isPaid) {
                 return {
                     success: false,
                     message: "Tafadhali, lipia account yako ili kupata huduma."
                 };
             }
-    
+
             // Generate JWT
-            const token = await jwt.sign({ 
+            const token = await jwt.sign({
                 userId: userData.id,
                 shopId: shopData.shopId
             });
-    
+
             if (!token) {
                 return {
                     success: false,
                     message: "Hakuna tokeni, hujaruhusiwa"
                 };
             }
-    
+
             // Set secure cookie
             auth_token.set({
                 value: token,
@@ -116,21 +141,21 @@ export const loginPlugin = new Elysia()
                 sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
                 maxAge: 7 * 86400,
                 path: '/',
-                domain: process.env.NODE_ENV === 'development' 
+                domain: process.env.NODE_ENV === 'development'
                         ? undefined: ".mypostech.store"
             });
-    
+
             // 🧠 Store result in cache for future logins
             const payload = {
                 userId: userData.id,
                 shopId: shopData.shopId,
                 isPaid: shopData.isPaid
             };
-    
+
             loginCache.set(cacheKey, {
                 payload
             });
-    
+
             return {
                 success: true,
                 message: `Umefanikiwa kuingia kama ${username}`,
@@ -147,5 +172,3 @@ export const loginPlugin = new Elysia()
     }, {
         body: loginData
     });
-
-    

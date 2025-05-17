@@ -3,13 +3,13 @@ import { DebtComponentGraph } from "./Debt";
 import { CashDebt } from "./CashDebt";
 import { Salexp } from "./Salexp";
 import { StockComponent } from "./Stock";
-import { fetchWithLang } from "~/routes/function/fetchLang";
+import { fetch } from "~/routes/function/fetchLang";
 
 export const MainGraph =  component$(() => {
   const selected = useSignal<'debts' | 'cash' | 'expenses' | 'stock' | null>(null);
   useResource$(async () => {
     try {
-      const res = await fetchWithLang("http://localhost:3000/graph", {
+      const res = await fetch("http://localhost:3000/graph", {
         credentials: 'include'
       });
   

@@ -1,5 +1,4 @@
 import { component$, useResource$, useSignal } from '@builder.io/qwik';
-import { fetchWithLang } from '~/routes/function/fetchLang';
 
 export const ExpensesComponent = component$(() => {
   const dummyExpenses = [
@@ -30,7 +29,7 @@ export const ExpensesComponent = component$(() => {
 
   useResource$(async () => {
     try {
-      const res = await fetchWithLang("http://localhost:3000/analytics", {
+      const res = await fetch("http://localhost:3000/analytics", {
         credentials: 'include'
       });
 

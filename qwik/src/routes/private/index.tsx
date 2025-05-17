@@ -18,7 +18,7 @@ import { CrudService } from "../api/base/oop";
 export default component$(() => {
   const store = useStore({
     isSidebarOpen: false,
-    currentPage: "home",
+    currentPage: "Nyumbani",
     input: "",
     showCalculator: false,
     username: "",

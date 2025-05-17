@@ -1,5 +1,4 @@
 import { component$, useSignal, useTask$, $, useContext } from '@builder.io/qwik';
-import { fetchWithLang } from '~/routes/function/fetchLang';
 import { RefetchContext } from './context/refreshContext';
 
 interface Customer {
@@ -24,7 +23,7 @@ export const CustomersCrudComponent =  component$(() => {
   const fetchCustomers = $(async () => {
     isLoading.value = true;
     try {
-      const res = await fetchWithLang(
+      const res = await fetch(
         `http://localhost:3000/customers?search=${encodeURIComponent(search.value)}&page=${currentPage.value}&limit=${perPage}`,{
           method: 'GET',
           credentials: 'include',
@@ -74,7 +73,7 @@ export const CustomersCrudComponent =  component$(() => {
   
   const deleteCustomers = $(async (customerId: string) => {
     try {
-      const res = await fetchWithLang(`http://localhost:3000/${customerId}`, {
+      const res = await fetch(`http://localhost:3000/${customerId}`, {
         method: 'DELETE',
         credentials: 'include',
         headers: {
@@ -247,7 +246,7 @@ export const CustomersCrudComponent =  component$(() => {
           class="px-4 py-2 bg-gray-700 text-white rounded"
           onClick$={async () => {
             try {
-              const res = await fetchWithLang(`http://localhost:3000/customers/${selectedCustomer.value!.id}`, {
+              const res = await fetch(`http://localhost:3000/customers/${selectedCustomer.value!.id}`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
-import { fetchWithLang } from "~/routes/function/fetchLang";
+import { fetch } from "~/routes/function/fetchLang";
 
 export const HomeComponent = component$(() => {
 
@@ -29,7 +29,7 @@ export const HomeComponent = component$(() => {
 
 
   useVisibleTask$(async() => {
-    const res = await fetchWithLang("http://localhost:3000/analytics", {
+    const res = await fetch("http://localhost:3000/analytics", {
       credentials: 'include'
     });
 

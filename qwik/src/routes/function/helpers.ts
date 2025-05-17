@@ -1,5 +1,4 @@
 import { env } from "../api/base/config";
-import { fetchWithLang } from "./fetchLang";
 
 interface categTypesafe  {
     id: string,
@@ -22,7 +21,7 @@ export const fetchSuppliers = async () => {
                           ? env.backendURL_DEV
                           : env.backendURL;
 
-      const res = await fetchWithLang(`${backendURL}/suppliers`, {
+      const res = await fetch(`${backendURL}/suppliers`, {
         method: "GET",
         credentials: "include",
       });
@@ -47,7 +46,7 @@ export const fetchCategories = async () => {
                       ? env.backendURL_DEV
                       : env.backendURL;
                       
-      const res = await fetchWithLang(`${backendURL}/categories`, {
+      const res = await fetch(`${backendURL}/categories`, {
         method: "GET",
         credentials: "include",
       });
