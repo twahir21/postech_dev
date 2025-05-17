@@ -1,6 +1,5 @@
 // implement crud
 
-import { getTranslation } from "./translation"
 import type { headTypes, ProductQuery, suppTypes } from "../types/types";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { suppliers } from "../database/schema/shop";
@@ -31,7 +30,7 @@ export const suppPost = async ({ body, headers, shopId}: { body : suppTypes, hea
     if (checkSupp.length > 0) {
         return {
             success: false,
-            message: await getTranslation(lang, "exists")
+            message: (lang, "exists")
         }
     }
 
@@ -46,7 +45,7 @@ export const suppPost = async ({ body, headers, shopId}: { body : suppTypes, hea
 
     return {
         success: true,
-        message: await getTranslation(lang, "save")
+        message: (lang, "save")
     }
 
     } catch (error) {
@@ -54,7 +53,7 @@ export const suppPost = async ({ body, headers, shopId}: { body : suppTypes, hea
             success: false,
             message: error instanceof Error 
                     ? error.message
-                    : await getTranslation(lang, "serverErr") 
+                    : "Hitilafu kwenye seva"
         }
     }
 }
@@ -93,7 +92,7 @@ export const suppGet = async ({
       return {
         success: true,
         test: "Is this Cached?", 
-        message: await getTranslation(lang, "success"),
+        message: (lang, "success"),
         ...cached
       };
     }
@@ -124,7 +123,7 @@ export const suppGet = async ({
     if (existingSuppliers.length === 0) {
       return {
         success: false,
-        message: await getTranslation(lang, "notFound"),
+        message: (lang, "notFound"),
         data: [],
         total
       };
@@ -149,7 +148,7 @@ export const suppGet = async ({
 
     return {
       success: true,
-      message: await getTranslation(lang, "success"),
+      message: (lang, "success"),
       data: existingSuppliers,
       total,
       page,
@@ -166,14 +165,13 @@ export const suppGet = async ({
       success: false,
       message: error instanceof Error
         ? error.message
-        : await getTranslation(lang, "serverErr")
+        : "Hitilafu kwenye seva"
     };
   }
 };
 
 // update
 export const suppPut = async ({ body, headers, supplierId }: { body : suppTypes, headers: headTypes, supplierId: string}) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try {
 
     // now extract
@@ -188,7 +186,7 @@ export const suppPut = async ({ body, headers, supplierId }: { body : suppTypes,
     if (!supplierId || supplierId.length < 5) {
         return {
             success: false,
-            message: await getTranslation(lang, "idErr")
+            message: "ID sio sahihi"
         };
     }
 
@@ -205,14 +203,14 @@ export const suppPut = async ({ body, headers, supplierId }: { body : suppTypes,
     if (!updateSupp) {
         return {
             success: false,
-            message: await getTranslation(lang, "notFound")
+            message: "Hakuna taarifa iliyopatikana"
         }
     }
 
     return {
         success: true,
         data: updateSupp,
-        message: await getTranslation(lang, "update")
+        message: "Umefainikiwa ku-update taarifa"
     }
 
     } catch (error) {
@@ -220,15 +218,13 @@ export const suppPut = async ({ body, headers, supplierId }: { body : suppTypes,
             success: false,
             message: error instanceof Error 
                     ? error.message
-                    : await getTranslation(lang, "serverErr") 
+                    : "Hitilafu kwenye seva"
         }
     }
 }
 
 // delete
 export const suppDel = async ({ headers, supplierId, shopId }: {headers: headTypes, supplierId: string, shopId: string }) => {
-    const lang = headers["accept-language"]?.split(",")[0] || "sw";
-
 
     try { 
 
@@ -236,7 +232,7 @@ export const suppDel = async ({ headers, supplierId, shopId }: {headers: headTyp
         if (!supplierId || supplierId.length < 5) {
             return {
                 success: false,
-                message: await getTranslation(lang, "idErr")
+                message: "id ya msambazaji haipo!"
             };
         }
 
@@ -252,13 +248,13 @@ export const suppDel = async ({ headers, supplierId, shopId }: {headers: headTyp
         if (!suppDel) {
             return {
                 success: false,
-                message: await getTranslation(lang, "notFound")
+                message: "Hakuna taarifa ya kufutwa"
             }
         }
 
         return{
             success: true,
-            message: await getTranslation(lang, "delMsg")
+            message: "umefanikiwa kufuta taarifa"
         }
     } catch (error) {
         if (error instanceof Error){
@@ -266,7 +262,7 @@ export const suppDel = async ({ headers, supplierId, shopId }: {headers: headTyp
                 success: false,
                 message: error instanceof Error 
                         ? error.message
-                        : await getTranslation(lang, "serverErr") 
+                        : "Hitilafu kwenye seva"
             }
         }
     }

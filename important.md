@@ -57,3 +57,10 @@ and remove cors, ratelimiting and more.
 
 # when you can't push changes to database with drizzle-orm , then neon is idle it will make errors
 try to ping first or warmup (wakeup database) by making req using server then you can push changes easily.
+
+# you can use neon read replica for max speed of reading only from mainDb. (best for scaling)
+# Migrate to Dublin (eu-west-1) — it's closer and more stable than Virginia for East Africa.
+use new neon AWS af-south-1 (Cape Town, South Africa)	very low latency of about 80ms only (blazing fastest) but new so no enough report for its downtime trend
+use AWS eu-central-1	(Frankfurt, Germany	) for medium latency of 120ms but low downtime (BEST)
+
+check if your database is not down from https://neonstatus.com/.

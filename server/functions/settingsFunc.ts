@@ -2,7 +2,6 @@ import { eq } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { shops, users } from "../database/schema/shop";
 import type { headTypes, pswdType, shopTypes } from "../types/types";
-import { getTranslation } from "./translation";
 import { sanitizeString } from "./security/xss";
 import { hashPassword, verifyPassword } from "./security/hash";
 
@@ -25,7 +24,7 @@ export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: str
         return {
         success: true,
         data: [{ shopName: fetchShop[0], email: fetchEmail[0]}],
-        message: await getTranslation(lang, "success")
+        message: (lang, "success")
         }
 
 
@@ -35,7 +34,7 @@ export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: str
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : await getTranslation(lang, "serverErr")
+                    : ("Hitilafu kwenye seva"")
         }
     }
 }
@@ -66,7 +65,7 @@ export const shopSettingsPut = async ({ shopId, userId, headers, body }: {userId
                 success: false,
                 message: error instanceof Error
                         ? error.message
-                        : await getTranslation(lang, "serverErr")
+                        : ("Hitilafu kwenye seva"")
             }
         }
 }
@@ -117,7 +116,7 @@ export const updatePassword = async ({ shopId, userId, headers, body }: {userId:
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : await getTranslation(lang, "serverErr")
+                    : ("Hitilafu kwenye seva"")
         }
     }
 }
@@ -183,7 +182,7 @@ export const deleteShop = async ({ shopId, userId, headers }: {userId: string, s
               success: false,
               message: error instanceof Error
                       ? error.message
-                      : await getTranslation(lang, "serverErr")
+                      : ("Hitilafu kwenye seva"")
           }
       }
 }

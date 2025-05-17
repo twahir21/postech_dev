@@ -33,7 +33,7 @@ export const authPlugin = new Elysia()
                 success: false,
                 message: error instanceof Error
                             ? error.message
-                            : await getTranslation(lang, "serverErr")
+                            : ("Hitilafu kwenye seva"")
             }
         }
     }, {
@@ -61,7 +61,7 @@ export const authPlugin = new Elysia()
                 success: false,
                 message: error instanceof Error
                             ? error.message
-                            : await getTranslation(lang, "serverErr")
+                            : ("Hitilafu kwenye seva"")
             }
         }
     }).get("/me", async ({ jwt, cookie, headers }) => {
@@ -83,7 +83,7 @@ export const authPlugin = new Elysia()
                 success: false,
                 message: error instanceof Error
                             ? error.message
-                            : await getTranslation(lang, "serverErr")
+                            : ("Hitilafu kwenye seva"")
             }
         }
     })

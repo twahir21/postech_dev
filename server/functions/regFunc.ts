@@ -54,7 +54,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             cacheStatsTracker.recordHit('userCheckCache');
             return {
               success: false,
-              message: await getTranslation(lang, "emailExistsErr")
+              message: (lang, "emailExistsErr")
             };
         }
 
@@ -62,7 +62,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             cacheStatsTracker.recordHit('shopCheckCache');
             return {
               success: false,
-              message: await getTranslation(lang, "shopExistsErr")
+              message: (lang, "shopExistsErr")
             };
           }
 
@@ -81,7 +81,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             userCheckCache.set(`user:${email}`, { exists: true });
             return {
             success: false,
-            message: await getTranslation(lang, "emailExistsErr")
+            message: (lang, "emailExistsErr")
             };
         }
     
@@ -89,7 +89,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             shopCheckCache.set(`shop:${name}`, { exists: true });
             return {
             success: false,
-            message: await getTranslation(lang, "shopExistsErr")
+            message: (lang, "shopExistsErr")
             };
         }
         // verify email
@@ -214,7 +214,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : sanitizeString(await getTranslation(lang, "serverErr"))
+                    : sanitizeString(("Hitilafu kwenye seva""))
         }
     }
 };

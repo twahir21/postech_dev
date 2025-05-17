@@ -1,7 +1,6 @@
 import Elysia, { redirect } from "elysia";
 import { regPost } from "../functions/regFunc";
 import { registerData } from "../functions/security/validators/data";
-import { getTranslation } from "../functions/translation";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { emailVerifications, shops, shopUsers, users } from "../database/schema/shop";
 import { eq } from "drizzle-orm";
@@ -76,7 +75,7 @@ const regPlugin = new Elysia()
             if (!user) {
                 return {
                     success: false,
-                    message: await getTranslation(lang, "userErr"),
+                    message: "Mtumiaji hayupo!",
                 };
             }
 
@@ -91,7 +90,7 @@ const regPlugin = new Elysia()
             if (!shop) {
                 return {
                     success: false,
-                    message: await getTranslation(lang, "shopCreateErr"),
+                    message: "Duka halipo!",
                 };
             }
 
@@ -115,7 +114,7 @@ const regPlugin = new Elysia()
             if (!jwtToken) {
                 return {
                     success: false,
-                    message: await getTranslation(lang, "noToken")
+                    message: "Hakuna tokeni"
                 };
             }
     
@@ -138,7 +137,7 @@ const regPlugin = new Elysia()
                 success: false,
                 message: error instanceof Error
                         ? error.message
-                        : await getTranslation(lang, "serverErr")
+                        : "Hitilafu kwenye seva"
             }
         }
     })

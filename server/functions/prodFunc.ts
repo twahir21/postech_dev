@@ -71,7 +71,7 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
         return {
             success: true,
             data: {name, priceBought, priceSold, stock, minStock, shopId, userId, categoryId, supplierId, unit },
-            message: await getTranslation(lang, "productSuccess")
+            message: (lang, "productSuccess")
         }   
         
     }catch(error){
@@ -79,7 +79,7 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(await getTranslation(lang, "serverErr"))
+                  : sanitizeString(("Hitilafu kwenye seva""))
       }
     }
 }
@@ -184,7 +184,7 @@ export const prodGet = async ({
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(await getTranslation(lang, "serverErr"))
+                  : sanitizeString(("Hitilafu kwenye seva""))
       }
     }
   };
@@ -225,7 +225,7 @@ export const prodDel = async ({userId, shopId, productId, headers}: {userId: str
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(await getTranslation(lang, "serverErr"))
+                  : sanitizeString(("Hitilafu kwenye seva""))
       }
     }
 }
@@ -325,7 +325,7 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
         return {
             success: true,
             data: updatedProduct,
-            message: await getTranslation(lang, "success")
+            message: (lang, "success")
         }
 
     }catch(error){
@@ -333,7 +333,7 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(await getTranslation(lang, "serverErr"))
+                  : sanitizeString(("Hitilafu kwenye seva""))
       }
     }
 }
@@ -463,7 +463,7 @@ export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, h
         success: false,
         message: error instanceof Error
                   ? error.message
-                  : sanitizeString(await getTranslation(lang, "serverErr"))
+                  : "Hitilafu kwenye seva"
       }
     }
 }

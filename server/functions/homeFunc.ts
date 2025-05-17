@@ -14,14 +14,14 @@ export const homeGet = async({ headers }: {headers: headTypes}) => {
                 .where(eq(emailVerifications.used, true));
         return {
             success: true,
-            message: await getTranslation(lang, "greeting")
+            message: (lang, "greeting")
         }
     }catch(error) {
         return {
             success: false,
             message: error instanceof Error
                     ? error.message
-                    :  await getTranslation(lang, "serverErr")
+                    :  ("Hitilafu kwenye seva"")
         }
     }
 }

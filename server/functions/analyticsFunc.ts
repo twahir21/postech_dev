@@ -289,7 +289,7 @@ export const getAnalytics = async ({ userId, shopId, headers }: { userId: string
           success: false,
           message: error instanceof Error
                   ? error.message
-                  : await getTranslation(lang, "serverErr")
+                  : ("Hitilafu kwenye seva"")
         }    
       }
 }
@@ -408,7 +408,7 @@ export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId:
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : await getTranslation(lang, "serverErr")
+                    : ("Hitilafu kwenye seva"")
           }
         }
 }
@@ -455,7 +455,7 @@ export const exportSales = async ({userId, shopId, headers, set } : { shopId: st
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : await getTranslation(lang, "serverErr")
+                    : ("Hitilafu kwenye seva"")
           }
         }
 }
@@ -572,7 +572,7 @@ export const graphFunc = async ({ shopId, userId, headers }: {shopId: string, us
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : getTranslation(lang, "serverErr")
+                    : getTranslation("Hitilafu kwenye seva"")
           }
         }
 }
@@ -642,7 +642,7 @@ export const debtsFunc = async({ userId, shopId, headers }: { userId: string, sh
                 success: false,
                 message: error instanceof Error
                         ? error.message
-                        : getTranslation(lang, "serverErr")
+                        : getTranslation("Hitilafu kwenye seva"")
               }
         }
 }

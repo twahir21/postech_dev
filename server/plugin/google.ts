@@ -3,7 +3,6 @@ import { redirect } from "elysia";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { shops, shopUsers, users } from "../database/schema/shop";
 import { eq } from "drizzle-orm";
-import { getTranslation } from "../functions/translation";
 import { hashPassword } from "../functions/security/hash";
 import { randomBytes } from 'crypto';
 import cookie from "@elysiajs/cookie";
@@ -93,7 +92,7 @@ const googlePlugin = new Elysia()
         const generateUsername = (name: string) => {
           const base = name.trim().split(' ')[0];
           const suffix = Math.floor(Math.random() * 1000);
-          return `${base}'_${suffix}`; // e.g., John_457
+          return `${base}_${suffix}`; // e.g., John_457
         };
         const generatePhone = () => {
           const preffix = '255';
@@ -137,7 +136,7 @@ const googlePlugin = new Elysia()
         if (!user) {
             return {
                 success: false,
-                message: await getTranslation(lang, "userErr"),
+                message: "Mtumiaji hayupo!",
             };
         }
 
@@ -152,7 +151,7 @@ const googlePlugin = new Elysia()
         if (!shop) {
             return {
                 success: false,
-                message: await getTranslation(lang, "shopCreateErr"),
+                message: "Duka lililosajiliwa kwa ajili yako halipo!",
             };
         }
 
@@ -177,7 +176,7 @@ const googlePlugin = new Elysia()
         if (!jwtToken) {
             return {
                 success: false,
-                message: await getTranslation(lang, "noToken")
+                message: "hakuna tokeni, hujaruhusiwa"
             };
         }
   
@@ -224,7 +223,7 @@ const googlePlugin = new Elysia()
         if (!jwtToken) {
             return {
                 success: false,
-                message: await getTranslation(lang, "noToken")
+                message: "hakuna tokeni, hujaruhusiwa"
             };
         }
 

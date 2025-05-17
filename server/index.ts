@@ -2,7 +2,6 @@ import Elysia from "elysia";
 import homePlugin from "./plugin/home";
 import qrCodePlugin from "./plugin/qrCode";
 import regPlugin from "./plugin/registration";
-import { setupI18n } from "./functions/translation";
 import { cors } from "@elysiajs/cors";
 
 import categoriesPlugin from "./plugin/categories";
@@ -30,7 +29,6 @@ const frontendURL = process.env.NODE_ENV  === 'development'
 
 
 // initialize translation before start the server
-await setupI18n();
 new Elysia()
     // use cookie for JWT
     .use(cookie())

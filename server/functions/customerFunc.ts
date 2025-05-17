@@ -107,7 +107,7 @@ export const customerGet = async ({
 
     return {
       success: true,
-      message: await getTranslation(lang, "success"),
+      message: (lang, "success"),
       data: existingCustomer,
       total,
       page,
@@ -120,7 +120,7 @@ export const customerGet = async ({
       success: false,
       message: error instanceof Error
         ? error.message
-        : sanitizeString(await getTranslation(lang, "serverErr"))
+        : sanitizeString(("Hitilafu kwenye seva""))
     };
   }
 };
@@ -155,7 +155,7 @@ return {
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : sanitizeString(await getTranslation(lang, "serverErr"))
+                    : sanitizeString(("Hitilafu kwenye seva""))
         }
       }
 
@@ -192,7 +192,7 @@ export const CustomerDel = async ({ userId, shopId, customerId, headers }: { use
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : sanitizeString(await getTranslation(lang, "serverErr"))
+                    : sanitizeString(("Hitilafu kwenye seva""))
         }
     }
 }
@@ -234,7 +234,7 @@ export const customerUpdate = async ({userId, shopId, customerId, body, headers}
         return {
             success: true,
             data: updatedCustomers,
-            message: await getTranslation(lang, "success")
+            message: (lang, "success")
         }
 
     }catch(error){
@@ -242,7 +242,7 @@ export const customerUpdate = async ({userId, shopId, customerId, body, headers}
             success: false,
             message: error instanceof Error
                     ? error.message
-                    : sanitizeString(await getTranslation(lang, "serverErr"))
+                    : sanitizeString(("Hitilafu kwenye seva""))
         }
     }
 }

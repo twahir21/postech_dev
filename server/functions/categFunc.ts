@@ -13,8 +13,8 @@ export const categPost = async ({ body, headers, shopId, userId }: { body : cate
     // data is already validated
     const lang = headers["accept-language"]?.split(",")[0] || "sw";
     try {
-        const idErr = await getTranslation(lang, "idErr");
-        const categMsg = await getTranslation(lang, "categMsg");
+        const idErr = (lang, "idErr");
+        const categMsg = (lang, "categMsg");
         
     // now extract
     if (!shopId || shopId.length < 5) {
@@ -56,7 +56,7 @@ export const categPost = async ({ body, headers, shopId, userId }: { body : cate
             success: false,
             message: error instanceof Error 
                     ? error.message 
-                    : sanitizeString(await getTranslation(lang, "serverErr"))
+                    : sanitizeString(("Hitilafu kwenye seva""))
         }
     }
 }
@@ -73,14 +73,14 @@ export const categGet = async ({headers, shopId} : {headers: headTypes, shopId: 
         if(allCateg.length === 0) {
             return {
                 success: false,
-                message: sanitizeString(await getTranslation(lang, "notFound")),
+                message: sanitizeString((lang, "notFound")),
                 data: []
             }
         }
 
         return {
             success: true,
-            message: sanitizeString(await getTranslation(lang, "success")),
+            message: sanitizeString((lang, "success")),
             data: allCateg
         }
     } catch (error) {
@@ -88,7 +88,7 @@ export const categGet = async ({headers, shopId} : {headers: headTypes, shopId: 
             success: false,
             message: error instanceof Error 
                     ? error.message 
-                    : sanitizeString(await getTranslation(lang, "serverErr"))
+                    : sanitizeString(("Hitilafu kwenye seva""))
         }
     }
 }
@@ -109,7 +109,7 @@ export const categPut = async ({ body, headers, categoryId, shopId }: { body : c
     if (!categoryId || categoryId.length < 5) {
         return {
             success: false,
-            message: await getTranslation(lang, "idErr")
+            message: (lang, "idErr")
         };
     }
 
@@ -130,13 +130,13 @@ export const categPut = async ({ body, headers, categoryId, shopId }: { body : c
     if (!updateCateg) {
         return {
             success: false,
-            message: await getTranslation(lang, "notFound")
+            message: (lang, "notFound")
         }
     }
 
     return {
         success: true,
-        message: await getTranslation(lang, "update")
+        message: (lang, "update")
     }
 
     } catch (error) {
@@ -144,7 +144,7 @@ export const categPut = async ({ body, headers, categoryId, shopId }: { body : c
             success: false,
             message: error instanceof Error 
                     ? error.message 
-                    : sanitizeString(await getTranslation(lang, "serverErr"))
+                    : sanitizeString(("Hitilafu kwenye seva""))
         }
     }
 }
@@ -159,7 +159,7 @@ export const categDel = async ({ headers, categoryId, shopId }: {headers: headTy
         if (!categoryId || categoryId.length < 5) {
             return {
                 success: false,
-                message: await getTranslation(lang, "idErr")
+                message: (lang, "idErr")
             };
         }
 
@@ -175,20 +175,20 @@ export const categDel = async ({ headers, categoryId, shopId }: {headers: headTy
         if (!categDel) {
             return {
                 success: false,
-                message: sanitizeString(await getTranslation(lang, "notFound"))
+                message: sanitizeString((lang, "notFound"))
             }
         }
 
         return{
             success: true,
-            message: sanitizeString(await getTranslation(lang, "delMsg"))
+            message: sanitizeString((lang, "delMsg"))
         }
     } catch (error) {
         return {
             success: false,
             message: error instanceof Error 
                     ? error.message 
-                    : sanitizeString(await getTranslation(lang, "serverErr"))
+                    : sanitizeString(("Hitilafu kwenye seva""))
         }
     }
 } 

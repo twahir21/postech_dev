@@ -54,7 +54,7 @@ export const genToken = async ({ userId, shopId, headers }: { userId: string, sh
             success: false,
             message: err instanceof Error   
                         ? err.message
-                        : await getTranslation(lang, "serverErr")
+                        : ("Hitilafu kwenye seva"")
         }
     }
 }
@@ -117,7 +117,7 @@ export const checkUSSD = async ({ userId, shopId, headers }: { userId: string, s
             success: false,
             message: err instanceof Error   
                         ? err.message
-                        : await getTranslation(lang, "serverErr")
+                        : ("Hitilafu kwenye seva"")
         }
     }
 }
@@ -197,7 +197,7 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
             success: false,
             message: err instanceof Error   
                         ? err.message
-                        : await getTranslation(lang, "serverErr")
+                        : ("Hitilafu kwenye seva"")
         }
     }
 }
@@ -240,7 +240,7 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
             success: false,
             message: err instanceof Error   
                         ? err.message
-                        : await getTranslation(lang, "serverErr")
+                        : ("Hitilafu kwenye seva"")
         }
     }
 }

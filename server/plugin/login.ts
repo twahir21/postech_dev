@@ -5,7 +5,6 @@ import argon2 from 'argon2'; // For hashing passwords
 import { mainDb } from '../database/schema/connections/mainDb';
 import { users, shopUsers } from '../database/schema/shop';
 import { eq } from 'drizzle-orm';
-import { getTranslation } from '../functions/translation';
 import { sanitizeString } from '../functions/security/xss';
 import { loginData } from '../functions/security/validators/data';
 import { loginCache } from '../functions/utils/caches';
@@ -31,7 +30,7 @@ export const loginPlugin = new Elysia()
             if (!username || !password) {
                 return { 
                     success: false, 
-                    message: await getTranslation(lang, "missingCredentials")
+                    message: "Taarifa ulizoweka sio sahihi"
                 };
             }
     
@@ -43,7 +42,7 @@ export const loginPlugin = new Elysia()
             if (cached && typeof cached === 'object') {
                 return {
                     success: true,
-                    message: `${await getTranslation(lang, "loginSuccess")} ${username}`,
+                    message: `Umefanikiwa kuingia kama ${username}`,
                     ...cached.payload
                 };
             }
@@ -62,7 +61,7 @@ export const loginPlugin = new Elysia()
             if (!user.length) {
                 return { 
                     success: false, 
-                    message: await getTranslation(lang, "loginErr") 
+                    message: "Mtumiaji hayupo!"
                 };
             }
     
@@ -71,7 +70,7 @@ export const loginPlugin = new Elysia()
             // Verify password
             const isValidPassword = await argon2.verify(userData.password, password);
             if (!isValidPassword) {
-                return { success: false, message: await getTranslation(lang, "loginErr") };
+                return { success: false, message: "Taarifa ulizoweka sio sahihi" };
             }
     
             // Fetch associated shopId
@@ -106,7 +105,7 @@ export const loginPlugin = new Elysia()
             if (!token) {
                 return {
                     success: false,
-                    message: await getTranslation(lang, "noToken")
+                    message: "Hakuna tokeni, hujaruhusiwa"
                 };
             }
     
@@ -135,7 +134,7 @@ export const loginPlugin = new Elysia()
     
             return {
                 success: true,
-                message: `${await getTranslation(lang, "loginSuccess")} ${username}`,
+                message: `Umefanikiwa kuingia kama ${username}`,
                 ...payload
             };
         } catch (error) {
@@ -143,7 +142,7 @@ export const loginPlugin = new Elysia()
                 success: false,
                 message: error instanceof Error
                         ? error.message
-                        : await getTranslation(lang, "serverErr")
+                        : "Hitilafu kwenye seva"
             };
         }
     }, {
