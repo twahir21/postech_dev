@@ -46,12 +46,12 @@ const settingsPlugin = new Elysia()
         body: changePasswordData
     })
     
-    .delete("/delete-shop", async ({ jwt, cookie, headers }) => {
+    .delete("/delete-shop", async ({ jwt, cookie }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
         if (!shopId || !userId) return;
 
         return await deleteShop({
-            shopId, userId, headers
+            shopId, userId, cookie
         });
     })
     

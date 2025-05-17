@@ -3,7 +3,6 @@ import { DebtComponentGraph } from "./Debt";
 import { CashDebt } from "./CashDebt";
 import { Salexp } from "./Salexp";
 import { StockComponent } from "./Stock";
-import { fetch } from "~/routes/function/fetchLang";
 
 export const MainGraph =  component$(() => {
   const selected = useSignal<'debts' | 'cash' | 'expenses' | 'stock' | null>(null);

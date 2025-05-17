@@ -1,7 +1,6 @@
 import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
-import { fetch } from "~/routes/function/fetchLang";
 
 export const HomeComponent = component$(() => {
 

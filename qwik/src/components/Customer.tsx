@@ -1,6 +1,5 @@
 import { component$, useStore, $, useComputed$, useContext } from "@builder.io/qwik";
 import { CustomersCrudComponent } from "./CustComp";
-import { fetch } from "~/routes/function/fetchLang";
 import { RefetchContext } from "./context/refreshContext";
 
 export const CustomerComponent =  component$(() => {

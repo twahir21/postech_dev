@@ -1,5 +1,4 @@
 import { component$, useContext, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import { fetch } from "~/routes/function/fetchLang";
 import { RefetchContext } from "./context/refreshContext";
 
 export const RecentProductsTable = component$(() => {

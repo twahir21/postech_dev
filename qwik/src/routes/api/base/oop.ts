@@ -1,4 +1,3 @@
-import { fetch } from "~/routes/function/fetchLang";
 import type { CrudItem, CrudResponse } from "./typeSafe";
 import { env } from "./config";
 
@@ -123,6 +122,23 @@ class CrudService<T extends CrudItem> {
       };
     }
   }
+
+  async deleteAll(): Promise<CrudResponse<void>> {
+    try {
+      const res = await fetch(`${this.baseUrl}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      return await res.json();
+    } catch (err) {
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : "Imeshindwa kufuta taarifa"
+      };
+    }
+  }
+  
 }
 
 export { CrudService };

@@ -1,5 +1,7 @@
 // src/components/SettingsPage.tsx
 import { component$, useSignal, useStore, useResource$, $ } from '@builder.io/qwik';
+import { useNavigate } from '@builder.io/qwik-city';
+import { env } from '~/routes/api/base/config';
 import { CrudService } from '~/routes/api/base/oop';
 
 export const SettingsComponent = component$(() => {
@@ -7,7 +9,7 @@ export const SettingsComponent = component$(() => {
   const newPassword = useSignal('');
   const confirmPassword = useSignal('');
   const isTrial = true;
-  const trialEnds = '2025-04-30';
+  const trialEnds = '30-4-2025';
 
   interface Store {
     shopName?: string;
@@ -20,11 +22,17 @@ export const SettingsComponent = component$(() => {
     isLoading?:boolean;
     isPassword?:boolean;
     isDelete?:boolean;
+    isDelLoading: boolean;
+    modal: {
+      isSuccess: boolean;
+      message: string;
+      isOpen: boolean;
+    }
   }
 
   const store = useStore<Store>({
-    shopName: 'MyPOS Tech',
-    email: 'admin@example.com',
+    shopName: 'Loading ...',
+    email: 'Loading ...',
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
@@ -32,11 +40,18 @@ export const SettingsComponent = component$(() => {
     trialEnds: '2025-04-30', // Consider using a Date object if needed
     isLoading: false,
     isPassword: false,
-    isDelete: false
+    isDelete: false,
+    isDelLoading: false,
+    modal: {
+      isSuccess: false,
+      message: '',
+      isOpen: false
+    }
   });
 
   const showModal = useSignal(false);
   const confirmInput = useSignal('');
+  const navigation = useNavigate();
 
 
 
@@ -51,38 +66,14 @@ export const SettingsComponent = component$(() => {
     const shopApi = new CrudService<shopInfo>("shop");
     
     const result = await shopApi.get();
-    console.log("DATA: ", result);
 
     if (!result.success) {
+      store.isLoading = false; // finishes loading ...
       return;
     }
-    console.log("ShopInfo: ", result.data[0].email.email)
-    // store.email = result.data[0].email;
-    // store.shopName = result.data.shopName;
-    try {
-      store.isLoading = true; // Start loading ...
-      const response = await fetch("http://localhost:3000/shop", {
-        credentials: 'include'
-      });
-  
-      if (!response.ok) {
-        console.error("Imeshindwa kupokea ujumbe unaotakiwa");
-      }
-  
-      const data = await response.json();
-  
-      if (!data.success) {
-        console.log(data.message || "Kuna tatizo");
-      }
-  
-      store.email = data.email.email;
-      store.shopName = data.shopName.shopName;
-    } catch (error) {
-      error instanceof Error ? error : "Imeshindwa kuwasiliana na seva"
-    } finally{
-      store.isLoading = false; // finishes loading ...
-    }
-
+    store.email = result.data[0].email.email;
+    store.shopName = result.data[0].shopName.shopName;
+    store.isLoading = false; // finishes loading ...
   });
 
   const handleSubmit = $(async () => {
@@ -157,46 +148,40 @@ export const SettingsComponent = component$(() => {
   const handleConfirmDelete = $(async () => {
     if (confirmInput.value.trim().toLowerCase() === "nipo tayari kufuta duka") {
       // original delete logic
-      if (store.isDelete) return;
+      if (store.isDelete) return; // prevent multiple reqs
 
       store.isDelete = true;
-      try {
-        const req = await fetch("http://localhost:3000/delete-shop", {
-          credentials: 'include',
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json"
-          },
-        });
-    
-        if (!req.ok) {
-          console.error("Imeshindwa kutuma ombi lako kwa seva");
-        }
-  
-        // const res = await req.json();
-  
-        // console.log(res.message);
-  
-      } finally {
-        store.isDelete = false;
+      store.isDelLoading = true;
+      const deleteApi = new CrudService("delete-shop");
+      const delResult = await deleteApi.deleteAll();
+
+      store.isDelete = false // clear delete flag
+      store.isDelLoading = false
+      showModal.value = false; // close modal
+
+      const frontendURL = env.mode === 'development'
+                          ? env.frontendURL_DEV
+                          : env.frontendURL;
+
+      store.modal = {
+        isOpen: true,
+        isSuccess: delResult.success,
+        message: delResult.message || (delResult.success ? "Umefanikiwa" : "Imeshindwa kufuta duka")
       }
-      showModal.value = false;
-      return true;
-    } else {
-      alert("Andika sahihi: 'nipo tayari kufuta duka'");
-      return false;
+      return navigation(frontendURL);
     }
   });
   
 
   return (
     <div class="p-4 max-w-3xl mx-auto">
-      <h1 class="text-xl font-bold mb-4">⚙️ Settings</h1>
+      <h1 class="text-xl font-bold mb-4">⚙️ Mipangilio</h1>
 
       {/* Shop Info */}
-      <section class="mb-6 bg-white shadow rounded-xl p-4">
-        <h2 class="text-lg font-semibold mb-2">🛍️ Shop Information</h2>
+      <section class="mb-6 bg-gray-100 shadow rounded-xl p-4 border-2 border-gray-600">
+        <h2 class="text-lg font-semibold mb-2">🛍️ Taarifa za duka</h2>
         <div class="space-y-3">
+        <label class="block text-sm font-medium text-gray-700 m-0">Jina la Duka:</label>
           <input
             type="text"
             class="w-full p-2 border rounded"
@@ -204,6 +189,7 @@ export const SettingsComponent = component$(() => {
             value={store.shopName}
             onInput$={(e) => (store.shopName = (e.target as HTMLInputElement).value)}
           />
+          <label class="block text-sm font-medium text-gray-700 m-0">Email (barua pepe):</label>
           <input
             type="email"
             class="w-full p-2 border rounded"
@@ -211,7 +197,7 @@ export const SettingsComponent = component$(() => {
             value={store.email}
             onInput$={(e) => (store.email = (e.target as HTMLInputElement).value)}
           />
-          <button class={`${store.isLoading ? 'bg-gray-400': 'bg-blue-600'} hover:bg-blue-700 text-white px-4 py-2 rounded `}
+          <button class={`${store.isLoading ? 'bg-gray-400': 'bg-gray-600'} hover:bg-gray-700 text-white px-4 py-2 rounded `}
           onClick$={handleSubmit}
           disabled={store.isLoading}
           >
@@ -221,20 +207,20 @@ export const SettingsComponent = component$(() => {
               <div class="inline-flex">
               <div class="loaderCustom"></div>
               </div>
-            : '💾 Save Changes'
+            : '💾 Hifadhi mabadiliko'
             }
           </button>
         </div>
       </section>
 
       {/* Password */}
-      <section class="mb-6 bg-white shadow rounded-xl p-4">
-        <h2 class="text-lg font-semibold mb-2">🔐 Change Password</h2>
+      <section class="mb-6 bg-yellow-50 shadow rounded-xl p-4 border-2 border-yellow-500">
+        <h2 class="text-lg font-semibold mb-2">🔐 Badili Nenosiri</h2>
         <div class="space-y-3">
           <input
             type="password"
             class="w-full p-2 border rounded"
-            placeholder="Current Password"
+            placeholder="Nenosiri ya sasa"
             bind:value={currentPassword}
           />
             {/* Message for current password */}
@@ -246,7 +232,7 @@ export const SettingsComponent = component$(() => {
           <input
             type="password"
             class="w-full p-2 border rounded"
-            placeholder="New Password"
+            placeholder="Nenosiri mpya"
             bind:value={newPassword}
           />
             {/* Message for new password */}
@@ -258,7 +244,7 @@ export const SettingsComponent = component$(() => {
           <input
             type="password"
             class="w-full p-2 border rounded"
-            placeholder="Confirm New Password"
+            placeholder="Hakiki nenosiri mpya"
             bind:value={confirmPassword}
           />
             {/* Message for confirm password */}
@@ -287,7 +273,7 @@ export const SettingsComponent = component$(() => {
               <div class="inline-flex">
               <div class="loaderCustom"></div>
               </div>
-            : '🔒 Update Password'
+            : '🔒 Badili Nenosiri'
             }
           </button>
         </div>
@@ -295,27 +281,27 @@ export const SettingsComponent = component$(() => {
 
 
       {/* Subscription Info */}
-      <section class="mb-6 bg-white shadow rounded-xl p-4">
-        <h2 class="text-lg font-semibold mb-2">💳 Subscription</h2>
+      <section class="mb-6 bg-indigo-50 shadow rounded-xl p-4 border-2 border-indigo-500">
+        <h2 class="text-lg font-semibold mb-2">💳 Malipo ya huduma</h2>
         {isTrial ? (
           <p class="text-sm text-gray-600">
-            You are currently on a <span class="font-bold text-green-600">14-day trial</span>. It expires on{' '}
+            Kwa sasa upo kwenye ofa ya siku <span class="font-bold text-green-600">14 bure</span>. Itaisha {' '}
             <span class="font-semibold">{trialEnds}</span>.
           </p>
         ) : (
           <p class="text-sm text-gray-600">
-            Your subscription is active. Next renewal: <span class="font-semibold">2025-05-01</span>
+            Huduma yako ipo active. Utalipia tena tarehe : <span class="font-semibold">01-05-2025</span>
           </p>
         )}
         <button class="mt-3 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-          🧾 Manage Billing
+          🧾 Angalia vifurushi
         </button>
       </section>
 
       {/* Danger Zone */}
       <section class="bg-red-100 border border-red-400 rounded-xl p-4">
-        <h2 class="text-lg font-semibold text-red-700 mb-2">⚠️ Danger Zone</h2>
-        <p class="text-sm text-red-700 mb-3">Deleting your shop is permanent and cannot be undone.</p>
+        <h2 class="text-lg font-semibold text-red-700 mb-2">⚠️ Eneo Hatari</h2>
+        <p class="text-sm text-red-700 mb-3">Kufuta duka ni moja kwa moja, taarifa zako haziwezi kurudishwa.</p>
         <button class={`${store.isDelete ? 'bg-red-400': 'bg-red-600'} text-white px-4 py-2 rounded hover:bg-red-700`}
         disabled={store.isDelete}
         onClick$={() => showModal.value = true}
@@ -378,13 +364,31 @@ export const SettingsComponent = component$(() => {
                 disabled={confirmInput.value !== 'nipo tayari kufuta duka'}
                 onClick$={handleConfirmDelete}
               >
-                Thibitisha
+                {
+                store.isDelLoading ?             
+                  // Custom Loader
+                  <div class="inline-flex">
+                  <div class="loaderCustom"></div>
+                  </div>
+                : 'Thibitisha'
+                }
               </button>
             </div>
           </div>
         </div>
       )}
 
+        {/* Modal Popup */}
+        {store.modal.isOpen && (
+        <div class="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-neutral-500 z-50">
+          <div class="bg-white p-6 rounded shadow-lg text-center">
+            <p class={store.modal.isSuccess ? 'text-green-600' : 'text-red-600'}>{store.modal.message}</p>
+            <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onClick$={() => (store.modal.isOpen = false)}>
+              Sawa
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

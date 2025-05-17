@@ -1,6 +1,5 @@
 import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import Chart from "chart.js/auto";
-import { fetch } from "~/routes/function/fetchLang";
 
 type SalesData = {
   day: string;

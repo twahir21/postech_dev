@@ -1,4 +1,5 @@
 import { $, component$, useStore } from '@builder.io/qwik';
+import { useNavigate } from '@builder.io/qwik-city';
 import { env } from '~/routes/api/base/config';
 import { CrudService } from '~/routes/api/base/oop';
 
@@ -25,6 +26,8 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
     },
     isLoading: false
   });
+
+  const navigation = useNavigate();
 
   // Real-time validation
   const validateField = $((field: string, value: string) => {
@@ -162,7 +165,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
                             ? env.frontendURL_DEV
                             : env.frontendURL;
 
-        window.location.href = `${frontendURL}/private`; // Redirect to dashboard
+        navigation(`${frontendURL}/private`); // Redirect to dashboard
       
 
         // ✅ Reset state after successful submission

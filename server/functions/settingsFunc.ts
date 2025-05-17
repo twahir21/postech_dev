@@ -119,7 +119,7 @@ export const updatePassword = async ({ shopId, userId, headers, body }: {userId:
     }
 }
 
-export const deleteShop = async ({ shopId, userId, headers, cookie }: {userId: string, shopId: string, headers: headTypes, cookie: Record<string, Cookie<string | undefined>> & Record<string, string>}) => {
+export const deleteShop = async ({ shopId, userId, cookie }: {userId: string, shopId: string,  cookie: Record<string, Cookie<string | undefined>>}) => {
 
     try {
 
