@@ -163,7 +163,7 @@ export const deleteShop = async ({ shopId, userId, cookie }: {userId: string, sh
         `);
         
   
-        // delete the coookie
+        // delete the coookies
         cookie.auth_token.set({
           value: "",
           httpOnly: true,
@@ -172,8 +172,19 @@ export const deleteShop = async ({ shopId, userId, cookie }: {userId: string, sh
           maxAge: 0,
           path: '/',
           domain: process.env.NODE_ENV === 'development' 
-                  ? undefined: ".mypostech.store"
-      });
+                  ? undefined: ".mypostech.store"  
+          });
+
+          cookie.username.set({
+            value: "",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'development' ? false : true,
+            sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
+            maxAge: 0,
+            path: '/',
+            domain: process.env.NODE_ENV === 'development' 
+                    ? undefined: ".mypostech.store"  
+            });
         return {
           success: true,
           message: "Umefanikiwa kufuta duka"
