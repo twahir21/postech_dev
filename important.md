@@ -64,3 +64,9 @@ use new neon AWS af-south-1 (Cape Town, South Africa)	very low latency of about 
 use AWS eu-central-1	(Frankfurt, Germany	) for medium latency of 120ms but low downtime (BEST)
 
 check if your database is not down from https://neonstatus.com/.
+
+
+# Qwik famous libs
+ visit [https://qwik.dev/ecosystem/#libraries] click here. 
+
+ # vercel is now supports bun!

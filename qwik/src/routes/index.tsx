@@ -2,6 +2,8 @@ import { $, component$, useSignal, useStore, useVisibleTask$ } from "@builder.io
 import { Link, type DocumentHead } from "@builder.io/qwik-city";
 import type { ContactTypes } from "./api/base/typeSafe";
 import { contactApi, warmUpApi } from "./api/base/api";
+import { Typewriter } from "~/components/TypeWriter";
+import { FancyIntro } from "~/components/FancyIntro";
 
 export default component$(() => {
 
@@ -286,9 +288,11 @@ export default component$(() => {
         {/* HERO SECTION  */}
         <section id="hero" class="flex items-center min-h-screen px-6 max-w-6xl mx-auto pt-20">
             <div class="w-full md:w-1/2">
-                <h1 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">Boresha Biashara Yako na PosTech</h1>
-                <p class="text-sm sm:text-base md:text-base text-gray-600 mb-6 dark:text-gray-400">
-                Mfumo wa kisasa wa POS ulio na uwezo wa kuboresha na kurahisisha mauzo kwa ku scan special QR Codes hivyo kufanya mahesabu ya biashara kiotomatiki.
+                <h1 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">   
+                  Boresha biashara yako na PosTech
+                </h1>
+              <p class="text-sm sm:text-base md:text-base text-gray-600 mb-6 dark:text-gray-400">
+                  <Typewriter text="Mfumo wa kisasa wa POS ulio na uwezo wa kuboresha na kurahisisha mauzo kwa ku scan special QR Codes hivyo kufanya mahesabu ya biashara kiotomatiki." speed={80} />
                 </p>
                 <div class="flex space-x-4">
                 <Link href= '/auth?reg=true' class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base">Anza Kutumia</Link>
@@ -299,13 +303,7 @@ export default component$(() => {
 
         {/* ABOUT US  */}
         <section id="about" class="flex items-center min-h-screen px-6 mx-auto bg-gray-300 dark:bg-gray-600">
-            <div class="w-full md:w-1/2 ml-auto text-right">
-            <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">Kuhusu PosTech</h2>
-            <p class="text-sm sm:text-base md:text-base text-gray-600 dark:text-gray-300">
-                PosTech ni mfumo wa kisasa wa Point-of-Sale uliotengenezwa ili kurahisisha shughuli za biashara hasa mauzo na utunzaji wa taarifa za kibiashara kwa kufanya
-                uchanganuzi wa faida, usimamizi wa mauzo na manunuzi, na shughuli zisizo na mashaka, tunawasaidia wajasiriamali kufanikiwa.
-            </p>
-            </div>
+          <FancyIntro />
         </section>
 
         {/* WHY CHOOSE US  */}
