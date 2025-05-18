@@ -1,4 +1,4 @@
-import { component$, useStore, $, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useStore, $, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 import { useNavigate } from "@builder.io/qwik-city";
 import { HomeComponent } from "~/components/Home";
 import { ProductComponent } from "~/components/Products";
@@ -13,6 +13,7 @@ import { SettingsComponent } from "~/components/Settings";
 import { MainGraph } from "~/components/reports/MainGraph";
 import { OthersComponent } from "~/components/Others";
 import { CrudService } from "../api/base/oop";
+import { useAuthLoader } from "../layout";
 
 
 export default component$(() => {
@@ -48,14 +49,22 @@ export default component$(() => {
     if (window.innerWidth < 768) store.isSidebarOpen = false; // Close on mobile
   });
 
+  const fetchUsername = useVisibleTask$(async () => {
+    const getNameApi = new CrudService<{ id?: string; username: string}>("me");
+    const getName = await getNameApi.get();
+    if (!getName.success) return
+  })
 
+  const usernameData = useAuthLoader(); // data from SSR cookie (secured!)
 
   // Load selected language from localStorage when component is visible
-  useVisibleTask$(async () => {
-      const getNameApi = new CrudService<{ id?: string; username: string}>("me");
-      const getName = await getNameApi.get();
-      if (!getName.success) return;
-      const username = getName.data[0].username || "Mgeni";
+  useTask$(() => {
+      let username = usernameData.value.username;
+      if (!username) {
+        username = "Mgeni"
+        fetchUsername;
+      }
+
       // Utility function to capitalize the first letter of each word
     const capitalizeWords = (username: string) => {
       return username
