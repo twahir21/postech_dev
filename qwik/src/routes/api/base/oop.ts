@@ -106,6 +106,40 @@ class CrudService<T extends CrudItem> {
     }
   }
 
+    async updateById(data: Partial<T>, id: string): Promise<CrudResponse<T>> {
+    try {
+      const res = await fetch(`${this.baseUrl}/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+
+      return await res.json();
+    } catch (err) {
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : "Imeshindwa ku-update taarifa"
+      };
+    }
+  }
+    async delete(id: string): Promise<CrudResponse<void>> {
+    try {
+      const res = await fetch(`${this.baseUrl}/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      return await res.json();
+    } catch (err) {
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : "Imeshindwa kufuta taarifa"
+      };
+    }
+  }
 
   async deleteAll(): Promise<CrudResponse<void>> {
     try {

@@ -1,5 +1,6 @@
 import { component$, useSignal, useStore, $, useTask$ } from '@builder.io/qwik';
 import { format } from 'date-fns';
+import { CrudService } from '~/routes/api/base/oop';
 
 interface Sale {
   name: string;
@@ -40,7 +41,10 @@ export const SalesComponent = component$(() => {
     }
 
     try {
-      console.log(params);
+      const newApiSales = new CrudService(`sales?${params}`);
+      const salesGetData = await newApiSales.get();
+
+      if (!salesGetData.success) return;
       const res = await fetch(`http://localhost:3000/sales?${params}`, {
         credentials: 'include'
       });

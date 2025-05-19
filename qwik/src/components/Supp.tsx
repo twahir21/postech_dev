@@ -227,7 +227,9 @@ export const SuppCrudComponent =  component$(() => {
           class="px-4 py-2 bg-gray-700 text-white rounded"
           onClick$={async () => {
             const editSupplierApi = new CrudService<Supplier>("suppliers");
-            const result = await editSupplierApi.update(selectedSupplier.value!.id, selectedSupplier.value!);
+            const selectedSuppId = selectedSupplier.value?.id
+            if (!selectedSuppId) return;
+            const result = await editSupplierApi.updateById(selectedSupplier.value!, selectedSuppId);
 
             if (!result.success) {
               modal.isOpen = true,

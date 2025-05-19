@@ -24,10 +24,13 @@ export const prodPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
-
+        console.log("Body: ", body)
 
         if (!(body as productTypes).categoryId || !(body as productTypes).supplierId) {
-            throw new Error('Category ID and Supplier ID are required.');
+            return {
+                success: false,
+                message: "Category Id and supplier Id zinatakiwa"
+            }
         }
 
         return await prodPost({ 

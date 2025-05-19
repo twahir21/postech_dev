@@ -78,28 +78,21 @@ export const SettingsComponent = component$(() => {
 
   const handleSubmit = $(async () => {
     if (store.isLoading) return;
-    store.isLoading = true;
-    try {
-      const payload = {
+      store.isLoading = true;
+          const payload = {
         email: store.email,
         shopName: store.shopName
       };
-  
-      const req = await fetch("http://localhost:3000/shop", {
-        credentials: 'include',
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-  
-      if (!req.ok) {
-        console.error("Imeshindwa kutuma ombi lako kwa seva");
+      interface payloadEdit { id?: string; email: string; shopName: string}
+      const editShopAPI = new CrudService<payloadEdit>("shop");
+      const editShopData = await editShopAPI.update(payload);
+      store.isLoading = false; //stop loading ...
+
+      store.modal = {
+        isOpen: true,
+        isSuccess: editShopData.success,
+        message: editShopData.message || (editShopData.success ? "Umefanikiwa ku-update" : "Tatizo limetokea wakati wa kubadili taarifa za duka")
       }
-    } finally {
-      store.isLoading = false;
-    }
   });
 
 

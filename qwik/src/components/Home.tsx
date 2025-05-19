@@ -1,6 +1,7 @@
 import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
+import { CrudService } from "~/routes/api/base/oop";
 
 export const HomeComponent = component$(() => {
 
@@ -10,21 +11,29 @@ export const HomeComponent = component$(() => {
     expenses: "0" as string,
     purchases: "0" as string,
     profitableProductname: '' as string,
-    profitableProductProfit: '' as string,
-    mostFreqPrd: '' as string,
-    mostFreqPrdquantity: '' as string,
-    mostPrdQuantity: '' as string,
-    mostPrdQuantitytimes: '' as string,
+    profitableProductProfit: '0' as string,
+    mostFreqPrd: '0' as string,
+    mostFreqPrdquantity: '0' as string,
+    mostPrdQuantity: '0' as string,
+    mostPrdQuantitytimes: '0' as string,
     longDebt: "" as string,
-    amount: '' as string,
+    amount: '0' as string,
     mostDebt: '' as string,
-    amountDebt: '' as string,
+    amountDebt: '0' as string,
     daysDebt: '' as string,
     lowestPrdName: '' as string,
     lowestPrdStock: 0 as number
   });
   const netSalesStore = useStore<{ day: string; netSales: number }[]>([]);
   const isGraphReady = useSignal(false);
+
+  useVisibleTask$(async () => {
+    const analyticsApi = new CrudService("analytics");
+    const analyticsData = await analyticsApi.get();
+
+    console.log("Analytics: ", analyticsData);
+
+  })
 
 
   useVisibleTask$(async() => {

@@ -3,7 +3,6 @@ import { Link, type DocumentHead } from "@builder.io/qwik-city";
 import type { ContactTypes } from "./api/base/typeSafe";
 import { contactApi, warmUpApi } from "./api/base/api";
 import { Typewriter } from "~/components/TypeWriter";
-import { FancyIntro } from "~/components/FancyIntro";
 
 export default component$(() => {
 
@@ -303,7 +302,13 @@ export default component$(() => {
 
         {/* ABOUT US  */}
         <section id="about" class="flex items-center min-h-screen px-6 mx-auto bg-gray-300 dark:bg-gray-600">
-          <FancyIntro />
+          <div class="w-full md:w-1/2 ml-auto text-right">
+              <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">Kuhusu PosTech</h2>
+              <p class="text-sm sm:text-base md:text-base text-gray-600 dark:text-gray-300">
+                  PosTech ni mfumo wa kisasa wa Point-of-Sale uliotengenezwa ili kurahisisha shughuli za biashara hasa mauzo na utunzaji wa taarifa za kibiashara kwa kufanya
+                  uchanganuzi wa faida, usimamizi wa mauzo na manunuzi, na shughuli zisizo na mashaka, tunawasaidia wajasiriamali kufanikiwa.
+              </p>
+          </div>        
         </section>
 
         {/* WHY CHOOSE US  */}
