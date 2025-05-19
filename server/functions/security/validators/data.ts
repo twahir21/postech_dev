@@ -97,7 +97,28 @@ export const prodData = t.Object({
                 message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya bilioni 2"
             }
         }
-    })
+    }),
+    categoryId: t.String({
+        minLength: 1,
+        maxLength: 70,
+        error() {
+            return {
+                success: false,
+                message: "ID haliwezi kuwa na herufi chini ya 3 na juu ya 40"
+            }
+        }
+    }),
+
+    supplierId: t.String({
+        minLength: 1,
+        maxLength: 70,
+        error() {
+            return {
+                success: false,
+                message: "ID haliwezi kuwa na herufi chini ya 3 na juu ya 40"
+            }
+        }
+    }),
 })
 
 export const QrPostData = t.Object({

@@ -77,8 +77,11 @@ export const ProductComponent = component$(() => {
       return globalStore.categoriesData
     } catch (error) {
       store.category = [];
-      console.error("Error: ", error);
-      store.modal = { isOpen: true, message: 'Tatizo limejitokeza', isSuccess: false };
+      store.modal = { 
+        isOpen: true, 
+        message: error instanceof Error ? error.message : 'Tatizo limejitokeza', 
+        isSuccess: false 
+      };
       return []; // Return empty array in case of an error
     }
   });
@@ -95,9 +98,12 @@ export const ProductComponent = component$(() => {
         return globalStore.supplierData;
       } catch (error) {
         store.supplier = [];
-        console.error("Error: ", error);
-        store.modal = { isOpen: true, message: 'Tatizo limejitokeza', isSuccess: false };
-        return []; // Return empty array in case of an error
+        store.modal = { 
+          isOpen: true, 
+          message: error instanceof Error ? error.message : 'Tatizo limejitokeza', 
+          isSuccess: false 
+        };
+      return []; // Return empty array in case of an error
       }
     });  
 
@@ -155,7 +161,7 @@ export const ProductComponent = component$(() => {
         categoryId: store.category[0]?.id, // Use ID instead of full object
         supplierId: store.supplier[0]?.id,
       };
-    
+      console.log(productPayload, " product payload")
       // Send data to backend
 
       const response = await fetch('http://localhost:3000/products', {
@@ -177,9 +183,12 @@ export const ProductComponent = component$(() => {
       store.modal = { isOpen: true, message: resData.message || 'Umefanikiwa', isSuccess: true };
   
     } catch (error) {
-      console.error('Error submitting form:', error);
-      store.modal = { isOpen: true, message: 'Tatizo limejitokeza', isSuccess: false };
-    } finally {
+      store.modal = { 
+        isOpen: true, 
+        message: error instanceof Error ? error.message : 'Tatizo limejitokeza', 
+        isSuccess: false 
+      };
+      } finally {
       store.isLoading = false; // end loading ...
     }
   });

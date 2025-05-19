@@ -35,7 +35,6 @@ export const fetchSuppliers = async () => {
       }))
       : [];  // 
     } catch (error) {
-      console.error("Fetch error:", error);
       return [];
     }
 };
@@ -60,7 +59,6 @@ export const fetchCategories = async () => {
     }))
     : [];  // 
     } catch (error) {
-      console.error("Fetch error:", error);
       return [];
     }
 };

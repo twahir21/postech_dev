@@ -13,14 +13,14 @@ export interface registerRequest {
 }
 
 export interface productTypes {
-    name?: string;
-    priceBought?: number;
-    priceSold?: number;
-    stock?: number;
-    minStock?: number;
-    unit?: string;
-    supplierId?: string;
-    categoryId?: string;
+    name: string;
+    priceBought: number;
+    priceSold: number;
+    stock: number;
+    minStock: number;
+    unit: string;
+    supplierId: string;
+    categoryId: string;
 }
 
 export interface headTypes {

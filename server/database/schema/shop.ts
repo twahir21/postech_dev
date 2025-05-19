@@ -7,7 +7,8 @@ import {
     uniqueIndex, 
     index,
     boolean,
-    doublePrecision
+    doublePrecision,
+    decimal
   } from "drizzle-orm/pg-core";
 
 
@@ -88,7 +89,7 @@ import {
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
     categoryId: uuid("category_id").references(() => categories.id, { onDelete: "set null" }),
-    priceSold: integer("price_sold").notNull(),
+    priceSold: decimal("price_sold", { precision: 15, scale: 2}).notNull(), // is string but store up to 999 trillion and support USD dollar
     stock: doublePrecision("stock").notNull().default(0),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     supplierId: uuid("supplier_id").notNull().references(() => suppliers.id, { onDelete: "cascade" }),
@@ -111,8 +112,8 @@ import {
     supplierId: uuid("supplier_id").notNull().references(() => suppliers.id, { onDelete: "cascade" }),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     quantity: doublePrecision("quantity").notNull().default(0), // Amount added to stock
-    priceBought: integer("price_bought").notNull(), // Cost price per unit
-    totalCost: integer("total_cost").notNull().default(0), // quantity * priceBought
+    priceBought: decimal("price_bought", { precision: 15, scale: 2}).notNull(), // Cost price per unit
+    totalCost: decimal("total_cost", { precision: 15, scale: 2}).notNull().default("0"), // quantity * priceBought
     purchaseDate: timestamp("purchase_date").defaultNow(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   }, (table) => ({
@@ -128,7 +129,7 @@ import {
     supplierId: uuid("supplier_id").notNull().references(() => suppliers.id),
     productId: uuid("product_id").notNull().references(() => products.id, {onDelete: "cascade"}),
     shopId: uuid("shop_id").notNull().references(() => shops.id),
-    price: integer("price").notNull(),
+    price: decimal("price", { precision: 15, scale: 2}).notNull(),
     dateAdded: timestamp("date_added").defaultNow(),
 }, (table) => ({
     uniqueSupplierProduct: uniqueIndex("unique_supplier_product").on(table.supplierId, table.productId, table.shopId),
@@ -143,9 +144,9 @@ import {
     id: uuid("id").defaultRandom().primaryKey(),
     productId: uuid("product_id").notNull().references(() => products.id, {onDelete: "cascade"}),
     quantity: doublePrecision("quantity").notNull().default(0),
-    priceSold: integer("price_sold").notNull(), // this is mandatory for calculating total price
+    priceSold: decimal("price_sold", {precision: 15, scale: 2}).notNull(), // this is mandatory for calculating total price
     // total_price and net_price can be computed on the fly in queries
-    totalSales: integer("total_sales").notNull(),
+    totalSales: decimal("total_sales", { precision: 15, scale: 2}).notNull(),
     discount: doublePrecision("discount").notNull().default(0),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     saleType: text("sale_type").notNull().default("cash"),
@@ -161,8 +162,8 @@ import {
   export const debts = pgTable("debts", {
     id: uuid("id").defaultRandom().primaryKey(),
     customerId: uuid("customer_id").notNull().references(() => customers.id, { onDelete: "cascade" }),
-    totalAmount: integer("total_amount").notNull(),
-    remainingAmount: integer("remaining_amount").notNull(),
+    totalAmount: decimal("total_amount", { precision: 15, scale: 2}).notNull(),
+    remainingAmount: decimal("remaining_amount", { precision: 15, scale: 2}).notNull(),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     lastPaymentDate: timestamp("last_payment_date"),
     createdAt: timestamp("created_at").defaultNow(),
@@ -177,7 +178,7 @@ import {
     id: uuid("id").defaultRandom().primaryKey(),
     debtId: uuid("debt_id").references(() => debts.id,{onDelete: "cascade"}),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
-    amountPaid: integer("amount_paid").notNull(),
+    amountPaid: decimal("amount_paid", { precision: 15, scale: 2}).notNull(), 
     paymentDate: timestamp("payment_date").defaultNow(),
   });
   
@@ -215,7 +216,7 @@ import {
   export const expenses = pgTable("expenses", {
     id: uuid("id").defaultRandom().primaryKey(),
     description: text("description").notNull(),
-    amount: integer("amount").notNull(),
+    amount: decimal("amount", { precision: 15, scale: 2}).notNull(),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     date: timestamp("date").defaultNow(),
     createdAt: timestamp("created_at").defaultNow(),
