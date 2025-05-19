@@ -105,7 +105,7 @@ export const QrPdf = component$(() => {
             <div class="loaderCustom"></div>
           </div>
         ) : (
-          'Generate QR Codes'
+          'Tengeneza QR Codes'
         )}
       </button>
 

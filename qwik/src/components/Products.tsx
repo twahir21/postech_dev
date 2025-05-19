@@ -3,6 +3,8 @@ import { SupplierComponent } from './Supplier';
 import { QrPdf } from './QRPdf';
 import { fetchCategories, fetchSuppliers, globalStore } from '~/routes/function/helpers';
 import { RefetchContext } from './context/refreshContext';
+import { CrudService } from '~/routes/api/base/oop';
+import { swahiliLabels, swahiliPlaceholders } from '~/routes/api/base/forms';
 
 interface Product {
   name: string;
@@ -161,21 +163,25 @@ export const ProductComponent = component$(() => {
         categoryId: store.category[0]?.id, // Use ID instead of full object
         supplierId: store.supplier[0]?.id,
       };
-      console.log(productPayload, " product payload")
       // Send data to backend
-
-      const response = await fetch('http://localhost:3000/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productPayload),
-        credentials: 'include',
-      });
+      interface prdPayload {   
+        id?: string; 
+        name: string;
+        priceSold: number;
+        stock: number;
+        minStock: number;
+        priceBought: number;
+        unit: string;
+        categoryId: string;
+        supplierId: string;
+      }
+      const newCrudPrd = new CrudService<prdPayload>("products");
+      const resData = await newCrudPrd.create(productPayload);
 
       qrCodeRefetch.value = true;
-      const resData = await response.json();
   
       // Check response
-      if (!response.ok || !resData.success) { 
+      if (!resData.success) { 
         store.modal = { isOpen: true, message: resData.message || 'Tatizo limejitokeza', isSuccess: false };
         return;
       }
@@ -214,7 +220,7 @@ export const ProductComponent = component$(() => {
             class="border p-2 rounded w-full"
             onChange$={(e) => handleInputChange('category', (e.target as HTMLSelectElement).value)}
           >
-            <option value="">Select Category</option>
+            <option value="">-- Chagua Kategoria --</option>
             {store.category.length > 0 ? (
               store.category.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -222,7 +228,7 @@ export const ProductComponent = component$(() => {
                 </option>
               ))
             ) : (
-              <option disabled>No Categories Found</option>
+              <option disabled>Hakuna Kategoria iliyopatikana</option>
             )}
           </select>
 
@@ -231,7 +237,7 @@ export const ProductComponent = component$(() => {
             class="border p-2 rounded w-full"
             onChange$={(e) => handleInputChange('supplier', (e.target as HTMLSelectElement).value)}
           >
-            <option value="">Select Supplier</option>
+            <option value="">-- Chagua Msambazaji --</option>
             {store.supplier.length > 0 ? (
               store.supplier.map((supplier) => (
                 <option key={supplier.id} value={supplier.id}>
@@ -239,31 +245,45 @@ export const ProductComponent = component$(() => {
                 </option>
               ))
             ) : (
-              <option disabled>No Supplier Found</option>
+              <option disabled>Hakuna Msambazaji aliyepatikana</option>
             )}
           </select>
 
-          {/* Product Inputs */}
-          {Object.keys(store.product).map((key) => (
-            <input
-              key={key}
-              class="border p-2 rounded w-full"
-              placeholder={`Product ${key.charAt(0).toUpperCase() + key.slice(1)}`}
-              type={key === 'priceSold' || key === 'stock' || key === 'minStock' ? 'number' : 'text'}
-              onInput$={(e) => handleNestedInputChange('product', key, (e.target as HTMLInputElement).value)}
-            />
-          ))}
 
-          {/* Purchases Inputs */}
-          {Object.keys(store.purchases).map((key) => (
+        {/* Product Inputs */}
+        {Object.keys(store.product).map((key) => (
+          <div class="mb-1" key={key}>
+            <label class="block mb-1 font-semibold text-sm text-gray-600">
+              {swahiliLabels.product[key as keyof typeof swahiliLabels.product]}
+            </label>
             <input
-              key={key}
               class="border p-2 rounded w-full"
-              placeholder={`Purchases ${key.charAt(0).toUpperCase() + key.slice(1)}`}
-              type={key === 'priceBought' ? 'number' : 'text'}
-              onInput$={(e) => handleNestedInputChange('purchases', key, (e.target as HTMLInputElement).value)}
+              placeholder={swahiliPlaceholders.product[key as keyof typeof swahiliPlaceholders.product]}
+              type={key === 'priceSold' || key === 'stock' || key === 'minStock' ? 'number' : 'text'}
+              onInput$={(e) =>
+                handleNestedInputChange('product', key, (e.target as HTMLInputElement).value)
+              }
             />
-          ))}
+          </div>
+        ))}
+
+        {/* Purchases Inputs */}
+        {Object.keys(store.purchases).map((key) => (
+          <div class="mb-1" key={key}>
+            <label class="block mb-1 font-semibold text-sm text-gray-600">
+              {swahiliLabels.purchases[key as keyof typeof swahiliLabels.purchases]}
+            </label>
+            <input
+              class="border p-2 rounded w-full"
+              placeholder={swahiliPlaceholders.purchases[key as keyof typeof swahiliPlaceholders.purchases]}
+              type={key === 'priceBought' ? 'number' : 'text'}
+              onInput$={(e) =>
+                handleNestedInputChange('purchases', key, (e.target as HTMLInputElement).value)
+              }
+            />
+          </div>
+        ))}
+
         </div>
 
         {/* Submit Button */}

@@ -3,6 +3,7 @@ import { sanitizeNumber, sanitizeString } from "./security/xss";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { debts, expenses, products, purchases, sales, supplierPriceHistory } from "../database/schema/shop";
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
+import { calculateTotal, formatFloatToFixed } from "./security/money";
 
 // implementing crud for products 
 export const prodPost = async ({ body, headers, shopId, userId, supplierId, categoryId }: {body: productTypes, headers: headTypes, shopId: string, userId: string, categoryId: string, supplierId: string}) => {
@@ -20,13 +21,11 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
         unit = sanitizeString(unit);
 
 
-        // priceBought
-
         // now save to database to products
         const [insertedProduct] = await mainDb.insert(products).values({
             name,
             categoryId,
-            priceSold: parseFloat(priceSold.toString()),
+            priceSold: formatFloatToFixed(priceSold),  // convert some data types to match that of database
             stock,
             supplierId,
             shopId,
@@ -34,16 +33,13 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
             unit,
           }).returning({ id: products.id });
           
-          if (!insertedProduct) {
-            throw new Error("Hakuna bidhaa kwa jina hili");
-          }
-          
           const productId = insertedProduct.id;
 
-
-
           if (!insertedProduct || !insertedProduct.id) {
-            throw new Error("Hakuna bidhaa kwa jina hili");
+            return {
+              success: false,
+              message: "Hakuna bidhaa kwa jina hili"
+            }
           }
 
 
@@ -53,8 +49,8 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
             productId: productId,
             shopId,
             quantity: stock,
-            priceBought,
-            totalCost: priceBought * stock,
+            priceBought: formatFloatToFixed(priceBought),
+            totalCost: calculateTotal(String(priceBought), stock)
         });
 
         // insert supplier price history
@@ -62,7 +58,7 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
             supplierId,
             productId: productId,
             shopId,
-            price: priceBought
+            price: formatFloatToFixed(priceBought)
         })
 
         return {
@@ -270,7 +266,7 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
             minStock,
             unit,
             status: sanitizedStock <= 0 ? 'finished' : 'available', // auto-update status
-            priceSold,
+            priceSold: formatFloatToFixed(priceSold),
             updatedAt: new Date(),
             isQRCode: false
             
@@ -279,13 +275,13 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
         // purchases
         await mainDb.update(purchases).set({
             quantity: sanitizedStock,
-            priceBought,
-            totalCost: priceBought * sanitizedStock,
+            priceBought: formatFloatToFixed(priceBought),
+            totalCost: calculateTotal(String(priceBought), sanitizedStock)
 
         }).where(eq(purchases.productId, productId));
 
         await mainDb.update(supplierPriceHistory).set({
-            price: priceBought
+            price: formatFloatToFixed(priceBought)
         }).where(eq(supplierPriceHistory.productId, productId));
 
         // set isQrCode to false
@@ -356,7 +352,7 @@ export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, h
       case 'expenses':
         await mainDb.insert(expenses).values({
           description,
-          amount: calculatedTotal,
+          amount: formatFloatToFixed(calculatedTotal),
           shopId
         });
     
@@ -398,8 +394,8 @@ export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, h
           await mainDb.insert(sales).values({
             productId,
             quantity,
-            priceSold,
-            totalSales: calculatedTotal,
+            priceSold: formatFloatToFixed(priceSold),
+            totalSales: formatFloatToFixed(calculatedTotal),
             discount,
             shopId,
             saleType: "cash",
@@ -408,8 +404,8 @@ export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, h
         } else {
           await mainDb.insert(debts).values({
             customerId,
-            totalAmount: calculatedTotal,
-            remainingAmount: calculatedTotal,
+            totalAmount: formatFloatToFixed(calculatedTotal),
+            remainingAmount: formatFloatToFixed(calculatedTotal),
             shopId,
           });
         }
@@ -432,8 +428,8 @@ export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, h
           supplierId,
           shopId,
           quantity,
-          priceBought,
-          totalCost: calculatedTotal
+          priceBought: formatFloatToFixed(priceBought),
+          totalCost: formatFloatToFixed(calculatedTotal)
         });
     
         return {
