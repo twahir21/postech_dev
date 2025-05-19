@@ -27,20 +27,14 @@ export async function generateQRCodeWithLogo(data: string, logoPath: string, out
 
         return {
             success: true,
-            message: `QR Code generated successfully at path ${outputPath}`
+            message: `QR Code imetengenezwa katika njia ${outputPath}`
         }
     } catch (error) {
-        console.error("Error generating QR Code with Logo:", error);
-        if (error instanceof Error) {
-            return {
-                success: false,
-                message: error.message
-            }
-        }else{
-            return {
-                success: false,
-                message: "Error while generating QR Code."
-            }
+        return {
+            success: false,
+            message: error instanceof Error 
+                        ? error.message
+                        : "Tatizo kwenye seva wakati wa kutengeneza QR Code"
         }
     }
 }

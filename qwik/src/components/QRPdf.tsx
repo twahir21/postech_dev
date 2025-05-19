@@ -44,14 +44,18 @@ export const QrPdf = component$(() => {
         method: 'GET',
         credentials: 'include',
       });
+      const resultClone = response.clone() // ili tuweze kuisoma mara mbili json and blob
+      const result = await response.json();
 
       if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.message || 'Failed to generate QR codes.');
+        return {
+          success: false,
+          message: result.message || "Seva imeshindwa kutengeneza QR Code"
+        }
       }
 
       // Trigger download of the zip file
-      const blob = await response.blob();
+      const blob = await resultClone.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -63,7 +67,7 @@ export const QrPdf = component$(() => {
       // Show success message
       store.modal = {
         isOpen: true,
-        message: 'QR codes imetengenezwa kwa mafanikio na zipu imeshushwa.',
+        message: result.message || 'QR codes imetengenezwa kwa mafanikio na zipu imeshushwa.',
         isSuccess: true,
       };
     } catch (error) {

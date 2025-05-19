@@ -1,8 +1,9 @@
 import jwt from "@elysiajs/jwt";
 import Elysia from "elysia";
 import { mainDb } from "../database/schema/connections/mainDb";
-import { debts, debtPayments, products, purchases, sales } from "../database/schema/shop";
+import { debts, products, purchases, sales } from "../database/schema/shop";
 import { eq, sql } from "drizzle-orm";
+import { calculateTotal, formatFloatToFixed } from "../functions/security/money";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -13,7 +14,7 @@ const automateTasks = new Elysia()
     }))
     .get("/scan-qrcode", async ({ query }) => {
         try {
-                   // Extract & parse values
+        // Extract & parse values
         const {
             priceSold, shopId, productId, userId, quantity, saleType,
             discount, customerId, description, amount, supplierId, priceBought
@@ -38,8 +39,8 @@ const automateTasks = new Elysia()
                     quantity: parsedQuantity,
                     discount: parsedDiscount,
                     shopId,
-                    priceSold: parsedPriceSold,
-                    totalSales: sql`${parsedQuantity} * ${parsedPriceSold}`, // ✅ Fixed
+                    priceSold: formatFloatToFixed(parsedPriceSold),
+                    totalSales: calculateTotal(String(parsedPriceSold), parsedQuantity),
                     saleType,
                     customerId
                 });
@@ -54,7 +55,12 @@ const automateTasks = new Elysia()
                 break;
 
             case "debt":
-                if (!customerId) throw new Error("Customer ID is required for debt sales.");
+                if (!customerId) {
+                    return {
+                        success: false,
+                        message: "ID ya mteja lazima iwepo!"
+                    }
+                };
 
                 // ✅ Insert into debts table
                 const [{ id: debtId }] = await mainDb.insert(debts)
@@ -72,7 +78,7 @@ const automateTasks = new Elysia()
                     quantity: parsedQuantity,
                     discount: parsedDiscount,
                     shopId,
-                    priceSold: parsedPriceSold,
+                    priceSold: formatFloatToFixed(parsedPriceSold),
                     totalSales: sql`${parsedQuantity} * ${parsedPriceSold}`,
                     saleType: "debt",
                     customerId
@@ -81,7 +87,12 @@ const automateTasks = new Elysia()
                 break;
 
             case "purchases":
-                if (!supplierId || !parsedPriceBought) throw new Error("Missing supplierId or priceBought for purchase");
+                if (!supplierId || !parsedPriceBought) {
+                    return {
+                        success: false,
+                        message: "ID ya supplier na bei ya kununua ni lazima"
+                    }
+                }
 
                 // ✅ Insert into purchases table
                 await mainDb.insert(purchases).values({
@@ -89,7 +100,7 @@ const automateTasks = new Elysia()
                     supplierId,
                     shopId,
                     quantity: parsedQuantity,
-                    priceBought: parsedPriceBought,
+                    priceBought: formatFloatToFixed(parsedPriceBought),
                     totalCost: sql`${parsedPriceBought} * ${parsedQuantity}`,
                 });
 
