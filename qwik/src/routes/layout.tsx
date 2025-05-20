@@ -75,6 +75,7 @@ export default component$(() => {
   const qrCodeRefetch =  useSignal(false);
   const supplierRefetch = useSignal(false);
   const categoryRefetch = useSignal(false);
+  const refetchAnalytics = useSignal(false);
 
   // Provide all signals as a grouped context
   useContextProvider(RefetchContext, {
@@ -84,11 +85,8 @@ export default component$(() => {
     qrCodeRefetch,
     supplierRefetch,
     categoryRefetch,
+    refetchAnalytics
   });
-
-
-
-
 
   return <Slot />;
 });

@@ -9,6 +9,7 @@ export interface RefetchFlags {
   qrCodeRefetch: Signal<boolean>;
   supplierRefetch: Signal<boolean>;
   categoryRefetch: Signal<boolean>;
+  refetchAnalytics: Signal<boolean>;
 
   // Add more flags as needed
 }
