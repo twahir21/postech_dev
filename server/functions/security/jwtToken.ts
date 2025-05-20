@@ -57,13 +57,13 @@ export function isDecodedToken(token: unknown): token is DecodedToken {
       )
     );
 
-    if(isAvaible.length === 0){
-      console.log("hit")
-      return {
-        success: false,
-        message: "Mtumiaji hayupo!"
-      }
-    }
+    // if(isAvaible.length === 0){
+    //   console.log("hit")
+    //   return {
+    //     success: false,
+    //     message: "Mtumiaji hayupo!"
+    //   }
+    // }
   
     // ✅ Now fully type-safe
     return { userId, shopId}

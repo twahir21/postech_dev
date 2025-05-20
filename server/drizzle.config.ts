@@ -8,7 +8,7 @@ export default defineConfig({
   dbCredentials: {
     url:
       process.env.NODE_ENV === 'development'
-        ? process.env.NEON_URL_DEV!
+        ? process.env.NEON_URL!
         : process.env.NEON_URL!,
   },
 });
