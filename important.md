@@ -72,3 +72,17 @@ check if your database is not down from https://neonstatus.com/.
  # vercel is now supports bun!
 
  # always use Promise.all instead of async await for many promises like fetching different datas in database for max speed
+
+  # most big tech companies use this format
+ 1. mvp website
+  - then make WPA and offline (manifest is responsible here ...)
+ 2. scaling they add mobile apps
+ 3. enterprice level, desktop apps and more.
+
+ ## how to turn website to wpa ??
+ 1. a clear manifest like i have implemented
+ 2. to make works offline you need a service worker
+ 3. make it save data details in indexed DB
+ 4. sync when online
+ 5. cache static files
+ 6. app update with service worker
