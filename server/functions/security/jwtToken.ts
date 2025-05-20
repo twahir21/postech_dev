@@ -1,3 +1,6 @@
+import { and, eq } from "drizzle-orm";
+import { mainDb } from "../../database/schema/connections/mainDb";
+import { shopUsers } from "../../database/schema/shop";
 import type { CookieTypes, DecodedToken,  jwtTypes } from "../../types/types";
 
 
@@ -40,6 +43,25 @@ export function isDecodedToken(token: unknown): token is DecodedToken {
       return {
         success: false,
         message: "shopId au userId haipo"
+      }
+    }
+
+    // check if user exist in database for validation and cache it, delete cache on deleting accout
+    const isAvaible = await mainDb.select({
+      userId: shopUsers.userId,
+      shopId: shopUsers.shopId
+    }).from(shopUsers).where(
+      and(
+        eq(shopUsers.shopId, shopId),
+        eq(shopUsers.userId, userId)
+      )
+    );
+
+    if(isAvaible.length === 0){
+      console.log("hit")
+      return {
+        success: false,
+        message: "Mtumiaji hayupo!"
       }
     }
   
