@@ -291,7 +291,7 @@ export default component$(() => {
                   Boresha biashara yako na PosTech
                 </h1>
               <p class="text-sm sm:text-base md:text-base text-gray-600 mb-6 dark:text-gray-400">
-                  <Typewriter text="Mfumo wa kisasa wa POS ulio na uwezo wa kuboresha na kurahisisha mauzo kwa ku scan special QR Codes hivyo kufanya mahesabu ya biashara kiotomatiki." speed={80} />
+                  <Typewriter text="Mfumo wa kisasa wa POS ulio na uwezo wa kuboresha na kurahisisha mauzo kwa ku scan special QR Codes hivyo kufanya mahesabu ya biashara kiotomatiki." speed={50} />
                 </p>
                 <div class="flex space-x-4">
                 <Link href= '/auth?reg=true' class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base">Anza Kutumia</Link>

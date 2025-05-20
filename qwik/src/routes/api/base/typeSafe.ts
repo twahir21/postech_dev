@@ -3,7 +3,7 @@ export interface CrudItem {
   }
   
   export type CrudResponse<T> = 
-  | { success: true; data: T; message?: string }
+  | { success: true; data: T; message?: string; total: number }
   | { success: false; message?: string };
 
 

@@ -1,5 +1,6 @@
-import { component$, useSignal, useTask$, $, useContext } from '@builder.io/qwik';
+import { component$, useSignal, useTask$, $, useContext, useStore } from '@builder.io/qwik';
 import { RefetchContext } from './context/refreshContext';
+import { CrudService } from '~/routes/api/base/oop';
 
 interface Customer {
   id: string;
@@ -19,39 +20,24 @@ export const CustomersCrudComponent =  component$(() => {
   const isEditing = useSignal(false);
   const isDeleting = useSignal(false);
 
+  const store = useStore({
+    modal: {
+      isOpen: false as boolean,
+      isSuccess: false  as boolean,
+      message: '' as string | undefined
+    }
+  })
+
 
   const fetchCustomers = $(async () => {
     isLoading.value = true;
-    try {
-      const res = await fetch(
-        `http://localhost:3000/customers?search=${encodeURIComponent(search.value)}&page=${currentPage.value}&limit=${perPage}`,{
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept-Language': 'sw', // Adjust as necessary
-          },
-        }
-      );
+    const newFetchApi = new CrudService<Customer>(`customers?search=${encodeURIComponent(search.value)}&page=${currentPage.value}&limit=${perPage}`);
+    const fetchData = await newFetchApi.get();
+    isLoading.value = false;
+    if(!fetchData.success) return; // dont give popup if no customer found
 
-      if (!res.ok) {
-        const text = await res.text(); // fallback for non-JSON errors
-        throw new Error(`Imeshindwa kujibu kuhusu wateja: ${text}`);
-      }
-
-
-      const json = await res.json();
-      if (!json.success) {
-        throw new Error(json.message || 'Imeshindwa kuleta wateja kutoka kwenye seva');
-      }
-      customer.value = json.data;
-
-      total.value = json.total;
-    } catch (err) {
-      console.error('Imeshindwa kuleta mteja:', err);
-    } finally {
-      isLoading.value = false;
-    }
+    customer.value = fetchData.data;
+    total.value = fetchData.total;
   });
 
   const { customerRefetch } = useContext(RefetchContext);
@@ -73,17 +59,15 @@ export const CustomersCrudComponent =  component$(() => {
   
   const deleteCustomers = $(async (customerId: string) => {
     try {
-      const res = await fetch(`http://localhost:3000/${customerId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (!res.ok) {
-        const text = await res.text(); // Fallback for non-JSON errors
-        throw new Error(`Imeshindwa kufuta mteja: ${text}`);
+      const delAPI = new CrudService(`${customerId}`);
+      const isDeleted = await delAPI.deleteAll();
+      if (!isDeleted.success) {
+        store.modal = {
+          isOpen: true,
+          isSuccess: false,
+          message: isDeleted.message || "Imeshindwa kufuta taarifa"
+        }
+        return;
       }
   
       // If deletion is successful, remove the customer from the list
@@ -150,7 +134,7 @@ export const CustomersCrudComponent =  component$(() => {
                         isDeleting.value = true;
                         }}
                     >
-                        Delete
+                        Futa
                     </button>
                     </div>
 
@@ -183,7 +167,7 @@ export const CustomersCrudComponent =  component$(() => {
                     isDeleting.value = true;
                   }}
                 >
-                  Delete
+                  Futa
                 </button>
               </div>
             </div>
@@ -199,24 +183,24 @@ export const CustomersCrudComponent =  component$(() => {
         disabled={currentPage.value === 1}
         class="px-4 py-2 bg-gray-200 text-sm rounded disabled:opacity-50"
         >
-          Previous
+          Nyuma
         </button>
         <span class="text-sm">
-          Page {currentPage.value} of {totalPages()}
+          Kurasa {currentPage.value} kati ya {totalPages()}
         </span>
         <button
           onClick$={() => currentPage.value++}
           disabled={currentPage.value >= totalPages()}
           class="px-4 py-2 bg-gray-200 text-sm rounded disabled:opacity-50"
         >
-          Next
+          Mbele
         </button>
       </div>
 
       {isEditing.value && selectedCustomer.value && (
   <div class="fixed inset-0 flex items-center justify-center z-10 bg-gray-600 bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-      <h2 class="text-lg font-semibold">Edit Customers</h2>
+      <h2 class="text-lg font-semibold">Edit Mteja</h2>
 
       <div class="mt-4">
         <label class="block text-sm">Jina:</label>
@@ -245,35 +229,37 @@ export const CustomersCrudComponent =  component$(() => {
         <button
           class="px-4 py-2 bg-gray-700 text-white rounded"
           onClick$={async () => {
-            try {
-              const res = await fetch(`http://localhost:3000/customers/${selectedCustomer.value!.id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept-Language': 'sw', // Adjust as necessary
-                },
-                body: JSON.stringify(selectedCustomer.value),
-                credentials: 'include',
-              });
-
-              customerRefetch.value = true;
-              if (!res.ok) {
-                const text = await res.text();
-                throw new Error(`Imeshindwa ku-update mteja: ${text}`);
+            const newPut = new CrudService<Customer>(`customers/${selectedCustomer.value!.id}`);
+            if(selectedCustomer.value === null) {
+              store.modal = {
+                isOpen: true,
+                isSuccess: true,
+                message: "Tafadhali chagua mteja"
               }
-              const updatedCustomer = await res.json();
-              // Update Customer in the local list
-              const index = customer.value.findIndex(p => p.id === updatedCustomer.id);
-              if (index > -1) {
-                customer.value[index] = updatedCustomer;
-              }
-              isEditing.value = false;
-            } catch (err) {
-              console.error('Imeshindwa ku-update mteja:', err);
+              return;
             }
+            const putRes = await newPut.update(selectedCustomer.value);
+            customerRefetch.value = true;
+
+            if (!putRes.success){
+              store.modal = {
+                isSuccess: false,
+                isOpen: true,
+                message: putRes.message || "Imeshindwa ku-update taarifa"
+              }
+              return;
+            }
+      
+
+            const index = customer.value.findIndex(p => p.id === putRes.data.id);
+            if (index > -1) {
+              customer.value[index] = putRes.data;
+            }
+            isEditing.value = false;
+
           }}
         >
-          Save
+          Hifadhi
         </button>
         <button
           class="px-4 py-2 bg-gray-300 text-black rounded"
@@ -282,7 +268,7 @@ export const CustomersCrudComponent =  component$(() => {
             selectedCustomer.value = null;
           }}
         >
-          Cancel
+          Ghairi
         </button>
       </div>
     </div>
@@ -300,7 +286,7 @@ export const CustomersCrudComponent =  component$(() => {
           class="px-4 py-2 bg-red-500 text-white rounded"
           onClick$={() => deleteCustomers(selectedCustomer.value!.id)}
         >
-          Delete
+          Futa
         </button>
         <button
           class="px-4 py-2 bg-gray-300 text-black rounded"
@@ -309,14 +295,24 @@ export const CustomersCrudComponent =  component$(() => {
             selectedCustomer.value = null;
           }}
         >
-          Cancel
+          Ghairi
         </button>
       </div>
     </div>
   </div>
 )}
 
-
+        {/* Modal Popup */}
+        {store.modal.isOpen && (
+        <div class="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-neutral-500 z-50">
+          <div class="bg-white p-6 rounded shadow-lg text-center">
+            <p class={store.modal.isSuccess ? 'text-green-600' : 'text-red-600'}>{store.modal.message}</p>
+            <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onClick$={() => (store.modal.isOpen = false)}>
+              Sawa
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 });
