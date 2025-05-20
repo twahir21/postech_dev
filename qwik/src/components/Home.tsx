@@ -126,7 +126,7 @@ export const HomeComponent = component$(() => {
     <>
       <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* Total Profit */}
-      <div class="bg-blue-200 text-blue-800 p-4 rounded shadow text-center">
+      <div class="bg-blue-200 text-blue-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="profit" class="pr-1.5">💵</span> 
           Faida ya Jumla
@@ -135,7 +135,7 @@ export const HomeComponent = component$(() => {
       </div>
 
       {/* Total Sales */}
-      <div class="bg-green-200 text-green-800 p-4 rounded shadow text-center">
+      <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="sales" class="pr-1.5">📈</span> 
           Mauzo ya Jumla
@@ -144,7 +144,7 @@ export const HomeComponent = component$(() => {
       </div>
 
       {/* Total Expenses */}
-      <div class="bg-red-200 text-red-800 p-4 rounded shadow text-center">
+      <div class="bg-red-200 text-red-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="expenses" class="pr-1.5">💸</span> 
           Matumizi ya jumla
@@ -153,7 +153,7 @@ export const HomeComponent = component$(() => {
       </div>
 
       {/* Most Profitable Product */}
-      <div class="bg-yellow-200 text-yellow-800 p-4 rounded shadow text-center">
+      <div class="bg-yellow-200 text-yellow-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="product" class="pr-1.5">🛒</span> 
           Bidhaa yenye faida kubwa
@@ -164,7 +164,7 @@ export const HomeComponent = component$(() => {
       </div>
 
       {/* Most Sold Product */}
-      <div class="bg-purple-200 text-purple-800 p-4 rounded shadow text-center">
+      <div class="bg-purple-200 text-purple-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="sold" class="pr-1.5">🔥</span> 
           Bidhaa inayouzwa sana
@@ -178,7 +178,7 @@ export const HomeComponent = component$(() => {
       </div>
 
       {/* Most Debt User */}
-      <div class="bg-gray-200 text-gray-800 p-4 rounded shadow text-center">
+      <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="debt" class="pr-1.5">💳</span> 
           Mwenye deni Kubwa
@@ -187,7 +187,7 @@ export const HomeComponent = component$(() => {
       </div>
 
       {/* Long Debt User */}
-      <div class="bg-teal-200 text-teal-800 p-4 rounded shadow text-center">
+      <div class="bg-teal-200 text-teal-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="long-debt" class="pr-1.5">⏳</span> 
           Mdeni wa muda mrefu
@@ -197,7 +197,7 @@ export const HomeComponent = component$(() => {
       </div>
 
       {/* Low Stock */}
-      <div class="bg-orange-200 text-orange-800 p-4 rounded shadow text-center">
+      <div class="bg-orange-200 text-orange-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="low-stock" class="pr-1.5">⚠️</span> 
           Hisa ya chini zaidi
@@ -208,7 +208,7 @@ export const HomeComponent = component$(() => {
       </div>
 
       {/* SaaS Countdown */}
-      <div class="bg-indigo-200 text-indigo-800 p-4 rounded shadow text-center">
+      <div class="bg-indigo-200 text-indigo-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="countdown" class="pr-1.5">⏰</span> 
           Kulipia Huduma
@@ -217,31 +217,31 @@ export const HomeComponent = component$(() => {
       </div>
 
         {/* Total Return */}
-        {/* <div class="bg-gradient-to-r from-pink-500 to-pink-700 text-white shadow-lg p-4 rounded-lg">
-          <h3 class="text-lg font-medium flex items-center">
+      <div class="bg-pink-200 text-pink-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
             <span role="img" aria-label="return" class="pr-1.5">🔄</span> 
-            <Translate lang={props.lang} keys={['total_return']} />
+            Jumla ya Vilivyorudi
           </h3>
-          <p class="text-1xl font-semibold">$1,200</p>
-        </div> */}
+          <p class="text-1xl font-semibold">20,000/=</p>
+        </div>
 
         {/* Top Asked Products */}
-        {/* <div class="bg-gradient-to-r from-yellow-300 to-yellow-500 text-white shadow-lg p-4 rounded-lg">
-          <h3 class="text-lg font-medium flex items-center">
+      <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
             <span role="img" aria-label="asked-product" class="pr-1.5">❓</span> 
-            <Translate lang={props.lang} keys={['top_asked_products']} />
+            Kilichouliziwa sana
           </h3>
-          <p class="text-1xl font-semibold">Product Y</p>
-        </div> */}
+          <p class="text-1xl font-semibold">Moh Energy</p>
+        </div>
 
         {/* Total Expired Products */}
-        {/* <div class="bg-gradient-to-r from-gray-500 to-gray-700 text-white shadow-lg p-4 rounded-lg">
-          <h3 class="text-lg font-medium flex items-center">
+      <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
             <span role="img" aria-label="expired" class="pr-1.5">📅</span> 
-            <Translate lang={props.lang} keys={['total_expired_products']} />
+            Jumla ya bidhaa zilizo-expire
           </h3>
           <p class="text-1xl font-semibold">0</p>
-        </div> */}
+        </div>
 
 
       </div>
