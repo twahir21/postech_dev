@@ -9,6 +9,7 @@ export const RecentProductsTable = component$(() => {
 
   useVisibleTask$(async ({ track }) => {
     track(() => productRefetch.value);
+
     try {
       const response = await fetch("http://localhost:3000/analytics", {
         method: "GET",

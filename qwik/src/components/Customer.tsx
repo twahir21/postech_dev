@@ -1,6 +1,7 @@
 import { component$, useStore, $, useComputed$, useContext } from "@builder.io/qwik";
 import { CustomersCrudComponent } from "./CustComp";
 import { RefetchContext } from "./context/refreshContext";
+import { CrudService } from "~/routes/api/base/oop";
 
 export const CustomerComponent =  component$(() => {
   const customer = useStore({
@@ -31,28 +32,22 @@ export const CustomerComponent =  component$(() => {
     const name = customer.name.trim().toLowerCase();
     const contact = customer.contact.trim().toLowerCase();
 
-    const response = await fetch("http://localhost:3000/customers", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ name, contact }),
-    });
+    const newPost = new CrudService<{id?: string; name: string; contact: string}>("customers");
+    const postData = await newPost.create({ name, contact });
     customerRefetch.value = true;
 
-    if (!response.ok) {
-      const result = await response.json();
-      throw new Error(result.message || "Imeshindwa kusajili mteja.");
-    }
-    const data = await response.json();
-    if (!data.success) {
-      throw new Error(data.message || "Imeshindwa kusajili mteja.");
+    if(!postData.success) {
+      modal.isOpen = true;
+      modal.isSuccess = false;
+      modal.message = postData.message || "Imeshindwa kutunza taarifa za mteja"
+      return; 
     }
 
     customer.name = "";
     customer.contact = "";
      // Instead of replacing modal, update its properties individually
     modal.isOpen = true;
-    modal.message = data.message || "Customer created successfully";
+    modal.message = postData.message || "Mteja amehifadhiwa kwa mafanikio";
     modal.isSuccess = true;
 
   });

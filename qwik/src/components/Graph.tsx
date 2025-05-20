@@ -8,11 +8,6 @@ type SalesData = {
 
 
 export const Graph = component$((props: { data: SalesData[] }) => {
-  useVisibleTask$(async () => {
-    await fetch("http://localhost:3000/analytics", {
-      credentials: 'include'
-    });
-  });
 
   console.log("Data: ", props.data)
 
