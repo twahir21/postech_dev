@@ -1,10 +1,7 @@
-import { component$, Slot, useContextProvider, useSignal, useStore } from "@builder.io/qwik";
+import { component$, Slot, useContextProvider, useSignal } from "@builder.io/qwik";
 import { routeLoader$, type RequestHandler } from "@builder.io/qwik-city";
 import { RefetchContext } from "~/components/context/refreshContext";
-import { globalStoreContext } from "~/components/context/store/globalStore";
-import type { globalStoreTypes } from "~/components/context/store/globalStore";
 import { CrudService } from "./api/base/oop";
-import { userGlobal } from "~/components/context/userContext";
 
 
 
@@ -78,7 +75,6 @@ export default component$(() => {
   const qrCodeRefetch =  useSignal(false);
   const supplierRefetch = useSignal(false);
   const categoryRefetch = useSignal(false);
-  const usernameData = useSignal('Mgeni');
 
   // Provide all signals as a grouped context
   useContextProvider(RefetchContext, {
@@ -91,15 +87,7 @@ export default component$(() => {
   });
 
 
-  // globalStore
-const globalStore = useStore<globalStoreTypes>({
-  profitPerProduct: [] // This is an array, matching the interface
-});
 
-// Provide the store using the context provider
-useContextProvider(globalStoreContext, globalStore);
-
-useContextProvider(userGlobal, { usernameData })
 
 
   return <Slot />;
