@@ -7,7 +7,6 @@ import { extractId } from '../functions/security/jwtToken';
 
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
-
 const analyticsRoute = new Elysia()
   .use(jwt({
       name: 'jwt',
@@ -15,16 +14,15 @@ const analyticsRoute = new Elysia()
   }))
 
   .get('/analytics', async ({ jwt, cookie, headers }) => {
+    const t0 = Date.now()
 
     const { userId, shopId } = await extractId({ jwt, cookie });
     if (!shopId || !userId) return;
 
+    const result = await getAnalytics({ userId, shopId })
 
-    return await getAnalytics({
-      userId,
-      shopId,
-      headers
-    })
+    console.log(`analytics get takes ${Date.now() - t0} ms`)
+    return result;
   })
 
 
@@ -76,6 +74,5 @@ const analyticsRoute = new Elysia()
     })
   })
   
-
 
 export default analyticsRoute;

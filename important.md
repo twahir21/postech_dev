@@ -70,3 +70,5 @@ check if your database is not down from https://neonstatus.com/.
  visit [https://qwik.dev/ecosystem/#libraries] click here. 
 
  # vercel is now supports bun!
+
+ # always use Promise.all instead of async await for many promises like fetching different datas in database for max speed

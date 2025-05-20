@@ -1,4 +1,4 @@
-import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useStore, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
 import { CrudService } from "~/routes/api/base/oop";
@@ -27,13 +27,19 @@ export const HomeComponent = component$(() => {
   const netSalesStore = useStore<{ day: string; netSales: number }[]>([]);
   const isGraphReady = useSignal(false);
 
-
+useTask$(async () => {
+      const analyticsApi = new CrudService("customers");
+    const analyticsData = await analyticsApi.get();
+    console.log("Task Analytics: ", analyticsData);
+})
 
 useVisibleTask$(async () => {
   if (localStorage.getItem("isFetched") !== "true") {
     const analyticsApi = new CrudService("analytics");
     const analyticsData = await analyticsApi.get();
     console.log("Analytics: ", analyticsData);
+
+    // store data globally
 
     // Only mark as fetched after success
     localStorage.setItem("isFetched", "true");
@@ -42,6 +48,7 @@ useVisibleTask$(async () => {
 
 
   useVisibleTask$(async() => {
+    const t0 = Date.now();
     const res = await fetch("http://localhost:3000/analytics", {
       credentials: 'include'
     });
@@ -125,7 +132,7 @@ useVisibleTask$(async () => {
 
     isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
 
-
+    console.log("Time taken", Date.now() - t0, " ms")
   });
   return (
     <>

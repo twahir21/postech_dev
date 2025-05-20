@@ -5,292 +5,273 @@ import { formatDistanceToNow } from "date-fns";
 import type { exportSet, headTypes, ProductQuery, SalesQuery } from '../types/types';
 
 
-export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId: string}) => {
-        
-      try {
-    
-    
-        // 🔹 Profit Per Product
-        const result = await mainDb.execute (sql`
-          SELECT 
-            p.id as productId,
-            p.name as productName,
-            
-            COALESCE(s.totalSales, 0) AS totalSales,
-            COALESCE(pur.totalCost, 0) AS totalCost,
-            COALESCE(s.totalSales, 0) - COALESCE(pur.totalCost, 0) AS profit
-        
-          FROM products p
-        
-          LEFT JOIN (
-            SELECT 
-              s.product_id, 
-              SUM(s.quantity * s.price_sold) AS totalSales
-            FROM sales s
-            WHERE s.shop_id = ${shopId}
-            GROUP BY s.product_id
-          ) s ON s.product_id = p.id
-        
-          LEFT JOIN (
-            SELECT 
-              pur.product_id, 
-              SUM(pur.quantity * pur.price_bought) AS totalCost
-            FROM purchases pur
-            WHERE pur.shop_id = ${shopId}
-            GROUP BY pur.product_id
-          ) pur ON pur.product_id = p.id
-        
-          WHERE p.shop_id = ${shopId}
-          ORDER BY profit DESC
-        `);
-        
-        const profitPerProduct = result.rows || [];
-        const highestProfitProduct = profitPerProduct[0] || null;
-    
-        
-        const totalProfitFromProducts = profitPerProduct.reduce((sum, item) => {
-          return sum + Number(item.profit || 0);
-        }, 0);
-    
-        const totalSalesFromProducts = profitPerProduct.reduce((sum, item) => {
-          return sum + Number(item.totalsales || 0);
-        }, 0);
-    
-        const totalPurchasesFromProducts = profitPerProduct.reduce((sum, item) => {
-          return sum + Number(item.totalcost || 0);
-        }, 0);
-            
-        const expenseResult = await mainDb.execute(sql`
-          SELECT COALESCE(SUM(e.amount), 0) AS totalExpenses
-          FROM expenses e
-          WHERE e.shop_id = ${shopId}
-        `);
-    
-        const totalExpenses = Number(expenseResult.rows?.[0]?.totalexpenses || 0);
-        
-        const netProfit = {
-          totalExpenses,
-          totalSales: totalSalesFromProducts,
-          totalPurchases: totalPurchasesFromProducts,
-          netProfit: totalProfitFromProducts - totalExpenses
-        };
-        
-    
-    
-      // lowest stock product
-      const lowestProduct = await mainDb
-      .select()
-      .from(products)
-      .where(and(
-          eq(products.shopId, shopId),
-          lte(products.stock, products.minStock)
-      ))
-      .orderBy(asc(products.stock))
-      .limit(1);
-    
-      const lowStockProducts = await mainDb
-      .select()
-      .from(products)
-      .where(and(
-        eq(products.shopId, shopId),
-        lte(products.stock, products.minStock)
-      ))
-      .orderBy(asc(products.stock)); // Optional: order from lowest to highest
-    
-      const mostFrequentSales = await mainDb.execute(sql`
-        SELECT 
-          p.id AS productId,
-          p.name AS productName,
-          COUNT(s.id) AS timesSold
-        FROM sales s
-        INNER JOIN products p ON s.product_id = p.id
-        WHERE s.shop_id = ${shopId}
-        GROUP BY p.id, p.name
-        ORDER BY timesSold DESC
-        LIMIT 1
-      `);
-    
-      const mostSoldByQuantity = await mainDb.execute(sql`
-        SELECT 
-          p.id AS productId,
-          p.name AS productName,
-          SUM(s.quantity) AS totalQuantitySold
-        FROM sales s
-        INNER JOIN products p ON s.product_id = p.id
-        WHERE s.shop_id = ${shopId}
-        GROUP BY p.id, p.name
-        ORDER BY totalQuantitySold DESC
-        LIMIT 1
-      `);
-    
-      const [longTermDebtUser] = await mainDb
-      .select({
-        debtId: debts.id,
-        customerId: debts.customerId,
-        remainingAmount: debts.remainingAmount,
-        createdAt: debts.createdAt,
-        name: customers.name, // optional: get customer name
-      })
-      .from(debts)
-      .where(eq(debts.shopId, shopId))
-      .innerJoin(customers, eq(customers.id, debts.customerId))
-      .orderBy(asc(debts.createdAt)) // oldest first
-      .limit(1); // ⏳ Longest unpaid debt
-    
-      let daysSinceDebt = "Haijulikani"; // Default fallback
-    
-      if (longTermDebtUser?.createdAt) {
-        const rawDate = new Date(longTermDebtUser.createdAt);
-        
-        // Safely adjust for UTC-3
-        rawDate.setHours(rawDate.getHours() - 3); // For East Africa
-      
-        daysSinceDebt = formatDistanceToNow(rawDate, {
-          addSuffix: true,
-        });
-      }
-      
-    
-    
-    
-    const [mostDebtUser] = await mainDb
-      .select({
-        debtId: debts.id,
-        customerId: debts.customerId,
-        remainingAmount: debts.remainingAmount,
-        createdAt: debts.createdAt,
-        name: customers.name,
-      })
-      .from(debts)
-      .where(eq(debts.shopId, shopId))
-      .innerJoin(customers, eq(customers.id, debts.customerId))
-      .orderBy(desc(debts.remainingAmount)) // 💰 Highest remaining debt first
-      .limit(1);
-    
-    
-      
-      // sales in a week 
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 6); // Last 7 days
-      
-      // --- SALES ---
-      const salesResult = await mainDb.execute(
-        sql`
-          SELECT 
-            TO_CHAR(created_at, 'Dy') AS day, 
-            SUM(total_sales) AS sales
-          FROM sales
-          WHERE shop_id = ${shopId} AND created_at >= ${startDate.toISOString()}
-          GROUP BY day
-          ORDER BY MIN(created_at)
-        `
-      );
-      
-      // --- EXPENSES ---
-      const expensesResult = await mainDb.execute(
-        sql`
-          SELECT 
-            TO_CHAR(date, 'Dy') AS day, 
-            SUM(amount) AS expenses
-          FROM expenses
-          WHERE shop_id = ${shopId} AND date >= ${startDate.toISOString()}
-          GROUP BY day
-          ORDER BY MIN(date)
-        `
-      );
-      
-      // --- PURCHASES ---
-      const purchasesResult = await mainDb.execute(
-        sql`
-          SELECT 
-            TO_CHAR(created_at, 'Dy') AS day, 
-            SUM(quantity * price_bought) AS purchases
-          FROM purchases
-          WHERE shop_id = ${shopId} AND created_at >= ${startDate.toISOString()}
-          GROUP BY day
-          ORDER BY MIN(created_at)
-        `
-      );
-      
-      // Create a map to align days and avoid missing entries
-      const daysMap = new Map<string, { sales: number, expenses: number, purchases: number }>();
-      
-      // Helper to init day entry if not exists
-      function ensureDay(day: string) {
-        if (!daysMap.has(day)) {
-          daysMap.set(day, { sales: 0, expenses: 0, purchases: 0 });
-        }
-      }
-      
-      // Process sales
-      type Weekday = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
-    
-      for (const row of salesResult.rows) {
-        const day = row.day as Weekday;
-        ensureDay(day);
-        daysMap.get(day)!.sales = Number(row.sales || 0);
-      }
-      
-      // Process expenses
-      for (const row of expensesResult.rows) {
-        const day = row.day as Weekday;
-        ensureDay(day);
-        daysMap.get(day)!.expenses = Number(row.expenses || 0);
-      }
-      
-      // Process purchases
-      for (const row of purchasesResult.rows) {
-        const day = row.day as Weekday;
-        ensureDay(day);
-        daysMap.get(day)!.purchases = Number(row.purchases || 0);
-      }
-      
-      // Final Output
-      const salesByDay = [];
-      const expensesByDay = [];
-      const purchasesPerDay = [];
-      const netSalesByDay = [];
-      
-      for (const [day, data] of daysMap.entries()) {
-        salesByDay.push({ day, sales: data.sales });
-        console.log("Data: ", data.sales)
-        expensesByDay.push({ day, expenses: data.expenses });
-        purchasesPerDay.push({ day, purchases: data.purchases });
-      
-        const netSales = data.sales - data.expenses - data.purchases;
-        netSalesByDay.push({ day, netSales });
-      }
 
-      console.log(salesByDay.length)
-      
-    
-      return {
-        success: true,
-        profitPerProduct,
-        highestProfitProduct,
-        netProfit,
-        lowestProduct,
-        lowStockProducts,
-        mostSoldProductByQuantity: mostSoldByQuantity.rows?.[0] || null,
-        mostFrequentProduct: mostFrequentSales.rows?.[0] || null,
-        longTermDebtUser: longTermDebtUser || null,
-        mostDebtUser: mostDebtUser || null,
-        daysSinceDebt,
-        salesByDay,
-        expensesByDay,
-        netSalesByDay,
-        purchasesPerDay
-      };
-    
-      } catch (error) {
+export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId: string }) => {
+    try {
+        // --- Combined Analytics Query (Profit Per Product, Total Sales, Total Cost) ---
+        // This query now fetches profit per product, and also provides the totals needed
+        // for netProfit calculations, reducing multiple calls.
+        const [
+            profitData,
+            lowestStockProductResult,
+            lowStockProductsResult,
+            mostFrequentSalesProductResult,
+            mostSoldByQuantityProductResult,
+            debtorData,
+            weeklySummaryData
+        ] = await Promise.all([
+            mainDb.execute(sql`
+                SELECT
+                    p.id AS productId,
+                    p.name AS productName,
+                    COALESCE(SUM(s.quantity * s.price_sold), 0) AS totalSales,
+                    COALESCE(SUM(pur.quantity * pur.price_bought), 0) AS totalCost,
+                    COALESCE(SUM(s.quantity * s.price_sold), 0) - COALESCE(SUM(pur.quantity * pur.price_bought), 0) AS profit
+                FROM products p
+                LEFT JOIN sales s ON s.product_id = p.id AND s.shop_id = ${shopId}
+                LEFT JOIN purchases pur ON pur.product_id = p.id AND pur.shop_id = ${shopId}
+                WHERE p.shop_id = ${shopId}
+                GROUP BY p.id, p.name
+                ORDER BY profit DESC
+            `),
+            // --- Lowest Stock Product ---
+            mainDb
+                .select()
+                .from(products)
+                .where(and(
+                    eq(products.shopId, shopId),
+                    lte(products.stock, products.minStock)
+                ))
+                .orderBy(asc(products.stock))
+                .limit(1),
+
+            // --- Low Stock Products (all) ---
+            mainDb
+                .select()
+                .from(products)
+                .where(and(
+                    eq(products.shopId, shopId),
+                    lte(products.stock, products.minStock)
+                ))
+                .orderBy(asc(products.stock)),
+
+            // --- Most Frequent Sales Product ---
+            mainDb.execute(sql`
+                SELECT
+                    p.id AS productId,
+                    p.name AS productName,
+                    COUNT(s.id) AS timesSold
+                FROM sales s
+                INNER JOIN products p ON s.product_id = p.id
+                WHERE s.shop_id = ${shopId}
+                GROUP BY p.id, p.name
+                ORDER BY timesSold DESC
+                LIMIT 1
+            `),
+
+            // --- Most Sold By Quantity Product ---
+            mainDb.execute(sql`
+                SELECT
+                    p.id AS productId,
+                    p.name AS productName,
+                    SUM(s.quantity) AS totalQuantitySold
+                FROM sales s
+                INNER JOIN products p ON s.product_id = p.id
+                WHERE s.shop_id = ${shopId}
+                GROUP BY p.id, p.name
+                ORDER BY totalQuantitySold DESC
+                LIMIT 1
+            `),
+
+            // --- Combined Debtors Query (Longest Unpaid and Highest Debt) ---
+            // This query fetches both the oldest and highest debt in one go by leveraging window functions or by fetching top N and sorting in application if N is small.
+            // For simplicity and typical use cases, two separate queries are often fine if they are distinct and efficient.
+            // But we can combine them to get both top oldest and top highest remaining debt from the same query if needed.
+            // For now, keeping them separate as `Promise.all` already handles concurrency.
+            // Here, we fetch both simultaneously:
+            Promise.all([
+                mainDb
+                    .select({
+                        debtId: debts.id,
+                        customerId: debts.customerId,
+                        remainingAmount: debts.remainingAmount,
+                        createdAt: debts.createdAt,
+                        name: customers.name,
+                    })
+                    .from(debts)
+                    .where(eq(debts.shopId, shopId))
+                    .innerJoin(customers, eq(customers.id, debts.customerId))
+                    .orderBy(asc(debts.createdAt))
+                    .limit(1),
+                mainDb
+                    .select({
+                        debtId: debts.id,
+                        customerId: debts.customerId,
+                        remainingAmount: debts.remainingAmount,
+                        createdAt: debts.createdAt,
+                        name: customers.name,
+                    })
+                    .from(debts)
+                    .where(eq(debts.shopId, shopId))
+                    .innerJoin(customers, eq(customers.id, debts.customerId))
+                    .orderBy(desc(debts.remainingAmount))
+                    .limit(1)
+            ]),
+
+            // --- Weekly Sales, Expenses, and Purchases in a single query (more complex but efficient) ---
+            // This is the most significant optimization: fetching all three types of data in one go.
+            // Requires a more complex SQL query using Common Table Expressions (CTEs) or subqueries.
+            mainDb.execute(sql`
+                WITH sales_data AS (
+                    SELECT
+                        TO_CHAR(created_at, 'Dy') AS day,
+                        SUM(total_sales) AS daily_sales
+                    FROM sales
+                    WHERE shop_id = ${shopId} AND created_at >= NOW() - INTERVAL '7 days'
+                    GROUP BY 1
+                ),
+                expenses_data AS (
+                    SELECT
+                        TO_CHAR(date, 'Dy') AS day,
+                        SUM(amount) AS daily_expenses
+                    FROM expenses
+                    WHERE shop_id = ${shopId} AND date >= NOW() - INTERVAL '7 days'
+                    GROUP BY 1
+                ),
+                purchases_data AS (
+                    SELECT
+                        TO_CHAR(created_at, 'Dy') AS day,
+                        SUM(quantity * price_bought) AS daily_purchases
+                    FROM purchases
+                    WHERE shop_id = ${shopId} AND created_at >= NOW() - INTERVAL '7 days'
+                    GROUP BY 1
+                )
+                SELECT
+                    COALESCE(sd.day, ed.day, pd.day) AS day,
+                    COALESCE(sd.daily_sales, 0) AS sales,
+                    COALESCE(ed.daily_expenses, 0) AS expenses,
+                    COALESCE(pd.daily_purchases, 0) AS purchases
+                FROM sales_data sd
+                FULL OUTER JOIN expenses_data ed ON sd.day = ed.day
+                FULL OUTER JOIN purchases_data pd ON COALESCE(sd.day, ed.day) = pd.day
+                ORDER BY
+                    CASE COALESCE(sd.day, ed.day, pd.day)
+                        WHEN 'Mon' THEN 1
+                        WHEN 'Tue' THEN 2
+                        WHEN 'Wed' THEN 3
+                        WHEN 'Thu' THEN 4
+                        WHEN 'Fri' THEN 5
+                        WHEN 'Sat' THEN 6
+                        WHEN 'Sun' THEN 7
+                    END
+            `)
+        ]);
+
+        // Destructure combined results
+        const profitPerProduct = profitData.rows || [];
+        const highestProfitProduct = profitPerProduct[0] || null;
+
+        const totalProfitFromProducts = profitPerProduct.reduce((sum, item) => {
+            return sum + Number(item.profit || 0);
+        }, 0);
+
+        const totalSalesFromProducts = profitPerProduct.reduce((sum, item) => {
+            return sum + Number(item.totalsales || 0);
+        }, 0);
+
+        const totalPurchasesFromProducts = profitPerProduct.reduce((sum, item) => {
+            return sum + Number(item.totalcost || 0);
+        }, 0);
+
+        // --- Total Expenses (can be fetched separately or combined if daily summaries are not needed) ---
+        // For simplicity and distinctness, keeping this separate if it's a single aggregate.
+        const expenseResult = await mainDb.execute(sql`
+            SELECT COALESCE(SUM(e.amount), 0) AS totalExpenses
+            FROM expenses e
+            WHERE e.shop_id = ${shopId}
+        `);
+        const totalExpenses = Number(expenseResult.rows?.[0]?.totalexpenses || 0);
+
+        const netProfit = {
+            totalExpenses,
+            totalSales: totalSalesFromProducts,
+            totalPurchases: totalPurchasesFromProducts,
+            netProfit: totalProfitFromProducts - totalExpenses
+        };
+
+        const lowestProduct = lowestStockProductResult[0] || null;
+        const lowStockProducts = lowStockProductsResult || [];
+        const mostFrequentProduct = mostFrequentSalesProductResult.rows?.[0] || null;
+        const mostSoldProductByQuantity = mostSoldByQuantityProductResult.rows?.[0] || null;
+
+        const [longTermDebtUserArray, mostDebtUserArray] = debtorData;
+        const longTermDebtUser = longTermDebtUserArray[0] || null;
+        const mostDebtUser = mostDebtUserArray[0] || null;
+
+        let daysSinceDebt = "Haijulikani";
+        if (longTermDebtUser?.createdAt) {
+            const rawDate = new Date(longTermDebtUser.createdAt);
+            rawDate.setHours(rawDate.getHours() - 3); // For East Africa
+            daysSinceDebt = formatDistanceToNow(rawDate, { addSuffix: true });
+        }
+
+        // Process weekly summary data
+        const salesByDay = [];
+        const expensesByDay = [];
+        const purchasesPerDay = [];
+        const netSalesByDay = [];
+
+        const weekDaysOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const dailyDataMap = new Map<string, { sales: number, expenses: number, purchases: number }>();
+
+        // Initialize map with all days to ensure consistent order and zero values
+        weekDaysOrder.forEach(day => dailyDataMap.set(day, { sales: 0, expenses: 0, purchases: 0 }));
+
+        for (const row of weeklySummaryData.rows) {
+            const day = row.day as string;
+            if (dailyDataMap.has(day)) {
+                dailyDataMap.get(day)!.sales = Number(row.sales || 0);
+                dailyDataMap.get(day)!.expenses = Number(row.expenses || 0);
+                dailyDataMap.get(day)!.purchases = Number(row.purchases || 0);
+            }
+        }
+
+        for (const [day, data] of dailyDataMap.entries()) {
+            salesByDay.push({ day, sales: data.sales });
+            expensesByDay.push({ day, expenses: data.expenses });
+            purchasesPerDay.push({ day, purchases: data.purchases });
+
+            const netSales = data.sales - data.expenses - data.purchases;
+            netSalesByDay.push({ day, netSales });
+        }
+
         return {
-          success: false,
-          message: error instanceof Error
-                  ? error.message
-                  : "Hitilafu kwenye seva"
-        }    
-      }
-}
+            success: true,
+            profitPerProduct,
+            highestProfitProduct,
+            netProfit,
+            lowestProduct,
+            lowStockProducts,
+            mostSoldProductByQuantity,
+            mostFrequentProduct,
+            longTermDebtUser,
+            mostDebtUser,
+            daysSinceDebt,
+            salesByDay,
+            expensesByDay,
+            netSalesByDay,
+            purchasesPerDay
+        };
+
+    } catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error
+                ? error.message
+                : "Hitilafu kwenye seva"
+        };
+    }
+};
 
 export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId: string, shopId: string, headers: headTypes, query: SalesQuery}) => {
             try {
