@@ -27,13 +27,18 @@ export const HomeComponent = component$(() => {
   const netSalesStore = useStore<{ day: string; netSales: number }[]>([]);
   const isGraphReady = useSignal(false);
 
-  useVisibleTask$(async () => {
+
+
+useVisibleTask$(async () => {
+  if (localStorage.getItem("isFetched") !== "true") {
     const analyticsApi = new CrudService("analytics");
     const analyticsData = await analyticsApi.get();
-
     console.log("Analytics: ", analyticsData);
 
-  })
+    // Only mark as fetched after success
+    localStorage.setItem("isFetched", "true");
+  }
+});
 
 
   useVisibleTask$(async() => {
