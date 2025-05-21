@@ -228,7 +228,7 @@ export const ProductComponent = component$(() => {
                 </option>
               ))
             ) : (
-              <option disabled>Hakuna Kategoria iliyopatikana</option>
+              <option disabled>Hakuna Kategoria</option>
             )}
           </select>
 
@@ -245,7 +245,7 @@ export const ProductComponent = component$(() => {
                 </option>
               ))
             ) : (
-              <option disabled>Hakuna Msambazaji aliyepatikana</option>
+              <option disabled>Hakuna Msambazaji</option>
             )}
           </select>
 
