@@ -129,7 +129,10 @@ const regPlugin = new Elysia()
                         ? undefined: ".mypostech.store"
             });
 
-            return redirect(`${frontendURL}/private`, 302);
+            return {
+                success: true,
+                message: "🎉 Email imehakikiwa kiukamilifu! inakupeleka ..."
+            }
             
         } catch (error) {
             return {

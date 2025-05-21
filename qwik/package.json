@@ -45,6 +45,7 @@
     "chart.js": "^4.4.9",
     "chartjs-plugin-datalabels": "^2.2.0",
     "date-fns": "^4.1.0",
+    "lucide-qwik": "^1.0.0",
     "tailwindcss": "^4.1.4"
   }
 }

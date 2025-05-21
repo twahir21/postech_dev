@@ -79,7 +79,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
             userCheckCache.set(`user:${email}`, { exists: true });
             return {
             success: false,
-            message: "Email tayari imeshatumik"
+            message: "Email tayari imeshatumika"
             };
         }
     
@@ -111,7 +111,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
 
 
         // Step 3: send email with magic link
-        const link = `${frontendURL}/verify-email?token=${token}`;
+        const link = `${frontendURL}/email?token=${token}`;
 
         await transporter.sendMail({
             from: `"PosTech" <${zohoEmail}>`,
