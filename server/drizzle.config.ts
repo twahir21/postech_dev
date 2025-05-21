@@ -7,8 +7,8 @@ export default defineConfig({
   dialect: 'postgresql',
   dbCredentials: {
     url:
-      process.env.NODE_ENV === 'development'
-        ? process.env.NEON_URL!
-        : process.env.NEON_URL!,
+        process.env.NODE_ENV === 'development'
+                      ? process.env.POSTGRES_URL_LOCAL!
+                      : process.env.POSTGRES_URL_LOCAL!
   },
 });

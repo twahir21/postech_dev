@@ -1,10 +1,13 @@
-import { drizzle } from "drizzle-orm/neon-http"
 import "dotenv/config";
-import { neon } from '@neondatabase/serverless';
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
 // LOAD CORRECT DB
-const connect = process.env.NODE_ENV === 'development'
-  ? neon(process.env.NEON_URL!)
-  : neon(process.env.NEON_URL!);
 
-export const mainDb = drizzle({ client: connect })
+const pool = new Pool({
+  connectionString: process.env.NODE_ENV === 'development'
+                      ? process.env.POSTGRES_URL_LOCAL!
+                      : process.env.POSTGRES_URL_LOCAL!
+})
+
+export const mainDb = drizzle({ client: pool })

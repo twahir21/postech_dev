@@ -92,3 +92,7 @@ check if your database is not down from https://neonstatus.com/.
  # total hours of neon db to work in dev mode is just 5h use production sever for dev.
 
  # rough estimation cost is 70,000 Tsh per month for 100 users  and 92,000 for clickpesa 10k of 100 users. so, for 10k in 100 user profit is 800k
+
+
+# left neon for its latency and hit limit on 5h computation on branch but still good
+# for local postgres use pg and not postgres in drizzle orm

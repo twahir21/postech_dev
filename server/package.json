@@ -12,8 +12,9 @@
     "builder": "bun install && bun run clean && bun build index.ts --outfile build/server --target bun --minify-whitespace --minify-syntax --sourcemap"
   },
   "devDependencies": {
+    "@types/pg": "^8.15.2",
     "depcheck": "^1.4.7",
-    "drizzle-kit": "^0.30.5"
+    "drizzle-kit": "^0.31.1"
   },
   "peerDependencies": {
     "typescript": "^5.8.2"
@@ -22,7 +23,6 @@
     "@elysiajs/cookie": "^0.8.0",
     "@elysiajs/cors": "1.2.0",
     "@elysiajs/jwt": "^1.2.0",
-    "@neondatabase/serverless": "^1.0.0",
     "@types/adm-zip": "^0.5.7",
     "@types/nodemailer": "^6.4.17",
     "@types/qrcode": "^1.5.5",
@@ -32,10 +32,11 @@
     "date-fns": "^4.1.0",
     "decimal.js": "^10.5.0",
     "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.42.0",
+    "drizzle-orm": "^0.43.1",
     "elysia": "1.2.25",
     "lru-cache": "^11.0.2",
     "nodemailer": "^6.10.0",
+    "pg": "^8.16.0",
     "qrcode": "^1.5.4",
     "sharp": "^0.33.5",
     "uuid": "^11.1.0",
