@@ -2,6 +2,7 @@ import { $, component$, useStore } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
 import { env } from '~/routes/api/base/config';
 import { CrudService } from '~/routes/api/base/oop';
+import { Toast } from './ui/Toast';
 
 interface AuthFormProps {
   isLogin?: boolean;
@@ -201,14 +202,14 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
         {/* Modal Popup */}
         {state.modal.isOpen && (
-          <div class="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-neutral-500 z-50">
-            <div class="bg-white p-6 rounded shadow-lg text-center">
-              <p class={state.modal.isSuccess ? 'text-green-600' : 'text-red-600'}>{state.modal.message}</p>
-              <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onClick$={() => (state.modal.isOpen = false)}>
-                Ok
-              </button>
-            </div>
-          </div>
+          <Toast
+          isOpen={state.modal.isOpen}
+          type={state.modal.isSuccess}
+          message={state.modal.message}
+          onClose$={$(() => {
+            state.modal.isOpen = false;
+          })}
+          />
         )}
 
         {/* Jina la Duka (Only for Registration) */}

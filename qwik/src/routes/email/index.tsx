@@ -27,7 +27,7 @@ export default component$(() => {
     const isVerified = await sendTokenApi.get();
     status.value = isVerified.success ? "success" : "error";
     if (!isVerified.message) return;
-    message.value = isVerified.success ? isVerified.message : `Tokeni imeshatumika au kuisha muda`;
+    message.value = isVerified.success ? isVerified.message : `Tokeni imeshatumika au kuisha muda, Jisajili tena`;
 
     if(isVerified.success) {
       setTimeout(() => {
@@ -35,10 +35,14 @@ export default component$(() => {
       }, 1500);
       return
     }
+
+    setTimeout(() => {
+      navigation(`${frontendURL}/auth?reg=true`); 
+    }, 2000);
   });
 
   return (
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div class="min-h-screen flex items-center justify-center bg-gray-300 px-4">
       <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center space-y-4">
         <div class="text-5xl flex justify-center mb-5">
           {status.value === 'pending' && <Loader2Icon class="animate-spin text-gray-400 w-16 h-16" />}
