@@ -151,7 +151,7 @@ export const QrPostData = t.Object({
     }),
     discount: t.Number({
         maximum: 2000000000,
-        minimum: 1,
+        minimum: 0,
         error() {
             return {
                 success: false,

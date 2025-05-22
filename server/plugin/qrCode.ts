@@ -113,7 +113,7 @@ const qrCodePlugin = new Elysia()
           saleType: "cash",
           discount: 0,
           customerId: null,
-          description: "home Expenses",
+          description: "Matumizi ya nyumbani",
           priceBought,
           generatedAt: new Date().toISOString(),
         },
@@ -161,6 +161,12 @@ const qrCodePlugin = new Elysia()
         console.error(`Failed to delete ${path}:`, err)
       );
     }
+
+    // ✅ Delete the zip file itself
+    await fs.unlink(zipFilePath).catch((err) =>
+      console.error(`Failed to delete zip file ${zipFilePath}:`, err)
+    );
+
     
     // Set response headers
     set.headers["Content-Type"] = "application/zip";

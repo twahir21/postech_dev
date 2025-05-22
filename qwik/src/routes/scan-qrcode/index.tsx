@@ -3,6 +3,7 @@ import {
   useTask$,
   useStore,
   $,
+  useVisibleTask$,
 } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { CrudService } from "../api/base/oop";
@@ -38,7 +39,7 @@ export default component$(() => {
     customers: [] as { id: string; name: string }[],
   });
 
-  useTask$(async() => {
+  useVisibleTask$(async() => {
     interface customers {id: string; name: string}
     const getCustomersApi = new CrudService<customers>("getCustomers");
     const customersData = await getCustomersApi.get();
@@ -333,7 +334,7 @@ const handleButtonClick = $((btn: string) => {
                   value={state.editableFields.description}
                   onInput$={(e) => handleChange(e, "description")}
                   rows={3}
-                  placeholder="e.g. Home use, party order..."
+                  placeholder="e.g. Nauli, chakula, bando, n.k. ..."
                   class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
                 ></textarea>
               </div>
