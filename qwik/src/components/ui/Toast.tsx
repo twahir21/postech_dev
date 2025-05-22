@@ -7,7 +7,7 @@ export const Toast = component$(
     isOpen,
     type,
     message,
-    duration = 2000,
+    duration = 3000,
     onClose$,
   }: {
     isOpen: boolean;

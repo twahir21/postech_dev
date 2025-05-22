@@ -2,6 +2,7 @@ import { component$, useStore, $, useComputed$, useContext } from "@builder.io/q
 import { CustomersCrudComponent } from "./CustComp";
 import { RefetchContext } from "./context/refreshContext";
 import { CrudService } from "~/routes/api/base/oop";
+import { Toast } from "./ui/Toast";
 
 export const CustomerComponent =  component$(() => {
   const customer = useStore({
@@ -96,14 +97,14 @@ export const CustomerComponent =  component$(() => {
 
     {/* Modal Popup */}
     {modal.isOpen && (
-    <div class="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-neutral-500 z-50">
-      <div class="bg-white p-6 rounded shadow-lg text-center">
-        <p class={modal.isSuccess ? 'text-green-600' : 'text-red-600'}>{modal.message}</p>
-        <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onClick$={() => (modal.isOpen = false)}>
-          Ok
-        </button>
-      </div>
-    </div>
+      <Toast
+      isOpen={modal.isOpen}
+      type={modal.isSuccess}
+      message={modal.message}
+      onClose$={$(() => {
+        modal.isOpen = false;
+      })}
+      />
   )}
 </>
   );

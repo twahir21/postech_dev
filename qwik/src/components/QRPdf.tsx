@@ -2,6 +2,7 @@ import { component$, useStore, $, useResource$, useContext } from '@builder.io/q
 import { RefetchContext } from "./context/refreshContext";
 import { CrudService } from '~/routes/api/base/oop';
 import { env } from '~/routes/api/base/config';
+import { Toast } from './ui/Toast';
 
 export const QrPdf = component$(() => {
   const store = useStore({
@@ -115,19 +116,14 @@ export const QrPdf = component$(() => {
 
       {/* Modal Popup */}
       {store.modal.isOpen && (
-        <div class="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-neutral-500 z-50">
-          <div class="bg-white p-6 rounded shadow-lg text-center">
-            <p class={store.modal.isSuccess ? 'text-green-600' : 'text-red-600'}>
-              {store.modal.message}
-            </p>
-            <button
-              class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-              onClick$={() => (store.modal.isOpen = false)}
-            >
-              Funga
-            </button>
-          </div>
-        </div>
+          <Toast
+          isOpen={store.modal.isOpen}
+          type={store.modal.isSuccess}
+          message={store.modal.message}
+          onClose$={$(() => {
+            store.modal.isOpen = false;
+          })}
+          />
       )}
     </>
   );

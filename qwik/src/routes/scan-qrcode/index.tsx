@@ -6,6 +6,7 @@ import {
 } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { CrudService } from "../api/base/oop";
+import { Toast } from "~/components/ui/Toast";
 
 export default component$(() => {
   const location = useLocation();
@@ -425,25 +426,17 @@ const handleButtonClick = $((btn: string) => {
         </div>
       )}
 
-{/* Modal Popup */}
-{state.modal.isOpen && (
-  <div class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
-    <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full border border-gray-300">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class={`text-lg font-semibold ${state.modal.isSuccess ? 'text-green-600' : 'text-red-600'}`}>
-          {state.modal.isSuccess ? '✅ Success' : '❌ Error'}
-        </h2>
-        <button
-          onClick$={() => (state.modal.isOpen = false)}
-          class="text-gray-500 hover:text-red-600 text-xl"
-        >
-          ✖
-        </button>
-      </div>
-      <p class="text-gray-700">{state.modal.message}</p>
-    </div>
-  </div>
-)}
+      {/* Modal Popup */}
+      {state.modal.isOpen && (
+        <Toast
+          isOpen={state.modal.isOpen}
+          type={state.modal.isSuccess}
+          message={state.modal.message}
+          onClose$={$(() => {
+            state.modal.isOpen = false;
+        })}
+        />
+      )}
 
     </div>
   );

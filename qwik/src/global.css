@@ -78,5 +78,5 @@
   }
 }
 .animate-progress-bar {
-  animation: progress-bar 1.5s linear forwards;
+  animation: progress-bar 3s linear forwards;
 }

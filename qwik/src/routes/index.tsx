@@ -3,6 +3,7 @@ import { Link, type DocumentHead } from "@builder.io/qwik-city";
 import type { ContactTypes } from "./api/base/typeSafe";
 import { contactApi, warmUpApi } from "./api/base/api";
 import { Typewriter } from "~/components/TypeWriter";
+import { Toast } from "~/components/ui/Toast";
 
 export default component$(() => {
 
@@ -410,14 +411,14 @@ export default component$(() => {
 
         {/* Modal Popup */}
         {contactStore.modal.isOpen && (
-        <div class="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-neutral-500 z-50">
-        <div class="bg-white p-6 rounded shadow-lg text-center">
-            <p class={contactStore.modal.isSuccess ? 'text-green-600' : 'text-red-600'}>{contactStore.modal.message}</p>
-            <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onClick$={() => (contactStore.modal.isOpen = false)}>
-            Ok
-            </button>
-        </div>
-        </div>
+          <Toast
+            isOpen={contactStore.modal.isOpen}
+            type={contactStore.modal.isSuccess}
+            message={contactStore.modal.message}
+            onClose$={$(() => {
+              contactStore.modal.isOpen = false;
+            })}
+          />
         )}
 
         {/* FOOTER  */}

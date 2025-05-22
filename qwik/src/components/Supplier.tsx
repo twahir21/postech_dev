@@ -2,6 +2,7 @@ import { component$, useStore, $, useContext } from "@builder.io/qwik";
 import { RefetchContext } from "./context/refreshContext";
 import { CrudService } from "~/routes/api/base/oop";
 import type { categoriesPost, supplierData } from "~/routes/api/base/typeSafe";
+import { Toast } from "./ui/Toast";
 
 export const SupplierComponent = component$(() => {
   const formState = useStore({
@@ -157,14 +158,14 @@ export const SupplierComponent = component$(() => {
 
       {/* Modal Popup */}
       {formState.modal.isOpen && (
-        <div class="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-neutral-500 z-50">
-          <div class="bg-white p-6 rounded shadow-lg text-center">
-            <p class={formState.modal.isSuccess ? 'text-green-600' : 'text-red-600'}>{formState.modal.message}</p>
-            <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onClick$={() => (formState.modal.isOpen = false)}>
-              Sawa
-            </button>
-          </div>
-        </div>
+        <Toast
+          isOpen={formState.modal.isOpen}
+          type={formState.modal.isSuccess}
+          message={formState.modal.message}
+          onClose$={$(() => {
+            formState.modal.isOpen = false;
+        })}
+        />
       )}
     </div>
     </>
