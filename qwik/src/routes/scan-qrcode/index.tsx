@@ -65,7 +65,7 @@ export default component$(() => {
     });
 
     state.query = params;
-    state.generatedAt = params.generatedAt || "Not provided"; // Store generatedAt with a fallback
+    state.generatedAt = params.generatedAt || "Hakuna"; // Store generatedAt with a fallback
     state.editableFields.quantity = params.quantity || "1";
     state.editableFields.saleType = params.saleType || "cash";
     state.editableFields.discount = params.discount || "0";

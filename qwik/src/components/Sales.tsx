@@ -3,11 +3,12 @@ import { format } from 'date-fns';
 import { CrudService } from '~/routes/api/base/oop';
 
 interface Sale {
+  id?: string;
   name: string;
   date: string;
   total: number;
-  paymentType: string;
-  customer: string;
+  priceBought: number;
+  quantity: number;
   products: { name: string; qty: number }[];
 }
 
@@ -24,7 +25,6 @@ export const SalesComponent = component$(() => {
     startDate: '',
     endDate: '',
   });
-
   const fetchSales = $(async () => {
     isLoading.value = true;
 
@@ -41,21 +41,16 @@ export const SalesComponent = component$(() => {
     }
 
     try {
-      const newApiSales = new CrudService(`sales?${params}`);
+      const newApiSales = new CrudService<Sale>(`sales?${params}`);
       const salesGetData = await newApiSales.get();
 
       if (!salesGetData.success) return;
-      const res = await fetch(`http://localhost:3000/sales?${params}`, {
-        credentials: 'include'
-      });
-      const data = await res.json();
 
-      sales.value = data.sales;
+      sales.value = salesGetData.data;
 
-      console.log(sales.value)
-      totalPages.value = Math.ceil(data.total / limit);
+      totalPages.value = Math.ceil(salesGetData.total / limit);
+
     } catch (err) {
-      console.error('Fetch error:', err);
       sales.value = [];
     } finally {
       isLoading.value = false;
@@ -95,15 +90,15 @@ export const SalesComponent = component$(() => {
           <option value="Tarehe_maalumu">Tarehe maalumu</option>
         </select>
 
-        {dateFilter.value === 'custom' && (
+        {dateFilter.value === 'Tarehe_maalumu' && (
           <>
-            <label class="text-sm mt-2">From:</label>
+            <label class="text-sm mt-2">Kuanzia:</label>
             <input
               type="date"
               class="border px-3 py-2 rounded"
               onChange$={(e) => (filters.startDate = (e.target as HTMLInputElement).value)}
             />
-            <label class="text-sm mt-2">To:</label>
+            <label class="text-sm mt-2">Mpaka:</label>
             <input
               type="date"
               class="border px-3 py-2 rounded"
@@ -114,7 +109,7 @@ export const SalesComponent = component$(() => {
 
         <input
           type="text"
-          placeholder="Search customer"
+          placeholder="Tafuta kwa jina la bidhaa ..."
           class="border px-3 py-2 rounded flex-1"
           onInput$={(e) => {
             search.value = (e.target as HTMLInputElement).value;
@@ -128,11 +123,11 @@ export const SalesComponent = component$(() => {
         <table class="w-full text-left text-sm">
           <thead class="bg-gray-100">
             <tr>
-              <th class="p-2">Date</th>
-              <th class="p-2">Products</th>
-              <th class="p-2">Total</th>
-              <th class="p-2">Payment</th>
-              <th class="p-2">Customer</th>
+              <th class="p-2">Tarehe</th>
+              <th class="p-2">Bidhaa</th>
+              <th class="p-2">Jumla</th>
+              <th class="p-2">Faida</th>
+              <th class="p-2">Ngapi</th>
             </tr>
           </thead>
           <tbody>
@@ -156,12 +151,12 @@ export const SalesComponent = component$(() => {
         <td class="p-2">{Intl.NumberFormat().format(sale.total)}</td>
         <td
           class={`p-2 font-semibold ${
-            sale.paymentType === 'cash' ? 'text-green-600' : 'text-yellow-600'
+            (sale.total - (sale.priceBought * sale.quantity)) > 0 ? 'text-green-600' : 'text-red-400'
           }`}
         >
-          {sale.paymentType}
+          {Intl.NumberFormat().format(sale.total - (sale.priceBought * sale.quantity))}
         </td>
-        <td class="p-2">{sale.customer}</td>
+        <td class="p-2">{sale.quantity}</td>
       </tr>
     ))
   )}
@@ -179,17 +174,17 @@ export const SalesComponent = component$(() => {
               disabled={page.value <= 1}
               onClick$={() => (page.value = Math.max(1, page.value - 1))}
             >
-              Previous
+              Nyuma
             </button>
             <span>
-              Page {page.value} of {totalPages.value}
+              Kurasa {page.value} kati ya {totalPages.value}
             </span>
             <button
               class="bg-gray-300 text-black px-3 py-2 rounded"
               disabled={page.value >= totalPages.value}
               onClick$={() => (page.value = Math.min(totalPages.value, page.value + 1))}
             >
-              Next
+              Mbele
             </button>
           </div>
 
@@ -198,7 +193,7 @@ export const SalesComponent = component$(() => {
             href={`http://localhost:3000/export-sales`}
             class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-900"
           >
-            ⬇️ Export CSV
+            ⬇️ Toa kwa CSV
           </a>
         </div>
       )}

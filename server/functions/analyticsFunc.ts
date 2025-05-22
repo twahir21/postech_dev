@@ -1,4 +1,4 @@
-import { eq, and, sql, lte, asc, desc, ilike, gte } from 'drizzle-orm';
+import { eq, and, sql, lte, asc, desc, ilike, gte, or } from 'drizzle-orm';
 import { mainDb } from '../database/schema/connections/mainDb';
 import { askedProducts, categories, customers, debtPayments, debts, expenses, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, suppliers, users } from '../database/schema/shop';
 import { formatDistanceToNow } from "date-fns";
@@ -275,9 +275,7 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
 
 export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId: string, shopId: string, headers: headTypes, query: SalesQuery}) => {
             try {
-          // Extract user and shop IDs from JWT or cookies
-    
-      
+
           // Extract query parameters or set defaults
           const {
             search = '',
@@ -302,10 +300,14 @@ export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId:
           const searchTrimmed = (search as string).trim();
     
           if (searchTrimmed) {
-            filters.push(ilike(customers.name, `%${searchTrimmed}%`));
+            filters.push(
+              or(
+                ilike(customers.name, `%${searchTrimmed}%`),
+                ilike(products.name, `%${searchTrimmed}%`)
+              )
+            );
           }
     
-      
           // Handle date filtering (today, week, month, or custom)
           if (date && date !== 'Tarehe_maalumu') {
             const today = new Date();
@@ -341,9 +343,10 @@ export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId:
           }
       
           // Handle custom date range filtering
-          if (date === 'tarehe_maalumu' && from && to) {
+          if (date === 'Tarehe_maalumu' && from && to) {
             filters.push(and(gte(sales.createdAt, new Date(from)), lte(sales.createdAt, new Date(to))));
           }
+
       
       
           // Construct where clause from filters
@@ -354,6 +357,7 @@ export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId:
             .select({ count: sql<number>`COUNT(*)` })
             .from(sales)
             .leftJoin(customers, eq(sales.customerId, customers.id))
+            .leftJoin(products, eq(sales.productId, products.id))
             .where(whereClause);
       
           const total = totalResult[0].count;
@@ -364,21 +368,22 @@ export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId:
               date: sales.createdAt,
               name: products.name,
               total: sales.totalSales,
-              paymentType: sales.saleType,
-              customer: sql<string>`COALESCE(${customers.name}, 'mteja')`.as('customer')
+              priceBought: purchases.priceBought,
+              quantity: sales.quantity
             })
             .from(sales)
             .leftJoin(customers, eq(sales.customerId, customers.id))
             .leftJoin(products, eq(sales.productId, products.id))
+            .leftJoin(purchases, eq(sales.productId, purchases.productId))
             .where(whereClause)
             .limit(perPage)
             .offset(offset)
-            .orderBy(desc(sales.createdAt));
-    
+            .orderBy(desc(sales.createdAt));    
     
           // Return the sales data and total count
           return {
-            sales: results,
+            success: true,
+            data: results,
             total,
           };
         } catch (error) {
