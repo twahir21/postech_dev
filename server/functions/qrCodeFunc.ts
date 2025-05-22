@@ -1,40 +1,45 @@
 import QRCode from "qrcode";
 import sharp from "sharp";
 import fs from "fs/promises";
+import path from "path";
 
 export async function generateQRCodeWithLogo(data: string, logoPath: string, outputPath: string) {
     try {
-        const qrSize = 500; // QR Code Size (Increase for better quality)
-        const logoScale = 0.25; // Logo should be 25% of the QR code
+        const qrSize = 500;
+        const logoScale = 0.25;
+
+        // Ensure output folder exists
+        const outputDir = path.dirname(outputPath);
+        await fs.mkdir(outputDir, { recursive: true });
 
         // Generate QR Code as a Buffer
         const qrCodeBuffer = await QRCode.toBuffer(data, {
-            errorCorrectionLevel: "H", // High to allow logo overlay
+            errorCorrectionLevel: "H",
             width: qrSize,
         });
 
-        // Load & Resize Logo (25% of QR size)
+        // Load and resize logo
         const logoSize = Math.floor(qrSize * logoScale);
         const logoBuffer = await fs.readFile(logoPath);
         const resizedLogo = await sharp(logoBuffer)
             .resize(logoSize, logoSize)
             .toBuffer();
 
-        // Overlay Logo in the Center
+        // Composite and save final image
         await sharp(qrCodeBuffer)
-            .composite([{ input: resizedLogo, gravity: "center" }]) // Centered logo
+            .composite([{ input: resizedLogo, gravity: "center" }])
             .toFile(outputPath);
 
         return {
             success: true,
-            message: `QR Code imetengenezwa katika njia ${outputPath}`
-        }
+            message: `✅ QR Code saved to ${outputPath}`
+        };
     } catch (error) {
         return {
             success: false,
-            message: error instanceof Error 
-                        ? error.message
-                        : "Tatizo kwenye seva wakati wa kutengeneza QR Code"
-        }
+            message: error instanceof Error
+                ? error.message
+                : "Tatizo kwenye seva wakati wa kutengeneza QR Code"
+        };
     }
 }

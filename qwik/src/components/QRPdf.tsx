@@ -21,8 +21,10 @@ export const QrPdf = component$(() => {
   useResource$(async ({ track }) => {
     track(() => qrCodeRefetch.value);
 
+
       const checkQrCodeApi = new CrudService("check-isQrCode");
       const isQrcodeOk = await checkQrCodeApi.get();
+
       if (!isQrcodeOk.success){
         store.isButtonDisabled = true; // Disable the button if no QR codes are needed
       }else{
@@ -45,10 +47,10 @@ export const QrPdf = component$(() => {
         method: 'GET',
         credentials: 'include',
       });
-      const resultClone = response.clone() // ili tuweze kuisoma mara mbili json and blob
-      const result = await response.json();
 
       if (!response.ok) {
+      const result = await response.json();
+
         return {
           success: false,
           message: result.message || "Seva imeshindwa kutengeneza QR Code"
@@ -56,7 +58,7 @@ export const QrPdf = component$(() => {
       }
 
       // Trigger download of the zip file
-      const blob = await resultClone.blob();
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -68,7 +70,7 @@ export const QrPdf = component$(() => {
       // Show success message
       store.modal = {
         isOpen: true,
-        message: result.message || 'QR codes imetengenezwa kwa mafanikio na zipu imeshushwa.',
+        message: 'QR codes imetengenezwa kwa mafanikio na zipu imeshushwa.',
         isSuccess: true,
       };
     } catch (error) {
