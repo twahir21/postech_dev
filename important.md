@@ -159,3 +159,24 @@ latency to Tanzania.
 with NVMe faster than SSD. Almost 9 times.
 
 # contabo is clear winner with 13,000/- u get 75 NMVe, 8GB ram 3vCPU.
+
+# vertical scaling should be first priority for lowest latency to database t
+## to support up to 2000 users use 8vCPU, 32GB ram and 500 SSD 
+## beyond that do horizontal scaling hosting database in same data center for lower latency
+and then use redis (3 servers with load balancers) for caching frequent read data or read replica.
+
+           🌍 Users (Mobile/Web)
+                  │
+             Cloudflare CDN + Edge (Qwik UI)
+                  │
+     ┌────────────┴────────────┐
+     │                         │
+🌐 API Servers       🔄 WebSocket Workers (Elysia + Redis)
+(Horizontally scaled)         │
+     │                        └─► Redis Pub/Sub / Queues
+     ▼
+  🧠 PostgreSQL DB (Dedicated VPS, SSD)
+     ▲
+     └───── Background Workers (Analytics, Reports, Backups)
+
+for 10,000+ users and use websocket

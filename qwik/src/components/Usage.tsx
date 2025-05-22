@@ -95,7 +95,7 @@ export const UsageComponent = component$(() => {
                     Tengeneza QR Code
                 </summary>
                 <div class="mt-2 text-gray-800 pl-7">
-                    Bonyeza kitufe cha <button class="text-sm text-white bg-blue-600 px-2 py-0.5 rounded">Generate QR</button>. Faili litapakuliwa likiwa na QR Code zote za bidhaa zako.
+                    Bonyeza kitufe cha <button class="text-sm text-white bg-blue-600 px-2 py-0.5 rounded">Tengeneza QR Code</button>. Faili litapakuliwa likiwa na QR Code zote za bidhaa zako.
                 </div>
                 </details>
 
@@ -115,7 +115,7 @@ export const UsageComponent = component$(() => {
                     Scan na Tuma taarifa
                 </summary>
                 <div class="mt-2 text-gray-800 pl-7">
-                    <button class="text-sm text-white bg-green-600 px-2 py-0.5 rounded">Scan QR</button> ya bidhaa husika kutumia Google lens, jaza taarifa za kuuza, kununua au kutumia, kisha tuma.
+                    <button class="text-sm text-white bg-green-600 px-2 py-0.5 rounded">Scan QR Code</button> ya bidhaa husika kutumia Google lens, jaza taarifa za kuuza, kununua au kutumia, kisha tuma.
                 </div>
                 </details>
 
@@ -145,7 +145,7 @@ export const UsageComponent = component$(() => {
                     Futa bidhaa zisizohitajika
                 </summary>
                 <div class="mt-2 text-gray-800 pl-7">
-                    Unaweza <button class="text-sm text-white bg-red-600 px-2 py-0.5 rounded">Delete Product</button> kwa urahisi kupitia dashbodi.
+                    Unaweza <button class="text-sm text-white bg-red-600 px-2 py-0.5 rounded">Futa Bidhaa</button> kwa urahisi kupitia dashbodi.
                 </div>
                 </details>
 

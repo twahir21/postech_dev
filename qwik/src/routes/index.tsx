@@ -4,6 +4,7 @@ import type { ContactTypes } from "./api/base/typeSafe";
 import { contactApi, warmUpApi } from "./api/base/api";
 import { Typewriter } from "~/components/TypeWriter";
 import { Toast } from "~/components/ui/Toast";
+import { WhatsApp } from "~/components/WhatsApp";
 
 export default component$(() => {
 
@@ -233,6 +234,7 @@ export default component$(() => {
 
     return <>
     <div class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <WhatsApp />
 
         {/* HEADER  */}
         <header class="fixed top-0 left-0 w-full bg-white dark:bg-gray-700 shadow-md z-50 transition-colors duration-300">
