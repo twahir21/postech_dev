@@ -29,7 +29,6 @@ export default component$(() => {
     showCalculator: false,
     input: "",
     isSubmitting: false, // Track if submission is in progress
-    submitTimer: 0, // Countdown timer (in seconds),
     modal: {
       isOpen: false,
       message: '',
@@ -97,49 +96,40 @@ export default component$(() => {
 
 // Handle form submission with a 4-second cooldown
 const handleSubmit = $(async () => {
-  if (state.isSubmitting) return; // Prevent multiple submissions
+  if (state.isSubmitting) return;
 
-    state.isSubmitting = true; // Disable the button
-    state.submitTimer = 4; // Start the countdown from 4 seconds
+  state.isSubmitting = true;
 
-    // Convert quantity and discount to numbers
-    const numericQuantity = parseFloat(state.editableFields.quantity);
-    const numericDiscount = parseFloat(state.editableFields.discount);
+  const numericQuantity = parseFloat(state.editableFields.quantity);
+  const numericDiscount = parseFloat(state.editableFields.discount);
 
-    // Ensure valid numbers (fallback to defaults if NaN)
-    const validatedQuantity = isNaN(numericQuantity) ? 1 : numericQuantity;
-    const validatedDiscount = isNaN(numericDiscount) ? 0 : numericDiscount;
+  const validatedQuantity = isNaN(numericQuantity) ? 1 : numericQuantity;
+  const validatedDiscount = isNaN(numericDiscount) ? 0 : numericDiscount;
 
-    // check product id
-    if (!state.productId || state.productId === "") {
-      state.modal = {
-        isOpen: true,
-        message: "Product ID is required!",
-        isSuccess: false
-      };
-      return;
-    }
-    
-
-    // Prepare the data to send to the backend
-    const requestData = {
-      ...state.query,
-      ...state.editableFields,
-      quantity: validatedQuantity, // Use validated quantity
-      discount: validatedDiscount, // Use validated discount
-      productId: state.productId,
-      priceSold: Number(state.query.priceSold),
-      priceBought: Number(state.query.priceBought),
-      supplierId: state.supplierId,
-      customerId: state.customerId,
-      calculatedTotal: state.calculatedTotal,
+  if (!state.productId) {
+    state.modal = {
+      isOpen: true,
+      message: "Product ID inatakiwa!",
+      isSuccess: false
     };
+    state.isSubmitting = false;
+    return;
+  }
 
+  const requestData = {
+    ...state.query,
+    ...state.editableFields,
+    quantity: validatedQuantity,
+    discount: validatedDiscount,
+    productId: state.productId,
+    priceSold: Number(state.query.priceSold),
+    priceBought: Number(state.query.priceBought),
+    supplierId: state.supplierId,
+    customerId: state.customerId,
+    calculatedTotal: state.calculatedTotal,
+  };
 
-    // Send POST request to the backend
-    $(async () => {
-
-      interface sendData {
+        interface sendData {
         id?: string;
         quantity: number;
         discount: number;
@@ -153,46 +143,18 @@ const handleSubmit = $(async () => {
         description: string;
         typeDetected: string;
     }
-    
-    const sendDataApi = new CrudService<sendData>("get-data");
 
-      const sendResult = await sendDataApi.create(requestData);
+  const sendDataApi = new CrudService<sendData>("get-data");
+  const sendResult = await sendDataApi.create(requestData);
+  state.isSubmitting = false;
 
-      if (!sendResult.success){
-        state.modal = {
-          isOpen: true,
-          message: sendResult.message || "Tatizo limejitokeza",
-          isSuccess: false
-        }
-      // Countdown timer logic
-      const interval = setInterval(() => {
-      state.submitTimer -= 1; // Decrement the timer
-      if (state.submitTimer <= 0) {
-        clearInterval(interval); // Stop the timer
-        state.isSubmitting = false; // Re-enable the button
-        state.submitTimer = 0; // Reset the timer
-      }
-      }, 1000);
-      return;
-      }
-      // Log success message
-      state.modal = {
-      isOpen: true,
-      message: sendResult.message || "Umefanikiwa",
-      isSuccess: true
-      }
-
-          // Countdown timer logic
-    const interval = setInterval(() => {
-      state.submitTimer -= 1; // Decrement the timer
-      if (state.submitTimer <= 0) {
-        clearInterval(interval); // Stop the timer
-        state.isSubmitting = false; // Re-enable the button
-        state.submitTimer = 0; // Reset the timer
-      }
-    }, 1000);
-    })
+  state.modal = {
+    isOpen: true,
+    message: sendResult.message || (sendResult.success ? "Umefanikiwa" : "Tatizo limejitokeza"),
+    isSuccess: sendResult.success
+  };
 });
+
 
 const handleButtonClick = $((btn: string) => {
   if (btn === "C") {
@@ -295,7 +257,7 @@ const handleButtonClick = $((btn: string) => {
 
           <div class="relative inline-block group cursor-help">
             <p class="text-green-600 underline">
-              ℹ️ Click here (Quantity)
+              ℹ️ Bonyeza hapa (Jinsi ya kuweka hisa)
             </p>
             <div class="absolute z-10 hidden group-hover:block bg-white border border-gray-300 text-sm text-gray-700 p-2 rounded-md shadow-md w-64 mt-2">
               <p>🟢 <strong>Robo</strong> = 0.25</p>
@@ -421,7 +383,7 @@ const handleButtonClick = $((btn: string) => {
           disabled={state.isSubmitting} // Disable button during submission
           class="mt-4 w-full bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-400 transition duration-300 ease-in-out"
         >
-          {state.isSubmitting ? `Please wait (${state.submitTimer}s)` : "Submit Transaction"}
+          {state.isSubmitting ? `Tafadhali subiri ` : "Tuma muamala"}
         </button>
         </div>
       )}

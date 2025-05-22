@@ -50,14 +50,19 @@ export const shopSettingsPut = async ({ shopId, userId, headers, body }: {userId
     
     
           // give the logic of saving to database
-          await mainDb.update(users).set({
+         await mainDb.update(users).set({
             email
-          }).where(eq(users.id, userId)).returning();
+          }).where(eq(users.id, userId));
+
     
           await mainDb.update(shops).set({
             name: shopName
-          }).where(eq(shops.id, shopId)).returning();
-    
+          }).where(eq(shops.id, shopId));
+
+          return {
+            success: true,
+            message: "Umefanikiwa kubadili taarifa zako kiukamilifu"
+          }
     
         } catch (error) {
             return {

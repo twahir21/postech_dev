@@ -6,7 +6,7 @@ export const Toast = component$(
     isOpen,
     type, // true for success (Nzuri), false for error (Mbaya)
     message,
-    duration = 3000, // Default duration in milliseconds
+    duration = 2000, // Default duration in milliseconds
     onClose$, // QRL to call when toast should close
   }: {
     isOpen: boolean;
