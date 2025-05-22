@@ -96,3 +96,66 @@ check if your database is not down from https://neonstatus.com/.
 
 # left neon for its latency and hit limit on 5h computation on branch but still good
 # for local postgres use pg and not postgres in drizzle orm
+
+# for efficient postgres connection upon concurrent users use connection pooling to reduce RAM and CPU loading ... !!!!!
+
+# if ram is too tight in vps use virtual ram by swap memory using
+```bash
+# Create 2GB swap file
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+# Make it permanent
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+# use monitoring tools for checking usage
+```bash
+sudo apt update
+sudo apt install htop glances -y
+```
+or top command (build-in) help to check total memory and free memory instant.
+while htop is per process usage help to optimize the draining task to use low memory.
+glances also adds alerts and disk checkup
+
+# 📌 How to Find What Is Using Most RAM
+Use htop or glances:
+
+Press F6 in htop to sort by MEM%
+
+Look at postgres, bun, or other processes
+
+Kill unused background apps or logs eating RAM
+
+for regular check use
+```bash
+free -h
+```
+for fast checking of memory.
+
+for realtime updates use
+```bash
+watch free -h
+```
+# swap ram
+is ram used from part of your SSD (fast) or HDD conrted to ram and is slower than real ram,
+so total ram can be in any OS 8GB with which real ram is only 4GB.
+
+often used to avoid system crush when resources exceed real ram limits but use this as preserved ram
+and not real ram upgrade.
+
+more than 2 x real Ram is not recommended so max is 2 x real RAM.
+
+# recommended 
+1. vps is better than managed railway for scaling
+2. use oracle free service vm with 1GB ram  (fast since from south Africa)
+3. change to vpsmart if you need much memory starts with 10,000 Tsh with 4GB ram with lowest
+latency to Tanzania.
+4. change to contabo since they use NVMe if you have greate database interactions (wins)
+
+# use localhost postgres for minimum latency to database
+with NVMe faster than SSD. Almost 9 times.
+
+# contabo is clear winner with 13,000/- u get 75 NMVe, 8GB ram 3vCPU.
