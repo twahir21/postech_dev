@@ -405,22 +405,25 @@ export const exportSales = async ({userId, shopId, headers, set } : { shopId: st
               date: sales.createdAt,
               productName: products.name,
               total: sales.totalSales,
-              paymentType: sales.saleType,
-              customer: sql<string>`COALESCE(${customers.name}, 'mteja')`.as('customer')
+              priceBought: purchases.priceBought,
+              quantity: sales.quantity
             })
             .from(sales)
             .leftJoin(customers, eq(sales.customerId, customers.id))
             .leftJoin(products, eq(sales.productId, products.id))
+            .leftJoin(purchases, eq(sales.productId, purchases.productId))
             .where(eq(sales.shopId, shopId))
             .orderBy(desc(sales.createdAt));
       
           // 🔥 Build CSV manually
-          const csvHeader = "Date,Product Name,Total,Payment Type,Customer\n";
+          const csvHeader = "Tarehe,Jina la Bidhaa,Jumla,Faida,Idadi\n";
           const csvRows = salesData.map(row => {
             const dateObj = new Date(row.date);
             const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()} ${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}:${String(dateObj.getSeconds()).padStart(2, '0')}`;
+
+            const profit = Number(row.total) - (Number(row.priceBought) * row.quantity);
                 
-            return `${formattedDate},"${row.productName}",${row.total},${row.paymentType},"${row.customer}"`;
+            return `${formattedDate},"${row.productName}",${row.total},${profit},"${row.quantity}"`;
           });
           const csvContent = csvHeader + csvRows.join("\n");
       

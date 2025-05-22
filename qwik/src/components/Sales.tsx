@@ -127,7 +127,7 @@ export const SalesComponent = component$(() => {
               <th class="p-2">Bidhaa</th>
               <th class="p-2">Jumla</th>
               <th class="p-2">Faida</th>
-              <th class="p-2">Ngapi</th>
+              <th class="p-2">Idadi</th>
             </tr>
           </thead>
           <tbody>
