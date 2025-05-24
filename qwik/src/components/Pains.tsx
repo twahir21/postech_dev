@@ -2,7 +2,7 @@ import { component$ } from '@builder.io/qwik';
 
 export const Pains =  component$(() => {
   return (
-    <section class="bg-white py-10 px-4 text-gray-800">
+    <section class="bg-white py-10 px-4 text-gray-800 dark:bg-gray-500">
       <div class="max-w-4xl mx-auto text-center">
         <h2 class="text-2xl md:text-3xl font-bold mb-6">
           Changamoto za Wamiliki wa Biashara Ndogo na Jinsi PosTech Inavyosaidia
@@ -11,8 +11,8 @@ export const Pains =  component$(() => {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 max-w-6xl mx-auto">
         {/* Problems */}
-        <div class="bg-red-50 rounded-xl p-6 shadow-md border-2 border-red-300">
-          <h3 class="text-xl font-semibold text-red-600 mb-4">🔴 Changamoto za Wafanyabiashara</h3>
+        <div class="bg-red-50 dark:bg-gray-400 rounded-xl p-6 shadow-md border-2 border-red-300">
+          <h3 class="text-xl font-semibold text-red-600 mb-4 dark:text-red-900">🔴 Changamoto za Wafanyabiashara</h3>
           <ul class="space-y-3 text-sm md:text-base">
             <li>• Kukosa njia rahisi ya kurekodi mauzo kila siku</li>
             <li>• Kushindwa kujua faida halisi au hasara</li>
@@ -29,8 +29,8 @@ export const Pains =  component$(() => {
         </div>
 
         {/* Solutions */}
-        <div class="bg-green-50 rounded-xl p-6 shadow-md border-2 border-green-300">
-          <h3 class="text-xl font-semibold text-green-700 mb-4">✅ PosTech Inatatua Kwa Urahisi</h3>
+        <div class="bg-green-50 dark:bg-gray-400 rounded-xl p-6 shadow-md border-2 border-green-300">
+          <h3 class="text-xl font-semibold text-green-700 dark:text-green-900 mb-4">✅ PosTech Inatatua Kwa Urahisi</h3>
           <ul class="space-y-3 text-sm md:text-base">
             <li>✔ Kurekodi mauzo kwa kuscan QR ya bidhaa</li>
             <li>✔ Kuonyesha faida, hasara na matumizi kwa muda halisi</li>

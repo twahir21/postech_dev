@@ -186,7 +186,7 @@ export default component$(() => {
           <ul class="hidden md:flex space-x-6">
             <li><a href="#hero" class="hover:text-gray-700 dark:hover:text-gray-300 text-sm sm:text-base dark:text-gray-200">Nyumbani</a></li>
             <li><a href="#about" class="hover:text-gray-700 dark:hover:text-gray-300 text-sm sm:text-base dark:text-gray-200">Kuhusu</a></li>
-            <li><a href="#features" class="hover:text-gray-700 dark:hover:text-gray-300 text-sm sm:text-base dark:text-gray-200">Kwa Nini Sisi?</a></li>
+            <li><a href="#features" class="hover:text-gray-700 dark:hover:text-gray-300 text-sm sm:text-base dark:text-gray-200">Unafanyaje kazi?</a></li>
             <li><a href="#contact" class="hover:text-gray-700 dark:hover:text-gray-300 text-sm sm:text-base dark:text-gray-200">Wasiliana</a></li>
           </ul>
 
@@ -209,7 +209,7 @@ export default component$(() => {
         <div ref={mobileMenuSig} id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 p-4 space-y-3 transition-colors duration-300">
           <a href="#hero" class="block text-gray-800 dark:text-gray-200 hover:text-indigo-500">Nyumbani</a>
           <a href="#about" class="block text-gray-800 dark:text-gray-200 hover:text-indigo-500">Kuhusu</a>
-          <a href="#features" class="block text-gray-800 dark:text-gray-200 hover:text-indigo-500">Kwa Nini Sisi?</a>
+          <a href="#features" class="block text-gray-800 dark:text-gray-200 hover:text-indigo-500">Unafanyaje kazi?</a>
           <a href="#contact" class="block text-gray-800 dark:text-gray-200 hover:text-indigo-500">Wasiliana</a>
           <div class="flex gap-3 mt-3">
             <Link href='/auth?reg=false ' class="w-full border border-gray-900 text-center px-4 py-2 rounded-md hover:bg-gray-900 hover:text-white transition">Ingia</Link>

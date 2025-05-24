@@ -25,15 +25,15 @@ export const Faqs = component$(() => {
   ];
 
   return (
-    <section class="bg-gray-50 text-gray-800 py-10 px-4">
+    <section class="bg-gray-50 text-gray-800 py-10 px-4 dark:bg-gray-800">
       <h2 class="text-center text-2xl font-bold mb-6">Maswali Yanayoulizwa Sana (FAQ)</h2>
       <div class="max-w-2xl mx-auto space-y-4">
         {faqs.map((faq, i) => (
-          <details key={i} class="bg-white rounded-lg shadow-sm p-4 group">
-            <summary class="font-semibold cursor-pointer text-base group-open:text-green-600">
+          <details key={i} class="bg-white dark:bg-gray-500 rounded-lg shadow-sm p-4 group">
+            <summary class="font-semibold cursor-pointer text-base group-open:text-green-600 dark:group-open:text-gray-300">
               {faq.question}
             </summary>
-            <p class="mt-2 text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-900 leading-relaxed">{faq.answer}</p>
           </details>
         ))}
       </div>
