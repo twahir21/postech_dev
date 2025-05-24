@@ -247,20 +247,20 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
 
         return {
             success: true,
-            profitPerProduct,
-            highestProfitProduct,
-            netProfit,
-            lowestProduct,
-            lowStockProducts,
-            mostSoldProductByQuantity,
-            mostFrequentProduct,
-            longTermDebtUser,
-            mostDebtUser,
-            daysSinceDebt,
-            salesByDay,
-            expensesByDay,
-            netSalesByDay,
-            purchasesPerDay
+            data:  profitPerProduct,
+                    highestProfitProduct,
+                    netProfit,
+                    lowestProduct,
+                    lowStockProducts,
+                    mostSoldProductByQuantity,
+                    mostFrequentProduct,
+                    longTermDebtUser,
+                    mostDebtUser,
+                    daysSinceDebt,
+                    salesByDay,
+                    expensesByDay,
+                    netSalesByDay,
+                    purchasesPerDay
         };
 
     } catch (error) {

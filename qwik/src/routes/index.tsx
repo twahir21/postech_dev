@@ -5,6 +5,11 @@ import { contactApi, warmUpApi } from "./api/base/api";
 import { Typewriter } from "~/components/TypeWriter";
 import { Toast } from "~/components/ui/Toast";
 import { WhatsApp } from "~/components/WhatsApp";
+import { Testimonials } from "~/components/Testimonials";
+import { Faqs } from "~/components/Faqs";
+import { Pains } from "~/components/Pains";
+import { Steps } from "~/components/Steps";
+import { Last } from "~/components/Last";
 
 export default component$(() => {
 
@@ -158,69 +163,6 @@ export default component$(() => {
       return () => document.removeEventListener('click', handler);
     });
 
-    useVisibleTask$(() => {
-        const beeModal = document.getElementById("bee-model");
-        if (!beeModal) return;
-    
-        const sections = Array.from(document.querySelectorAll("section"));
-        const sectionOffsets = sections.map((section) => section.offsetTop);
-    
-        const shiftPositions = [30, -30, 0, 64];
-        const cameraOrbits = [
-          [45, 45],
-          [-45, 45],
-          [-180, 0],
-          [45, 180],
-        ];
-    
-        const lastSectionIndex = sections.length - 1;
-    
-        const interpolate = (start: number, end: number, progress: number) =>
-          start + (end - start) * progress;
-    
-        const getScrollProgress = (scrollY: number) => {
-          for (let i = 0; i < lastSectionIndex; i++) {
-            if (scrollY >= sectionOffsets[i] && scrollY < sectionOffsets[i + 1]) {
-              return (
-                i +
-                (scrollY - sectionOffsets[i]) /
-                  (sectionOffsets[i + 1] - sectionOffsets[i])
-              );
-            }
-          }
-          return lastSectionIndex;
-        };
-    
-        const onScroll = () => {
-          const scrollProgress = getScrollProgress(window.scrollY);
-          const sectionIndex = Math.floor(scrollProgress);
-          const sectionProgress = scrollProgress - sectionIndex;
-    
-          const currentShift = interpolate(
-            shiftPositions[sectionIndex],
-            shiftPositions[sectionIndex + 1] ?? shiftPositions[sectionIndex],
-            sectionProgress
-          );
-    
-          const currentOrbit = cameraOrbits[sectionIndex].map((val, i) =>
-            interpolate(
-              val,
-              cameraOrbits[sectionIndex + 1]?.[i] ?? val,
-              sectionProgress
-            )
-          );
-    
-          beeModal.style.transform = `translateX(${currentShift}%)`;
-          beeModal.setAttribute(
-            "camera-orbit",
-            `${currentOrbit[0]}deg ${currentOrbit[1]}deg`
-          );
-        };
-    
-        window.addEventListener("scroll", onScroll);
-        return () => window.removeEventListener("scroll", onScroll);
-      });
-
       // WARM UP THE SERVER TO REMOVE COLD START
       useVisibleTask$(async () => {
         const result = await warmUpApi.get();
@@ -284,69 +226,99 @@ export default component$(() => {
         </div>
         </header>
 
-        {/* MODEL VIEWER 3D RENDERING  */}
-        <model-viewer src="/money.glb" id="bee-model" camera-orbit="45deg 45deg" class="getLeft w-full h-[400px]" auto-rotate autoplay ar camera-controls exposure="1"></model-viewer>
-
         {/* HERO SECTION  */}
-        <section id="hero" class="flex items-center min-h-screen px-6 max-w-6xl mx-auto pt-20">
-            <div class="w-full md:w-1/2">
-                <h1 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">   
-                  Boresha biashara yako na PosTech
-                </h1>
-              <p class="text-sm sm:text-base md:text-base text-gray-600 mb-6 dark:text-gray-400">
-                  <Typewriter text="Mfumo wa kisasa wa POS ulio na uwezo wa kuboresha na kurahisisha mauzo kwa ku scan special QR Codes hivyo kufanya mahesabu ya biashara kiotomatiki." speed={50} />
-                </p>
-                <div class="flex space-x-4">
-                <Link href= '/auth?reg=true' class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base">Anza Kutumia</Link>
-                <Link href= '/auth?reg=false' class="border border-gray-900 dark:border-gray-100 px-6 py-3 rounded-lg shadow-md hover:bg-gray-900 hover:text-white transition text-sm sm:text-base md:text-base">Ingia</Link>
-                </div>
+        <section id="hero" class="flex flex-col-reverse md:flex-row items-center min-h-screen px-6 max-w-6xl mx-auto pt-20 gap-12">
+          {/* Left side - text */}
+          <div class="w-full md:w-3/4">
+            <h1 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">
+              Boresha biashara yako na PosTech
+            </h1>
+            <p class="text-sm sm:text-base md:text-base text-gray-600 mb-6 dark:text-gray-400">
+              <Typewriter
+                text="Mfumo wa kisasa ulio na uwezo wa kuboresha na kurahisisha shughuli za kila siku za biashara yako kwa ku scan QR Codes maalumu zitakazotengenezwa na mfumo, hivyo kufanya mahesabu yako na rekodi za mauzo kiotomatiki kwa simu yako tu!. Pia unaweza kupakua App yako, itakuja kama ujumbe ukiwa unatumia mfumo mara kwa mara"
+                speed={50}
+              />
+            </p>
+            <div class="flex flex-wrap gap-4">
+              <Link
+                href="/auth?reg=true"
+                class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-full shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base"
+              >
+                Anza Bure (siku 14)
+              </Link>
+
+              <Link
+                href="#video"
+                class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-700 to-green-900 text-white rounded-full shadow-2xl animate-pulse hover:animate-none transition text-sm sm:text-base"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.5 5.5v9l8-4.5-8-4.5z" />
+                </svg>
+                Tazama Video
+              </Link>
             </div>
+          </div>
+
+    {/* Right side - image */}
+    <div class="w-full md:w-1/2">
+      {/* Small screens: hero.png */}
+      <img
+        src="/hero.png"
+        alt="PosTech mobile hero"
+        class="w-ful max-w-sm mx-auto drop-shadow-xl rounded-xl block md:hidden"
+        loading="lazy"
+      />
+      
+      {/* Desktop: hero-big.png */}
+      <img
+        src="/hero-big.png"
+        alt="PosTech desktop hero"
+        class="w-full max-w-sm mx-auto drop-shadow-xl rounded-xl hidden md:block"
+        loading="lazy"
+      />
+    </div>
+
         </section>
 
         {/* ABOUT US  */}
-        <section id="about" class="flex items-center min-h-screen px-6 mx-auto bg-gray-300 dark:bg-gray-600">
+        <section id="about" class="flex items-center min-h-screen px-6 mx-auto bg-gray-200 dark:bg-gray-600">
+          <div class="hidden md:block w-1/2">
+            <img
+              src="/gpt.png"
+              alt="About PosTech Visual"
+              class="w-full max-w-sm mx-auto drop-shadow-xl rounded-full"
+              loading="lazy"
+            />
+          </div>
+
           <div class="w-full md:w-1/2 ml-auto text-right">
               <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">Kuhusu PosTech</h2>
               <p class="text-sm sm:text-base md:text-base text-gray-600 dark:text-gray-300">
-                  PosTech ni mfumo wa kisasa wa Point-of-Sale uliotengenezwa ili kurahisisha shughuli za biashara hasa mauzo na utunzaji wa taarifa za kibiashara kwa kufanya
-                  uchanganuzi wa faida, usimamizi wa mauzo na manunuzi, na shughuli zisizo na mashaka, tunawasaidia wajasiriamali kufanikiwa.
+                PosTech umeundwa mahsusi kutatua changamoto halisi za wafanyabiashara wakubwa na wadogo.
+                Wafanyabiashara wengi walikuwa wanapoteza faida kwa sababu ya kumbukumbu hafifu za bidhaa zao, hesabu zisizo sahihi, bidhaa kuisha bila kujua kupelekea kukosa wateja, na madeni lisilofuatiliwa vizuri.
+                PosTech imekuja kama suluhisho rahisi, salama na nafuu – kwa kila biashara, Kwa kutengeneza QR Code za bidhaa zako kiotomatiki, kuuza na kuscan QR Code ya bidhaa, kurekodi mauzo kiotomatiki, na kuona faida yako papo hapo.
+                Mfumo hujifunza mwenendo wa biashara yako kupitia akili bandia (AI), na hukupa ushauri wa bidhaa gani kuagiza, lini, na kwa bei ipi.
+                PosTech - Biashara yako, Teknolojia yetu.
               </p>
           </div>        
         </section>
 
-        {/* WHY CHOOSE US  */}
-        <section id="features" class="min-h-screen bg-white flex flex-col items-center justify-center py-20 px-6 dark:bg-gray-800">
-            <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold text-center mb-12">Kwa Nini PosTech?</h2>
+        {/* FAQS */}
+        <Faqs />
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-            {/* <!-- Left Column --> */}
-            <div class="flex flex-col space-y-6">
-                <div class="p-6 bg-gray-50 dark:bg-gray-600 rounded-lg shadow-md">
-                <h3 class="text-lg sm:text-xl md:text-xl font-semibold mb-2">📊 Uchambuzi Imara</h3>
-                <p class="text-gray-600 dark:text-gray-300">Pata uchanganuzi wa wakati halisi kuhusu mauzo na orodha zako.</p>
-                </div>
-                <div class="p-6 bg-gray-50 dark:bg-gray-600 rounded-lg shadow-md">
-                <h3 class="text-lg sm:text-xl md:text-xl font-semibold mb-2">💰 Usimamizi wa Mauzo na Gharama</h3>
-                <p class="text-gray-600 dark:text-gray-300">Fuata kila shughuli kwa urahisi.</p>
-                </div>
-            </div>
+        {/*OUR BIG CUSTOMERS*/}
 
-            {/* <!-- Empty Middle Column --> */}
-            <div></div>
+        {/* PAINS  */}
+        <Pains />
 
-            {/* <!-- Right Column --> */}
-            <div class="flex flex-col space-y-6">
-                <div class="p-6 bg-gray-50 dark:bg-gray-600 rounded-lg shadow-md">
-                <h3 class="text-lg sm:text-xl md:text-xl font-semibold mb-2">📦 Usimamizi wa Orodha</h3>
-                <p class="text-gray-600 dark:text-gray-300">Hatutakosa bidhaa tena.</p>
-                </div>
-                <div class="p-6 bg-gray-50 dark:bg-gray-600 rounded-lg shadow-md">
-                <h3 class="text-lg sm:text-xl md:text-xl font-semibold mb-2">⚡ Haraka na Salama</h3>
-                <p class="text-gray-600 dark:text-gray-300">Imebuniwa kwa utendaji bora na usalama.</p>
-                </div>
-            </div>
-            </div>
-        </section>
+        {/* STEPS  */}
+        <Steps />
+
+        {/* LAST  */}
+        <Last />
+
+        {/* TESTIMONIALS  */}
+        <Testimonials />
 
         {/* CONTACT-SECTION  */}
         <section id="contact" class="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 py-20 px-6">
@@ -427,7 +399,6 @@ export default component$(() => {
         <footer class="bg-gray-900 dark:bg-gray-600 text-white text-center py-6">
             <p>© {new Date().getFullYear()} PosTech. Haki Zote Zimehifadhiwa.</p>
         </footer>
-        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     </div>
     </>
 });

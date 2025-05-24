@@ -1,4 +1,4 @@
-import { component$, useSignal, useStore, useTask$, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
 import { CrudService } from "~/routes/api/base/oop";
@@ -27,23 +27,11 @@ export const HomeComponent = component$(() => {
   const netSalesStore = useStore<{ day: string; netSales: number }[]>([]);
   const isGraphReady = useSignal(false);
 
-useTask$(async () => {
-      const analyticsApi = new CrudService("customers");
-    const analyticsData = await analyticsApi.get();
-    console.log("Task Analytics: ", analyticsData);
-})
-
 useVisibleTask$(async () => {
-  if (localStorage.getItem("isFetched") !== "true") {
     const analyticsApi = new CrudService("analytics");
     const analyticsData = await analyticsApi.get();
     console.log("Analytics: ", analyticsData);
 
-    // store data globally
-
-    // Only mark as fetched after success
-    localStorage.setItem("isFetched", "true");
-  }
 });
 
 
@@ -226,6 +214,15 @@ useVisibleTask$(async () => {
           Kulipia Huduma
         </h3>
         <p class="text-lg font-semibold">Zimebaki siku 20</p>
+      </div>
+
+      {/* Product registered */}
+      <div class="bg-indigo-200 text-indigo-800 p-4 rounded-2xl shadow text-center">
+        <h3 class="text-sm flex items-center justify-center">
+          <span role="img" aria-label="countdown" class="pr-1.5">📦</span> 
+          Bidhaa ulizosajili
+        </h3>
+        <p class="text-sm font-semibold">Umesajili bidhaa 10 kati ya 300</p>
       </div>
 
         {/* Total Return */}

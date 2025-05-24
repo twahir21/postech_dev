@@ -57,7 +57,6 @@ export default component$(() => {
 
   const usernameData = useAuthLoader(); // data from SSR cookie (secured!)
 
-  // Load selected language from localStorage when component is visible
   useTask$(() => {
       let username = usernameData.value.username;
       if (!username) {

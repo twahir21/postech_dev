@@ -39,18 +39,6 @@ export const DebtComponent = component$(() => {
         </div>
         </div>
 
-
-        {/* Actions */}
-        <div class="bg-white rounded-xl shadow p-4 md:p-6 text-gray-800">
-          <h2 class="text-lg md:text-2xl font-bold mb-4">⚙️ Hatua za Haraka</h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm md:text-base">
-            <button class="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600">👁️ Angalia Madeni</button>
-            <button class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">💸 Lipisha</button>
-            <button class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">🖨️ Chapisha Risiti</button>
-            <button class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">🧹 Futa Yaliyolipwa</button>
-          </div>
-        </div>
-
         {/* Analytics */}
         <div class="bg-white rounded-xl shadow p-4 md:p-6 text-gray-800">
           <h2 class="text-lg md:text-2xl font-bold mb-3">📈 Takwimu Muhimu</h2>

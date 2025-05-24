@@ -160,7 +160,6 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
 
 
         // registration do auto login
-        localStorage.setItem("username", state.username || "Guest");
         // Set token cookie manually is not allowed for production in frontend
         const frontendURL = env.mode === 'development'
                             ? env.frontendURL_DEV
