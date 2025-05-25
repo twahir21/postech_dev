@@ -23,16 +23,16 @@ export const Testimonials =  component$(() => {
   ];
 
   return (
-    <section class="bg-white text-gray-800 py-10 px-4">
+    <section class="bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-400 py-10 px-4">
       <h2 class="text-center text-2xl font-bold mb-8">Walisema Nini Kuhusu PosTech?</h2>
       <div class="space-y-6 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 sm:space-y-0">
         {testimonials.map((t, i) => (
-          <div key={i} class="bg-gray-100 p-5 rounded-xl shadow-sm hover:shadow-md transition">
+          <div key={i} class="bg-gray-100 dark:bg-gray-400 p-5 rounded-xl shadow-sm hover:shadow-md transition">
             <div class="flex items-center space-x-4 mb-4">
               <img src={t.image} alt={t.name} class="w-12 h-12 rounded-full object-cover" />
               <div>
-                <p class="font-semibold">{t.name}</p>
-                <p class="text-sm text-gray-500">{t.role}</p>
+                <p class="font-semibold dark:text-black">{t.name}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-900">{t.role}</p>
               </div>
             </div>
             <p class="text-sm text-gray-700 italic">“{t.quote}”</p>
