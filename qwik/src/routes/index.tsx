@@ -181,7 +181,7 @@ export default component$(() => {
         {/* HEADER  */}
         <header class="fixed top-0 left-0 w-full bg-white dark:bg-gray-700 shadow-md z-50 transition-colors duration-300">
         <nav class="max-w-6xl mx-auto flex justify-between items-center p-4">
-          <a href="/" class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">PosTech</a>
+          <a href="/" class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">myPosTech</a>
 
           <ul class="hidden md:flex space-x-6">
             <li><a href="#hero" class="hover:text-gray-700 dark:hover:text-gray-300 text-sm sm:text-base dark:text-gray-200">Nyumbani</a></li>
@@ -231,7 +231,7 @@ export default component$(() => {
           {/* Left side - text */}
           <div class="w-full md:w-3/4">
             <h1 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">
-              Boresha biashara yako na PosTech
+              Boresha biashara yako na myPosTech
             </h1>
             <p class="text-sm sm:text-base md:text-base text-gray-600 mb-6 dark:text-gray-400">
               <Typewriter
@@ -264,7 +264,7 @@ export default component$(() => {
       {/* Small screens: hero.png */}
       <img
         src="/hero.png"
-        alt="PosTech mobile hero"
+        alt="myPosTech mobile hero"
         class="w-ful max-w-sm mx-auto drop-shadow-xl rounded-xl block md:hidden"
         loading="lazy"
       />
@@ -272,7 +272,7 @@ export default component$(() => {
       {/* Desktop: hero-big.png */}
       <img
         src="/hero-big.png"
-        alt="PosTech desktop hero"
+        alt="myPosTech desktop hero"
         class="w-full max-w-sm mx-auto drop-shadow-xl rounded-xl hidden md:block"
         loading="lazy"
       />
@@ -285,20 +285,20 @@ export default component$(() => {
           <div class="hidden md:block w-1/2">
             <img
               src="/gpt.png"
-              alt="About PosTech Visual"
+              alt="About myPosTech Visual"
               class="w-full max-w-sm mx-auto drop-shadow-xl rounded-full"
               loading="lazy"
             />
           </div>
 
           <div class="w-full md:w-1/2 ml-auto text-right">
-              <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">Kuhusu PosTech</h2>
+              <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">Kuhusu myPosTech</h2>
               <p class="text-sm sm:text-base md:text-base text-gray-600 dark:text-gray-300">
-                PosTech umeundwa mahsusi kutatua changamoto halisi za wafanyabiashara wakubwa na wadogo.
+                myPosTech umeundwa mahsusi kutatua changamoto halisi za wafanyabiashara wakubwa na wadogo.
                 Wafanyabiashara wengi walikuwa wanapoteza faida kwa sababu ya kumbukumbu hafifu za bidhaa zao, hesabu zisizo sahihi, bidhaa kuisha bila kujua kupelekea kukosa wateja, na madeni lisilofuatiliwa vizuri.
-                PosTech imekuja kama suluhisho rahisi, salama na nafuu – kwa kila biashara, Kwa kutengeneza QR Code za bidhaa zako kiotomatiki, kuuza na kuscan QR Code ya bidhaa, kurekodi mauzo kiotomatiki, na kuona faida yako papo hapo.
+                myPosTech imekuja kama suluhisho rahisi, salama na nafuu – kwa kila biashara, Kwa kutengeneza QR Code za bidhaa zako kiotomatiki, kuuza na kuscan QR Code ya bidhaa, kurekodi mauzo kiotomatiki, na kuona faida yako papo hapo.
                 Mfumo hujifunza mwenendo wa biashara yako kupitia akili bandia (AI), na hukupa ushauri wa bidhaa gani kuagiza, lini, na kwa bei ipi.
-                PosTech - Biashara yako, Teknolojia yetu.
+                myPosTech - Biashara yako, Teknolojia yetu.
               </p>
           </div>        
         </section>
@@ -312,7 +312,9 @@ export default component$(() => {
         <Pains />
 
         {/* STEPS  */}
-        <Steps />
+        <section id="features" class="bg-gray-50 py-10 px-4 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+          <Steps />
+        </section>
 
         {/* LAST  */}
         <Last />
@@ -397,7 +399,7 @@ export default component$(() => {
 
         {/* FOOTER  */}
         <footer class="bg-gray-900 dark:bg-gray-600 text-white text-center py-6">
-            <p>© {new Date().getFullYear()} PosTech. Haki Zote Zimehifadhiwa.</p>
+            <p>© {new Date().getFullYear()} myPosTech. Haki Zote Zimehifadhiwa.</p>
         </footer>
     </div>
     </>
@@ -405,24 +407,24 @@ export default component$(() => {
 
 
 export const head: DocumentHead = {
-    title: "PosTech - Endesha biashara yoyote kidigitali, kwa simu yako tu.",
+    title: "myPosTech - Endesha biashara yoyote kidigitali, kwa simu yako tu.",
     meta: [
       // SEO Basic meta tags
       { name: "description", content: "Hakuna kukariri bei, kutunza kumbukumbu kwenye daftari, mahesabu, kufuatilia bidhaa zilizokwisha, na mengine mengi. Rahisisha mauzo, Angalia mwenendo wa faida kila siku, fuatilia madeni, na simamia bidhaa zako kwa ufanisi zaidi leo!" },
       { name: "keywords", 
-        content: "POS, myPostech, mypostech store, postech store, PosTech, sales management, inventory management, Qwik, e-commerce, point of sale system, POS ya kiswahili, Programu ya Biashara, Stoo, Madeni, Mfumo wa biashara, biashara kidigitali" 
+        content: "POS, myPostech, mypostech store, postech store, myPosTech, sales management, inventory management, Qwik, e-commerce, point of sale system, POS ya kiswahili, Programu ya Biashara, Stoo, Madeni, Mfumo wa biashara, biashara kidigitali" 
       },
       { name: "author", content: "Twahir Sudy" },
       { name: "robots", content: "index, follow" },
       { name: "viewport", content: "width=device-width, initial-scale=1.0" },
       { httpEquiv: "Content-Security-Policy", content: "upgrade-insecure-requests" },
-      { itemprop: "name", content: "PosTech"},
+      { itemprop: "name", content: "myPosTech"},
       { name: "theme-color", content: "#ffffff", media:"(prefers-color-scheme: light)" },
       
       
       // Open Graph (OG) tags for social media
-      { property: "og:title", content: "PosTech - Mfumo wa Kisasa wa Biashara" },
-      { property: "og:description", content: "Mfumo ya kisasa unayotumia QR Codes. fuatilia bidhaa, mauzo na madeni. PosTech ~ Biashara yako, teknolojia yetu" },
+      { property: "og:title", content: "myPosTech - Mfumo wa Kisasa wa Biashara" },
+      { property: "og:description", content: "Mfumo ya kisasa unayotumia QR Codes. fuatilia bidhaa, mauzo na madeni. myPosTech ~ Biashara yako, teknolojia yetu" },
       { property: "og:image", content: "https://www.mypostech.store/thumbnail2.png" },
       { property: "og:url", content: "https://mypostech.store" },
       { property: "og:type", content: "website" },
@@ -431,7 +433,7 @@ export const head: DocumentHead = {
   
       // Twitter Card meta tags
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "PosTech - Mfumo bora kwa biashara zote" },
+      { name: "twitter:title", content: "myPosTech - Mfumo bora kwa biashara zote" },
       { name: "twitter:description", content: "Mauzo ya haraka kwa kutumia QR, dashibodi ya Kiswahili, na muundo wa kisasa wa simu." },
       { name: "twitter:image", content: "https://mypostech.store/thumbnail2.png" },
   
@@ -444,13 +446,13 @@ export const head: DocumentHead = {
                 "@graph": [
                   {
                     "@type": "Organization",
-                    "name": "PosTech",
+                    "name": "myPosTech",
                     "url": "https://mypostech.store",
                     "logo": "https://mypostech.store/newLogo.png"
                   },
                   {
                     "@type": "LocalBusiness",
-                    "name": "PosTech",
+                    "name": "myPosTech",
                     "image": "https://mypostech.store/thumbnail2.png",
                     "url": "https://mypostech.store",
                     "telephone": "+255621031195",
@@ -465,12 +467,12 @@ export const head: DocumentHead = {
                   },
                   {
                     "@type": "Product",
-                    "name": "PosTech QR POS System",
+                    "name": "myPosTech QR POS System",
                     "image": "https://mypostech.store/thumbnail2.png",
                     "description": "POS system with QR code support, real-time analytics, debt tracking, and Swahili dashboard.",
                     "brand": {
                       "@type": "Brand",
-                      "name": "PosTech"
+                      "name": "myPosTech"
                     },
                     "offers": {
                       "@type": "Offer",
@@ -482,7 +484,7 @@ export const head: DocumentHead = {
                   },
                   {
                     "@type": "SoftwareApplication",
-                    "name": "PosTech",
+                    "name": "myPosTech",
                     "operatingSystem": "Web",
                     "applicationCategory": "BusinessApplication",
                     "offers": {
@@ -501,10 +503,10 @@ export const head: DocumentHead = {
                     "mainEntity": [
                       {
                         "@type": "Question",
-                        "name": "Je, PosTech ni nini?",
+                        "name": "Je, myPosTech ni nini?",
                         "acceptedAnswer": {
                           "@type": "Answer",
-                          "text": "PosTech ni mfumo wa kisasa wa mauzo na stoo unaotumia QR codes kusaidia wafanyabiashara."
+                          "text": "myPosTech ni mfumo wa kisasa wa mauzo na stoo unaotumia QR codes kusaidia wafanyabiashara."
                         }
                       },
                       {
@@ -517,7 +519,7 @@ export const head: DocumentHead = {
                       },
                       {
                         "@type": "Question",
-                        "name": "PosTech inasaidia lugha gani?",
+                        "name": "myPosTech inasaidia lugha gani?",
                         "acceptedAnswer": {
                           "@type": "Answer",
                           "text": "Inasaidia Kiswahili, Kiingereza, Kifaransa, na Kiarabu."

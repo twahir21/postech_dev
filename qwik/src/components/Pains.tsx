@@ -5,7 +5,7 @@ export const Pains =  component$(() => {
     <section class="bg-white py-10 px-4 text-gray-800 dark:bg-gray-500">
       <div class="max-w-4xl mx-auto text-center">
         <h2 class="text-2xl md:text-3xl font-bold mb-6">
-          Changamoto za Wamiliki wa Biashara Ndogo na Jinsi PosTech Inavyosaidia
+          Changamoto za Wamiliki wa Biashara na Jinsi myPosTech Inavyosaidia
         </h2>
       </div>
 
@@ -30,7 +30,7 @@ export const Pains =  component$(() => {
 
         {/* Solutions */}
         <div class="bg-green-50 dark:bg-gray-400 rounded-xl p-6 shadow-md border-2 border-green-300">
-          <h3 class="text-xl font-semibold text-green-700 dark:text-green-900 mb-4">✅ PosTech Inatatua Kwa Urahisi</h3>
+          <h3 class="text-xl font-semibold text-green-700 dark:text-green-900 mb-4">✅ myPosTech Inatatua Kwa Urahisi</h3>
           <ul class="space-y-3 text-sm md:text-base">
             <li>✔ Kurekodi mauzo kwa kuscan QR ya bidhaa</li>
             <li>✔ Kuonyesha faida, hasara na matumizi kwa muda halisi</li>

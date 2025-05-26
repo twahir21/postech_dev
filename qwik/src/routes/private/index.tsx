@@ -4,7 +4,6 @@ import { HomeComponent } from "~/components/Home";
 import { ProductComponent } from "~/components/Products";
 import { CustomerComponent } from "~/components/Customer";
 import { CrudPrdComponent } from "~/components/PrdComponent";
-import { UsageComponent } from "~/components/Usage";
 import { SalesComponent } from "~/components/Sales";
 import { DebtComponent } from "~/components/Debts";
 import { ExpensesComponent } from "~/components/Expenses";
@@ -109,13 +108,13 @@ export default component$(() => {
             width="70" 
             height="70" 
           />
-          <p class="pl-2">PosTech</p>
+          <p class="pl-2">myPosTech</p>
         </span>
 
         <nav class="mt-5">
           {[
             { name: "Nyumbani", emoji: "🏠" },
-            { name: "Muongozo", emoji: "📖" },
+            // { name: "Muongozo", emoji: "📖" },
             { name: "Anza hapa", emoji: "🚀" },
             { name: "Mauzo", emoji: "💰" },
             { name: "Mengineyo", emoji: "🧿" },
@@ -205,7 +204,7 @@ export default component$(() => {
           <h1 class="text-xl font-bold pb-2">Karibu, {store.username}</h1>
 
           {store.currentPage === "Nyumbani" && <HomeComponent />}
-          {store.currentPage === "Muongozo" && <UsageComponent />}
+          {/* {store.currentPage === "Muongozo" && <UsageComponent />} */}
           {store.currentPage === "Anza hapa" &&  <ProductComponent />}
           {store.currentPage === "Mauzo" && <SalesComponent />}
           {store.currentPage === "Mengineyo" && <OthersComponent />}

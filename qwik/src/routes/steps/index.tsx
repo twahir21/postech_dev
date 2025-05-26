@@ -4,9 +4,9 @@ export default component$(() => {
   return (
     <section class="bg-gray-50 py-10 px-4 text-gray-800">
       <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-2xl md:text-3xl font-bold mb-6">Jinsi PosTech Inavyofanya Kazi</h2>
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">Jinsi myPosTech Inavyofanya Kazi</h2>
         <p class="text-gray-600 mb-8 text-sm md:text-base">
-          Hatua rahisi tatu kutumia mfumo wa PosTech — kuanzia kuuza mpaka kupata ripoti ya faida!
+          Hatua rahisi tatu kutumia mfumo wa myPosTech — kuanzia kuuza mpaka kupata ripoti ya faida!
         </p>
       </div>
 

@@ -46,7 +46,7 @@ const steps: Step [] = [
   {
     emoji: '📊',
     title: '5. Pata Faida na Ripoti',
-    description: `Rudi mwanzoni mwa dashboard (Nyumbani), na utaona hesabu kamili — kila siku na ripoti zako utaziona. Hongera umefanikiwa kujua mfumo wetu. PosTech - Biashara yako, Teknolojia yetu.`,
+    description: `Rudi mwanzoni mwa dashboard (Nyumbani), na utaona hesabu kamili — kila siku na ripoti zako utaziona. Hongera umefanikiwa kujua mfumo wetu. myPosTech - Biashara yako, Teknolojia yetu.`,
   },
   {
     emoji: '📱',
@@ -59,11 +59,11 @@ export const Steps = component$(() => {
   const openStepIndex = useSignal<number | null>(null);
 
   return (
-    <section class="bg-gray-50 py-10 px-4 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+    <>
       <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-2xl md:text-3xl font-bold mb-6">Jinsi PosTech Inavyofanya Kazi</h2>
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">Jinsi myPosTech Inavyofanya Kazi</h2>
         <p class="text-gray-600 dark:text-gray-300 mb-8 text-sm md:text-base">
-          Ni Hatua tano tu, kutumia mfumo wa PosTech — kuanzia kuuza mpaka kupata ripoti ya faida!
+          Ni Hatua tano tu, kutumia mfumo wa myPosTech — kuanzia kuuza mpaka kupata ripoti ya faida!
         </p>
       </div>
 
@@ -92,6 +92,6 @@ export const Steps = component$(() => {
           </div>
         ))}
       </div>
-    </section>
+      </>
   );
 });

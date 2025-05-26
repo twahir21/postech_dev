@@ -19,7 +19,7 @@ export default component$(() => {
           <li>✔ Ripoti za matumizi, faida na mauzo kwa mwezi mmoja</li>
           <li>✔ Kutunza Kumbukumbu mwezi mmoja</li>
           <li>✔ Mpaka bidhaa 50</li>
-          <li>✔ Matumizi hata bila bando na PosTech App (PWA)</li>
+          <li>✔ Matumizi hata bila bando na myPosTech App (PWA)</li>
 
         </ul>
 
@@ -34,7 +34,7 @@ export default component$(() => {
         <p class="text-sm text-gray-600">Duka lenye bidhaa nyingi, linaendeshwa na mtu 1 au 2</p>
         <p class="text-2xl font-bold mt-4">Tsh 15,000/=</p>
         <ul class="mt-4 space-y-2 text-sm">
-          <li>⭐ Kifurushi cha PosTech Msingi</li>
+          <li>⭐ Kifurushi cha myPosTech Msingi</li>
           <li>✔ Uwezo wa kufanya mauzo kwa mkopo (deni)</li>
           <li>✔ Ripoti za mkopo (deni), yupi anadaiwa sana, yupi kwa muda mrefu, n.k.</li>
           <li>✔ Ripoti za kila siku na wiki</li>
@@ -56,7 +56,7 @@ export default component$(() => {
         <p class="text-sm text-gray-600">Kwa supermarket ndogo au duka kubwa</p>
         <p class="text-2xl font-bold mt-4">Tsh 30,000/=</p>
         <ul class="mt-4 space-y-2 text-sm">
-          <li>⭐ Kifurushi cha PosTech Lite </li>
+          <li>⭐ Kifurushi cha myPosTech Lite </li>
           <li>✔ Usimamizi wa wafanyakazi wote</li>
           <li>✔ Taarifa za hisa (stock) na bidhaa zinazouzwa zaidi</li>
           <li>✔ Ripoti za kila siku, wiki, mwezi</li>
@@ -80,7 +80,7 @@ export default component$(() => {
         <p class="text-sm text-gray-600">Kwa biashara kubwa au zenye matawi</p>
         <p class="text-2xl font-bold mt-4">Tsh 50,000/=</p>
         <ul class="mt-4 space-y-2 text-sm">
-          <li>⭐ Kifurushi cha PosTech Pro</li>
+          <li>⭐ Kifurushi cha myPosTech Pro</li>
           <li>✔ Mfumo wa matawi mengi</li>
           <li>✔ Duka lipi linatengeneza faida kubwa</li>
           <li>✔ AI kukupa kipi cha kuagiza na lini ?</li>

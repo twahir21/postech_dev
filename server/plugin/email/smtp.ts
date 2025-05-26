@@ -45,7 +45,7 @@ mailPlugin.post("/sendMail", async ({ body }: { body: email }) => {
         await transporter.sendMail({
             from: `"${name}" <${zohoEmail}>`,
             to: process.env.TO_EMAIL,
-            subject: "PosTech message",
+            subject: "myPosTech message",
             html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p>${message}</p>`,
         });
 

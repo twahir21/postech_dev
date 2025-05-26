@@ -114,7 +114,7 @@ export const regPost = async ({ body, headers }: { body: registerRequest; header
         const link = `${frontendURL}/email?token=${token}`;
 
         await transporter.sendMail({
-            from: `"PosTech" <${zohoEmail}>`,
+            from: `"myPosTech" <${zohoEmail}>`,
             to: body.email,
             subject: "Hakiki barua pepe",
             html: `

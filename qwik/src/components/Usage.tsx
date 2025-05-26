@@ -11,13 +11,13 @@ export const UsageComponent = component$(() => {
 
       {/* Maelezo ya Awali */}
       <p class="text-lg text-gray-700 leading-relaxed mb-4 animate-fade-in">
-        Karibu kwenye mfumo wa <strong>PosTech</strong> – suluhisho la kidigitali linalobadilisha jinsi biashara zinavyoendeshwa Afrika Mashariki. Mfumo huu umetengenezwa kwa teknolojia nyepesi lakini zenye nguvu, ukiwa na lengo la kurahisisha shughuli za kila siku za wafanyabiashara wa rejareja na jumla.
+        Karibu kwenye mfumo wa <strong>myPosTech</strong> – suluhisho la kidigitali linalobadilisha jinsi biashara zinavyoendeshwa Afrika Mashariki. Mfumo huu umetengenezwa kwa teknolojia nyepesi lakini zenye nguvu, ukiwa na lengo la kurahisisha shughuli za kila siku za wafanyabiashara wa rejareja na jumla.
       </p>
 
-        {/* Hatua za Kuanza Kutumia PosTech */}
+        {/* Hatua za Kuanza Kutumia myPosTech */}
         <div class="bg-teal-100 p-4 rounded-xl shadow-md mb-6">
         <h2 class="text-2xl font-semibold mb-1 text-teal-800 flex items-center gap-2">
-        📘 Hatua za Kuanza Kutumia PosTech
+        📘 Hatua za Kuanza Kutumia myPosTech
         </h2>
         <p class="text-sm text-teal-700 italic mb-3">
         Bonyeza hatua ili kufungua maelezo zaidi

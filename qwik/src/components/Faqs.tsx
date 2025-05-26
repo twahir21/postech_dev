@@ -3,12 +3,12 @@ import { component$ } from '@builder.io/qwik';
 export const Faqs = component$(() => {
   const faqs = [
     {
-      question: 'PosTech ni nini hasa?',
-      answer: 'PosTech ni mfumo wa kisasa wa kuuza na kusimamia biashara kupitia simu au kompyuta, unaosaidia kutunza kumbukumbu, kupata ripoti, na kuongeza faida.',
+      question: 'myPosTech ni nini hasa?',
+      answer: 'myPosTech ni mfumo wa kisasa wa kuuza na kusimamia biashara kupitia simu au kompyuta, unaosaidia kutunza kumbukumbu, kupata ripoti, na kuongeza faida.',
     },
     {
-      question: 'Je, nahitaji intaneti kutumia PosTech?',
-      answer: 'Hapana! PosTech inaweza kufanya kazi bila intaneti kwa kutumia PWA, hasa kwa vifurushi vya msingi na lite.',
+      question: 'Je, nahitaji intaneti kutumia myPosTech?',
+      answer: 'Hapana! myPosTech inaweza kufanya kazi bila intaneti kwa kutumia PWA, hasa kwa vifurushi vya msingi na lite.',
     },
     {
       question: 'Naweza kulipa vipi kifurushi?',
