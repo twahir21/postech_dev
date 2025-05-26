@@ -31,10 +31,21 @@ import {
   // -----------------
   // Shops Table
   // -----------------
+
   export const shops = pgTable("shops", {
     id: uuid("id").defaultRandom().primaryKey(),
+
     name: text("name").unique().notNull(),
-    createdAt: timestamp("created_at").defaultNow(),
+
+    subscription: text("subscription", {
+      enum: ["Msingi", "Lite", "Business", "Pro", "AI", "Trial"]
+    }).default("Trial").notNull(),
+
+    trialStart: timestamp("trial_start", { mode: "date" }),
+    trialEnd: timestamp("trial_end", { mode: "date" }),
+    paidUntil: timestamp("paid_until", { mode: "date" }),
+
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
   });
 
 
