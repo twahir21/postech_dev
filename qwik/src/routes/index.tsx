@@ -10,6 +10,7 @@ import { Faqs } from "~/components/Faqs";
 import { Pains } from "~/components/Pains";
 import { Steps } from "~/components/Steps";
 import { Last } from "~/components/Last";
+import { Partiners } from "~/components/Partiners";
 
 export default component$(() => {
 
@@ -318,6 +319,9 @@ export default component$(() => {
 
         {/* LAST  */}
         <Last />
+
+        {/* PARTINERS  */}
+        <Partiners />
 
         {/* TESTIMONIALS  */}
         <Testimonials />
