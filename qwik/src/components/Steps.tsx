@@ -65,6 +65,7 @@ export const Steps = component$(() => {
         <p class="text-gray-600 dark:text-gray-300 mb-8 text-sm md:text-base">
           Ni Hatua tano tu, kutumia mfumo wa myPosTech — kuanzia kuuza mpaka kupata ripoti ya faida!
         </p>
+
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto items-start">
@@ -82,8 +83,10 @@ export const Steps = component$(() => {
               {step.emoji}
             </div>
             <h3 class="font-semibold text-lg mb-2 text-center flex items-center gap-2">
-              {openStepIndex.value === index ? '👇' : '👉'} {step.title}
+              {step.title}
             </h3>
+            {openStepIndex.value === index ? '' : <p class="text-xs text-blue-500 mt-1">Bonyeza kuona zaidi ...</p> }
+
             {openStepIndex.value === index && (
               <p class="text-sm text-gray-600 dark:text-gray-300 text-center whitespace-pre-wrap">
                 {step.description}

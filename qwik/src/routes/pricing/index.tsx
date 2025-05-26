@@ -12,7 +12,7 @@ export default component$(() => {
       <div class="bg-green-50 rounded-2xl shadow p-6 flex flex-col border-2 border-green-700 self-start">
         <h2 class="text-xl font-bold text-green-600 mb-2">myPostech Msingi</h2>
         <p class="text-sm text-gray-600">Kwa duka dogo la mtaa, mama ntilie, kibanda</p>
-        <p class="text-2xl font-bold mt-4">Tsh 5,000/=</p>
+        <p class="text-2xl font-bold mt-4">Tsh 5,000/= <span class="text-sm text-gray-500">kwa mwezi</span></p>
         <ul class="mt-4 space-y-2 text-sm">
           <li>✔ Mauzo kupitia QR Code za bidhaa</li>
           <li>✔ Kurekodi mauzo kiotomatiki</li>
@@ -32,7 +32,7 @@ export default component$(() => {
       <div class="bg-blue-50 rounded-2xl shadow p-6 flex flex-col border-2 border-blue-700 self-start">
         <h2 class="text-xl font-bold text-blue-600 mb-2">myPostech Lite</h2>
         <p class="text-sm text-gray-600">Duka lenye bidhaa nyingi, linaendeshwa na mtu 1 au 2</p>
-        <p class="text-2xl font-bold mt-4">Tsh 15,000/=</p>
+        <p class="text-2xl font-bold mt-4">Tsh 15,000/= <span class="text-sm text-gray-500">kwa mwezi</span></p>
         <ul class="mt-4 space-y-2 text-sm">
           <li>⭐ Kifurushi cha myPosTech Msingi</li>
           <li>✔ Uwezo wa kufanya mauzo kwa mkopo (deni)</li>
@@ -55,7 +55,7 @@ export default component$(() => {
       <div class="bg-purple-50 rounded-2xl shadow p-6 flex flex-col border-2 border-purple-700 self-start">
         <h2 class="text-xl font-bold text-purple-600 mb-2">myPostech Pro</h2>
         <p class="text-sm text-gray-600">Kwa supermarket ndogo au duka kubwa</p>
-        <p class="text-2xl font-bold mt-4">Tsh 30,000/=</p>
+        <p class="text-2xl font-bold mt-4">Tsh 30,000/= <span class="text-sm text-gray-500">kwa mwezi</span></p>
         <ul class="mt-4 space-y-2 text-sm">
           <li>⭐ Kifurushi cha myPosTech Lite </li>
           <li>✔ Usimamizi wa wafanyakazi wote</li>
@@ -86,7 +86,7 @@ export default component$(() => {
       <div class="bg-red-50 rounded-2xl shadow p-6 flex flex-col border-2 border-red-700 self-start">
         <h2 class="text-xl font-bold text-red-600 mb-2">myPostech Business</h2>
         <p class="text-sm text-gray-600">Kwa biashara kubwa au zenye matawi</p>
-        <p class="text-2xl font-bold mt-4">Tsh 50,000/=</p>
+        <p class="text-2xl font-bold mt-4">Tsh 50,000/= <span class="text-sm text-gray-500">kwa mwezi</span></p>
         <ul class="mt-4 space-y-2 text-sm">
           <li>⭐ Kifurushi cha myPosTech Pro</li>
           <li>✔ Mfumo wa matawi mengi</li>
@@ -115,8 +115,8 @@ export default component$(() => {
       {/* <!-- myPostech AI --> */}
       <div class="bg-stone-50 rounded-2xl shadow p-6 flex flex-col border-2 border-stone-700 self-start">
         <h2 class="text-xl font-bold text-stone-600 mb-2">myPostech AI</h2>
-        <p class="text-sm text-gray-600">Kwa biashara kubwa au zenye matawi</p>
-        <p class="text-2xl font-bold mt-4">Tsh 100,000/=</p>
+        <p class="text-sm text-gray-600">Kwa biashara yoyote inayotaka matumizi ya AI</p>
+        <p class="text-2xl font-bold mt-4">Tsh 100,000/= <span class="text-sm text-gray-500">kwa mwezi</span></p>
         <ul class="mt-4 space-y-2 text-sm">
           <li>⭐ Kifurushi cha myPosTech Business</li>
           <li>✔ AI kukupa kipi cha kuagiza na lini ?</li>

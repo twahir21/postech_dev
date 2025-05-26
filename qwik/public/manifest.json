@@ -17,13 +17,13 @@
       "purpose": "any"
     },
     {
-      "src": "https://www.mypostech.store/thumbnail.png",
+      "src": "https://www.mypostech.store/thumbnail.webp",
       "sizes": "412x412",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://www.mypostech.store/thumbnail2.png",
+      "src": "https://www.mypostech.store/thumbnail2.webp",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

@@ -232,7 +232,7 @@ export default component$(() => {
           {/* Left side - text */}
           <div class="w-full md:w-3/4">
             <h1 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">
-              Boresha biashara yako na myPosTech
+              Boresha biashara yako kwa QR Code
             </h1>
             <p class="text-sm sm:text-base md:text-base text-gray-600 mb-6 dark:text-gray-400">
               <Typewriter
@@ -245,7 +245,7 @@ export default component$(() => {
                 href="/auth?reg=true"
                 class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-full shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base"
               >
-                Anza Bure (siku 14)
+                Jaribu Bure (siku 14)
               </Link>
 
               <Link
@@ -272,7 +272,7 @@ export default component$(() => {
       
       {/* Desktop: hero-big.png */}
       <img
-        src="/hero-big.png"
+        src="/hero-big.webp"
         alt="myPosTech desktop hero"
         class="w-full max-w-sm mx-auto drop-shadow-xl rounded-xl hidden md:block"
         loading="lazy"
@@ -429,7 +429,7 @@ export const head: DocumentHead = {
       // Open Graph (OG) tags for social media
       { property: "og:title", content: "myPosTech - Mfumo wa Kisasa wa Biashara" },
       { property: "og:description", content: "Mfumo ya kisasa unayotumia QR Codes. fuatilia bidhaa, mauzo na madeni. myPosTech ~ Biashara yako, teknolojia yetu" },
-      { property: "og:image", content: "https://www.mypostech.store/thumbnail2.png" },
+      { property: "og:image", content: "https://www.mypostech.store/thumbnail2.webp" },
       { property: "og:url", content: "https://mypostech.store" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Postech - Mfumo wa kisasa wa biashara" },
@@ -439,7 +439,7 @@ export const head: DocumentHead = {
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "myPosTech - Mfumo bora kwa biashara zote" },
       { name: "twitter:description", content: "Mauzo ya haraka kwa kutumia QR, dashibodi ya Kiswahili, na muundo wa kisasa wa simu." },
-      { name: "twitter:image", content: "https://mypostech.store/thumbnail2.png" },
+      { name: "twitter:image", content: "https://mypostech.store/thumbnail2.webp" },
   
       // Structured Data (JSON-LD) for enhanced SEO
       {
@@ -457,7 +457,7 @@ export const head: DocumentHead = {
                   {
                     "@type": "LocalBusiness",
                     "name": "myPosTech",
-                    "image": "https://mypostech.store/thumbnail2.png",
+                    "image": "https://mypostech.store/thumbnail2.web[",
                     "url": "https://mypostech.store",
                     "telephone": "+255621031195",
                     "address": {
@@ -472,7 +472,7 @@ export const head: DocumentHead = {
                   {
                     "@type": "Product",
                     "name": "myPosTech QR POS System",
-                    "image": "https://mypostech.store/thumbnail2.png",
+                    "image": "https://mypostech.store/thumbnail2.webp",
                     "description": "POS system with QR code support, real-time analytics, debt tracking, and Swahili dashboard.",
                     "brand": {
                       "@type": "Brand",
