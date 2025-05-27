@@ -59,42 +59,42 @@ export const prodData = t.Object({
         }
     }),
     priceBought: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 1,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
     priceSold: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 1,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
     stock: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 1,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
     minStock: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 1,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
@@ -130,52 +130,52 @@ export const QrPostData = t.Object({
     saleType: t.String(),
 
     calculatedTotal: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 0,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
     quantity: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 0,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
     discount: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 0,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
     priceBought: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 1,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
     priceSold: t.Number({
-        maximum: 99999999999999,
+        maximum: 999999999999.99,
         minimum: 1,
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 "
+                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     })
