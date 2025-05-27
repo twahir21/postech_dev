@@ -1,5 +1,5 @@
 import { mainDb } from "../../database/schema/connections/mainDb";
-import { emailVerifications, shops, shopUsers } from "../../database/schema/shop";
+import { emailVerifications, notifications, shops, shopUsers } from "../../database/schema/shop";
 import { eq } from "drizzle-orm";
 import nodemailer from "nodemailer";
 import "dotenv/config";
@@ -64,19 +64,25 @@ export const isTrialEnd = async () => {
             .set({ isPaid: false })
             .where(eq(shopUsers.shopId, shop.id));
 
+            const shopName = await mainDb.select({ name: shops.name })
+                            .from(shops)
+                            .where(eq(shops.id, shop.id));
+
             console.log(`⛔ Trial expired for shop ID ${shop.id}. Marked isPaid as false.`);
             // You could also send email or notification here if needed
-            await transporter.sendMail({
-            from: `"${name}" <${zohoEmail}>`,
+
+            // send Email
+            transporter.sendMail({
+            from: `"myPosTech" <${zohoEmail}>`,
             to: process.env.TO_EMAIL,
-            subject: "myPosTech message",
+            subject: "ujumbe kutoka myPosTech",
             html: `
                 <!DOCTYPE html>
                 <html lang="sw">
                 <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                <title>Thibitisha Barua Pepe</title>
+                <title>Muda umekwisha</title>
                 <style>
                     body {
                     font-family: 'Quicksand', sans-serif;
@@ -143,7 +149,7 @@ export const isTrialEnd = async () => {
                     </div>
                     <div class="content">
                     <p>
-                        Habari <strong>Mmiliki wa Duka</strong>,
+                        Habari <strong>"${shopName[0].name}"</strong>,
                     </p>
                     <p style="line-height: 1.6;">
                         Jaribio lako la siku 14 kwenye <strong>myPosTech</strong> limeisha. Ili kuendelea kutumia mfumo na kuona ripoti, faida na kufanya mauzo, tafadhali boresha kifurushi chako sasa.
@@ -160,7 +166,15 @@ export const isTrialEnd = async () => {
                 </body>
                 </html>
             `,
-        });
+            });
+
+            // set notification (in - app )
+            await mainDb.insert(notifications).values({
+                shopId: shop.id,
+                title: "Lipia account yako!",
+                message: "Account yako imekwisha muda wake wa matumizi, chagua kifurushi kisha lipia kufungua account yako.",
+                type: "upgrade"
+            });
         }
     }
 

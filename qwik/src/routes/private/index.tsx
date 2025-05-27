@@ -193,7 +193,23 @@ export default component$(() => {
                 </div>
               )}
             </div>
-            <button title="notification"> 🔔 </button>
+            <button title="notification">
+              <div style="position: relative; display: inline-block;">
+                🔔
+                <span style="
+                  position: absolute;
+                  top: -8px;
+                  right: -8px;
+                  background: red;
+                  color: white;
+                  border-radius: 50%;
+                  padding: 2px 4px;
+                  font-size: 11px;
+                ">
+                  3
+                </span>
+              </div>
+            </button>
 
             <button title="Logout" onClick$={logout}> 👋 </button>
 
