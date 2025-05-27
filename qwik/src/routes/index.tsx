@@ -1,7 +1,7 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { Link, type DocumentHead } from "@builder.io/qwik-city";
 import type { ContactTypes } from "./api/base/typeSafe";
-import { contactApi, warmUpApi } from "./api/base/api";
+import { contactApi } from "./api/base/api";
 import { Typewriter } from "~/components/TypeWriter";
 import { Toast } from "~/components/ui/Toast";
 import { WhatsApp } from "~/components/WhatsApp";
@@ -163,17 +163,6 @@ export default component$(() => {
       document.addEventListener('click', handler);
       return () => document.removeEventListener('click', handler);
     });
-
-      // WARM UP THE SERVER TO REMOVE COLD START
-      useVisibleTask$(async () => {
-        const result = await warmUpApi.get();
-        if (!result.success){
-          console.log("Failed to warm: ", result)
-          return;
-        }
-        console.log("Warm up: ", result)
-        return;
-      });
 
     return <>
     <div class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">

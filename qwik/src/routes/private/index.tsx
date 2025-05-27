@@ -193,9 +193,10 @@ export default component$(() => {
                 </div>
               )}
             </div>
+            <button title="notification"> 🔔 </button>
+
             <button title="Logout" onClick$={logout}> 👋 </button>
 
-            {/* <button title="profile"> 👤 </button> */}
           </div>
         </header>
 

@@ -82,6 +82,8 @@ const regPlugin = new Elysia()
             const shop = await mainDb.insert(shops)
                 .values({
                     name: result[0].shopName,
+                    trialStart: new Date(Date.now()),
+                    trialEnd: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) // 14 days in ms
                 })
                 .returning({ id: shops.id }) // Ensure ID is returned correctly
                 .then(res => res[0]); // Extract first row

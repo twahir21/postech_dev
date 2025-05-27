@@ -37,7 +37,7 @@ import {
 
     name: text("name").unique().notNull(),
 
-    subscription: text("subscription", {
+    subscription: text("subscription_type", {
       enum: ["Msingi", "Lite", "Business", "Pro", "AI", "Trial"]
     }).default("Trial").notNull(),
 
@@ -271,4 +271,14 @@ import {
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     token: text("token_clickpesa").notNull(),
     orderId: text("order_id"),
-  })
+  });
+
+  export const notifications = pgTable("notifications", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    message: text("message").notNull(),
+    type: text("type", { enum: ["info", "warning", "error", "upgrade"] }).default("info"),
+    isRead: boolean("is_read").default(false),
+    createdAt: timestamp("created_at").defaultNow(),
+});
