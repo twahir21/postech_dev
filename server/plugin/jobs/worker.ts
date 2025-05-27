@@ -1,8 +1,8 @@
-import { clearVerifiedEmails, pingAPI } from "./cronJobs";
+import { clearVerifiedEmails, isTrialEnd, pingAPI } from "./cronJobs";
 
 setInterval(async () => await clearVerifiedEmails(), 2000 * 60 * 60); // every 2 hour
 setInterval(() => pingAPI(), 1000 * 60 * 20); // warm up every 20 min 
-// run check trial or subscription after every 12 hours
+setInterval(() => isTrialEnd(), 12000 * 60 * 60)  // run check trial or subscription after every 12 hours
 // run to clear caches alongside 20min pingAPI
 
 

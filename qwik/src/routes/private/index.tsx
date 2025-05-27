@@ -101,7 +101,7 @@ export default component$(() => {
 
 
   return (
-    <div class="flex min-h-screen">
+    <div class="flex min-h-screen m-0">
       {/* Sidebar & Overlay */}
       <aside
         class={`bg-gray-800 text-white fixed inset-y-0 left-0 transform transition-all duration-300 md:relative md:translate-x-0 w-64 p-4 z-50 ${
@@ -150,11 +150,11 @@ export default component$(() => {
 
       {/* Mobile Overlay */}
       {store.isSidebarOpen && (
-        <div class="fixed inset-0 bg-opacity-50 md:hidden" onClick$={toggleSidebar}></div>
+        <div class="fixed inset-0 bg-opacity-50 md:hidden m-0" onClick$={toggleSidebar}></div>
       )}
 
       {/* Main Content */}
-      <div class="flex-1 flex flex-col">
+      <div class="w-full flex-1 flex flex-col m-0">
         {/* Top Navbar */}
         <header class="bg-white shadow-md p-4 flex justify-between items-center">
           <button class="md:hidden" onClick$={toggleSidebar}>☰</button>

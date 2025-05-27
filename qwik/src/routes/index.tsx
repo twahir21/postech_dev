@@ -170,7 +170,7 @@ export default component$(() => {
 
         {/* HEADER  */}
         <header class="fixed top-0 left-0 w-full bg-white dark:bg-gray-700 shadow-md z-50 transition-colors duration-300">
-        <nav class="max-w-6xl mx-auto flex justify-between items-center p-4">
+        <nav class="w-full max-w-6xl mx-auto flex justify-between items-center p-4 m-0">
           <a href="/" class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">myPosTech</a>
 
           <ul class="hidden md:flex space-x-6">
