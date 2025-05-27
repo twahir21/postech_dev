@@ -88,7 +88,6 @@ export const SettingsComponent = component$(() => {
       const editShopAPI = new CrudService<payloadEdit>("shop");
       const editShopData = await editShopAPI.update(payload);
       store.isLoading = false; //stop loading ...
-      console.log(editShopData.success)
       store.modal = {
         isOpen: true,
         isSuccess: editShopData.success,

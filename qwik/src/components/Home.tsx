@@ -35,93 +35,93 @@ useVisibleTask$(async () => {
 });
 
 
-  useVisibleTask$(async() => {
-    const t0 = Date.now();
-    const res = await fetch("http://localhost:3000/analytics", {
-      credentials: 'include'
-    });
+  // useVisibleTask$(async() => {
+  //   const t0 = Date.now();
+  //   const res = await fetch("http://localhost:3000/analytics", {
+  //     credentials: 'include'
+  //   });
 
-    if (!res.ok) {
-      console.error("Analytics failed to fetch");
-      return;
-    }
+  //   if (!res.ok) {
+  //     console.error("Analytics failed to fetch");
+  //     return;
+  //   }
 
-    const data = await res.json();// Helper function for safe money formatting
-    const formatMoney = (amount: number | undefined) =>
-      typeof amount === 'number' ? new Intl.NumberFormat().format(amount) : '0';
+  //   const data = await res.json();// Helper function for safe money formatting
+  //   const formatMoney = (amount: number | undefined) =>
+  //     typeof amount === 'number' ? new Intl.NumberFormat().format(amount) : '0';
     
-    // Net profit summary
-    analyticsStore.profit = formatMoney(data?.netProfit?.netProfit);
-    analyticsStore.purchases = formatMoney(data?.netProfit?.totalPurchases);
-    analyticsStore.sales = formatMoney(data?.netProfit?.totalSales);
-    analyticsStore.expenses = formatMoney(data?.netProfit?.totalExpenses);
+  //   // Net profit summary
+  //   analyticsStore.profit = formatMoney(data?.netProfit?.netProfit);
+  //   analyticsStore.purchases = formatMoney(data?.netProfit?.totalPurchases);
+  //   analyticsStore.sales = formatMoney(data?.netProfit?.totalSales);
+  //   analyticsStore.expenses = formatMoney(data?.netProfit?.totalExpenses);
     
-    // Most profitable product
-    analyticsStore.profitableProductname = data?.highestProfitProduct?.productname ?? 'N/A';
-    analyticsStore.profitableProductProfit = formatMoney(data?.highestProfitProduct?.profit);
+  //   // Most profitable product
+  //   analyticsStore.profitableProductname = data?.highestProfitProduct?.productname ?? 'N/A';
+  //   analyticsStore.profitableProductProfit = formatMoney(data?.highestProfitProduct?.profit);
     
-    // Most sold product by quantity
-    analyticsStore.mostPrdQuantity = data?.mostSoldProductByQuantity?.productname ?? 'N/A';
-    analyticsStore.mostPrdQuantitytimes = data?.mostSoldProductByQuantity?.totalquantitysold ?? 0;
+  //   // Most sold product by quantity
+  //   analyticsStore.mostPrdQuantity = data?.mostSoldProductByQuantity?.productname ?? 'N/A';
+  //   analyticsStore.mostPrdQuantitytimes = data?.mostSoldProductByQuantity?.totalquantitysold ?? 0;
     
-    // Most frequent product
-    analyticsStore.mostFreqPrd = data?.mostFrequentProduct?.productname ?? 'N/A';
-    analyticsStore.mostFreqPrdquantity = data?.mostFrequentProduct?.timessold ?? 0;
+  //   // Most frequent product
+  //   analyticsStore.mostFreqPrd = data?.mostFrequentProduct?.productname ?? 'N/A';
+  //   analyticsStore.mostFreqPrdquantity = data?.mostFrequentProduct?.timessold ?? 0;
     
-    // Longest unpaid debt user
-    analyticsStore.longDebt = data?.longTermDebtUser?.name ?? 'N/A';
-    analyticsStore.amount = formatMoney(data?.longTermDebtUser?.remainingAmount);
+  //   // Longest unpaid debt user
+  //   analyticsStore.longDebt = data?.longTermDebtUser?.name ?? 'N/A';
+  //   analyticsStore.amount = formatMoney(data?.longTermDebtUser?.remainingAmount);
     
-    // User with highest total debt
-    analyticsStore.mostDebt = data?.mostDebtUser?.name ?? 'N/A';
-    analyticsStore.amountDebt = formatMoney(data?.mostDebtUser?.remainingAmount);
+  //   // User with highest total debt
+  //   analyticsStore.mostDebt = data?.mostDebtUser?.name ?? 'N/A';
+  //   analyticsStore.amountDebt = formatMoney(data?.mostDebtUser?.remainingAmount);
     
-    // Days since oldest debt
-    analyticsStore.daysDebt = data?.daysSinceDebt ?? 0;
+  //   // Days since oldest debt
+  //   analyticsStore.daysDebt = data?.daysSinceDebt ?? 0;
     
-    // lowest product
-    if (data.lowestProduct?.length > 0) {
-      analyticsStore.lowestPrdName = data.lowestProduct[0].name;
-      analyticsStore.lowestPrdStock = data.lowestProduct[0].stock;
-    }
+  //   // lowest product
+  //   if (data.lowestProduct?.length > 0) {
+  //     analyticsStore.lowestPrdName = data.lowestProduct[0].name;
+  //     analyticsStore.lowestPrdStock = data.lowestProduct[0].stock;
+  //   }
     
-    // restructure and obtain netSales
-    type DaySales = {
-      day: string;
-      sales: string;
-    };
+  //   // restructure and obtain netSales
+  //   type DaySales = {
+  //     day: string;
+  //     sales: string;
+  //   };
     
-    type DayExpenses = {
-      day: string;
-      expenses: string;
-    };
+  //   type DayExpenses = {
+  //     day: string;
+  //     expenses: string;
+  //   };
 
-    const salesByDay: DaySales[] = data?.salesByDay ?? [];
-    const expensesByDay: DayExpenses[] = data?.expensesByDay ?? [];
+  //   const salesByDay: DaySales[] = data?.salesByDay ?? [];
+  //   const expensesByDay: DayExpenses[] = data?.expensesByDay ?? [];
     
 
-    // Convert to a map for faster lookup
-    const expensesMap: Record<string, number> = Object.fromEntries(
-      expensesByDay.map((e: DayExpenses): [string, number] => [e.day, parseInt(e.expenses)])
-    );
+  //   // Convert to a map for faster lookup
+  //   const expensesMap: Record<string, number> = Object.fromEntries(
+  //     expensesByDay.map((e: DayExpenses): [string, number] => [e.day, parseInt(e.expenses)])
+  //   );
 
-    // Merge and calculate net sales
-    const netSales = salesByDay.map(({ day, sales }: DaySales) => {
-      const salesAmount = parseInt(sales) || 0;
-      const expenseAmount = expensesMap[day] || 0;
+  //   // Merge and calculate net sales
+  //   const netSales = salesByDay.map(({ day, sales }: DaySales) => {
+  //     const salesAmount = parseInt(sales) || 0;
+  //     const expenseAmount = expensesMap[day] || 0;
 
-      return {
-        day,
-        netSales: salesAmount - expenseAmount
-      };
-    });
+  //     return {
+  //       day,
+  //       netSales: salesAmount - expenseAmount
+  //     };
+  //   });
 
-    netSalesStore.push(...netSales);
+  //   netSalesStore.push(...netSales);
 
-    isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
+  //   isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
 
-    console.log("Time taken", Date.now() - t0, " ms")
-  });
+  //   console.log("Time taken", Date.now() - t0, " ms")
+  // });
   return (
     <>
       <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

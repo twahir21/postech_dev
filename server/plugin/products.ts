@@ -24,8 +24,6 @@ export const prodPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
-        console.log("Body: ", body)
-
         if (!(body as productTypes).categoryId || !(body as productTypes).supplierId) {
             return {
                 success: false,

@@ -1,0 +1,142 @@
+{
+    "success": true,
+    "data": [
+        {
+            "profitPerProduct": [],
+            "highestProfitProduct": null,
+            "netProfit": {
+                "totalExpenses": 0,
+                "totalSales": 0,
+                "totalPurchases": 0,
+                "netProfit": 0
+            },
+            "lowestProduct": null,
+            "lowStockProducts": [],
+            "mostSoldProductByQuantity": null,
+            "mostFrequentProduct": null,
+            "longTermDebtUser": null,
+            "mostDebtUser": null,
+            "daysSinceDebt": "Haijulikani",
+            "salesByDay": [
+                {
+                    "day": "Mon",
+                    "sales": 0
+                },
+                {
+                    "day": "Tue",
+                    "sales": 0
+                },
+                {
+                    "day": "Wed",
+                    "sales": 0
+                },
+                {
+                    "day": "Thu",
+                    "sales": 0
+                },
+                {
+                    "day": "Fri",
+                    "sales": 0
+                },
+                {
+                    "day": "Sat",
+                    "sales": 0
+                },
+                {
+                    "day": "Sun",
+                    "sales": 0
+                }
+            ],
+            "expensesByDay": [
+                {
+                    "day": "Mon",
+                    "expenses": 0
+                },
+                {
+                    "day": "Tue",
+                    "expenses": 0
+                },
+                {
+                    "day": "Wed",
+                    "expenses": 0
+                },
+                {
+                    "day": "Thu",
+                    "expenses": 0
+                },
+                {
+                    "day": "Fri",
+                    "expenses": 0
+                },
+                {
+                    "day": "Sat",
+                    "expenses": 0
+                },
+                {
+                    "day": "Sun",
+                    "expenses": 0
+                }
+            ],
+            "netSalesByDay": [
+                {
+                    "day": "Mon",
+                    "netSales": 0
+                },
+                {
+                    "day": "Tue",
+                    "netSales": 0
+                },
+                {
+                    "day": "Wed",
+                    "netSales": 0
+                },
+                {
+                    "day": "Thu",
+                    "netSales": 0
+                },
+                {
+                    "day": "Fri",
+                    "netSales": 0
+                },
+                {
+                    "day": "Sat",
+                    "netSales": 0
+                },
+                {
+                    "day": "Sun",
+                    "netSales": 0
+                }
+            ],
+            "purchasesPerDay": [
+                {
+                    "day": "Mon",
+                    "purchases": 0
+                },
+                {
+                    "day": "Tue",
+                    "purchases": 0
+                },
+                {
+                    "day": "Wed",
+                    "purchases": 0
+                },
+                {
+                    "day": "Thu",
+                    "purchases": 0
+                },
+                {
+                    "day": "Fri",
+                    "purchases": 0
+                },
+                {
+                    "day": "Sat",
+                    "purchases": 0
+                },
+                {
+                    "day": "Sun",
+                    "purchases": 0
+                }
+            ]
+        }
+    ]
+}
