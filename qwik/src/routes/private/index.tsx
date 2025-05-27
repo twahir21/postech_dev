@@ -22,6 +22,7 @@ export default component$(() => {
     input: "",
     showCalculator: false,
     username: "",
+    notification: 0
   });
 
   const toggleSidebar = $(() => {
@@ -86,6 +87,16 @@ export default component$(() => {
 
     // Redirect to the login page or home page
     navigateLogout("/auth");  
+  });
+
+  useVisibleTask$(async () => {
+    const notApi = new CrudService<{ id?: string; count: number }>("notifyCount");
+    const result = await notApi.get();
+
+    if(!result.success) return;
+    
+    store.notification = result.data[0].count;
+
   });
 
 
@@ -196,6 +207,7 @@ export default component$(() => {
             <button title="notification">
               <div style="position: relative; display: inline-block;">
                 🔔
+              {store.notification > 0 && (
                 <span style="
                   position: absolute;
                   top: -8px;
@@ -205,9 +217,10 @@ export default component$(() => {
                   border-radius: 50%;
                   padding: 2px 4px;
                   font-size: 11px;
-                ">
-                  3
+                ">                 
+                  {store.notification}
                 </span>
+              )}
               </div>
             </button>
 
