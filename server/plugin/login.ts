@@ -101,7 +101,6 @@ export const loginPlugin = new Elysia()
             const shop = await mainDb
                 .select({
                     shopId: shopUsers.shopId,
-                    isPaid: shopUsers.isPaid
                 })
                 .from(shopUsers)
                 .where(eq(shopUsers.userId, userData.id))
@@ -112,13 +111,6 @@ export const loginPlugin = new Elysia()
             }
 
             const shopData = shop[0];
-
-            if (!shopData.isPaid) {
-                return {
-                    success: false,
-                    message: "Tafadhali, lipia account yako ili kupata huduma."
-                };
-            }
 
             // Generate JWT
             const token = await jwt.sign({
@@ -149,7 +141,6 @@ export const loginPlugin = new Elysia()
             const payload = {
                 userId: userData.id,
                 shopId: shopData.shopId,
-                isPaid: shopData.isPaid
             };
 
             loginCache.set(cacheKey, {

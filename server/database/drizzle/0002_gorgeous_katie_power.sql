@@ -1,1 +1,0 @@
-ALTER TABLE "shops" RENAME COLUMN "subscription" TO "subscription_type";

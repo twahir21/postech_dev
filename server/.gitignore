@@ -16,6 +16,10 @@ lerna-debug.log*
 *.sh
 *.log
 
+# remove dockers
+docker-compose.yml
+Dockerfile
+
 
 .cache
 
