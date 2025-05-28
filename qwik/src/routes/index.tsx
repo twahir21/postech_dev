@@ -281,7 +281,7 @@ export default component$(() => {
             />
           </div>
 
-          <div class="w-full md:w-1/2 ml-auto text-right">
+          <div class="w-full md:w-1/2 ml-auto">
               <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">Kuhusu myPosTech</h2>
               <p class="text-sm sm:text-base md:text-base text-gray-600 dark:text-gray-300">
                 myPosTech umeundwa mahsusi kutatua changamoto halisi za wafanyabiashara wakubwa na wadogo.

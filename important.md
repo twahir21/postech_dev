@@ -222,3 +222,15 @@ Good for EU + Africa latency.
 ## use digital ocean with $200 free 2 months
 ## prefer amd over intel for server parallel processing and faster dbs and apps
 move from shared CX to dedicated tsh 12,000/= (semi) euro 13 CCX then to full dedicated euro 30
+
+## first step
+move postgres out since is disk usage and it loves memory.
+
+## for very high traffic use horizontal scaling like this
+Clients
+   ↓
+Load Balancer
+   ↓
+Multiple Backend Instances (Horizontally Scaled)
+   ↓                 ↓
+Dedicated Redis     PostgreSQL (w/ read replicas & optional sharding)

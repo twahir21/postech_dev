@@ -2,21 +2,85 @@
     "success": true,
     "data": [
         {
-            "profitPerProduct": [],
-            "highestProfitProduct": null,
+            "profitPerProduct": [
+                {
+                    "productid": "33567a74-e183-497e-90ec-ea49ad2c1f8e",
+                    "productname": "safi",
+                    "totalsales": 990000,
+                    "totalcost": 2700000,
+                    "profit": -1710000
+                }
+            ],
+            "highestProfitProduct": {
+                "productid": "33567a74-e183-497e-90ec-ea49ad2c1f8e",
+                "productname": "safi",
+                "totalsales": 990000,
+                "totalcost": 2700000,
+                "profit": -1710000
+            },
             "netProfit": {
                 "totalExpenses": 0,
-                "totalSales": 0,
-                "totalPurchases": 0,
-                "netProfit": 0
+                "totalSales": 990000,
+                "totalPurchases": 2700000,
+                "netProfit": -1710000
             },
-            "lowestProduct": null,
-            "lowStockProducts": [],
-            "mostSoldProductByQuantity": null,
-            "mostFrequentProduct": null,
-            "longTermDebtUser": null,
-            "mostDebtUser": null,
-            "daysSinceDebt": "Haijulikani",
+            "lowestProduct": {
+                "id": "33567a74-e183-497e-90ec-ea49ad2c1f8e",
+                "name": "safi",
+                "categoryId": "a89c2d12-7dab-455a-ae06-4ee82e176ca7",
+                "priceSold": "120000.00",
+                "stock": 0.75,
+                "shopId": "650e7ef2-ceee-456f-87f9-e438140ca960",
+                "supplierId": "b25e693f-5a83-4a7a-92c8-1013b1f89b0e",
+                "minStock": 4,
+                "status": "available",
+                "unit": "lita",
+                "createdAt": "2025-05-27T22:56:32.715Z",
+                "updatedAt": "2025-05-27T22:56:32.715Z",
+                "isQRCode": true
+            },
+            "lowStockProducts": [
+                {
+                    "id": "33567a74-e183-497e-90ec-ea49ad2c1f8e",
+                    "name": "safi",
+                    "categoryId": "a89c2d12-7dab-455a-ae06-4ee82e176ca7",
+                    "priceSold": "120000.00",
+                    "stock": 0.75,
+                    "shopId": "650e7ef2-ceee-456f-87f9-e438140ca960",
+                    "supplierId": "b25e693f-5a83-4a7a-92c8-1013b1f89b0e",
+                    "minStock": 4,
+                    "status": "available",
+                    "unit": "lita",
+                    "createdAt": "2025-05-27T22:56:32.715Z",
+                    "updatedAt": "2025-05-27T22:56:32.715Z",
+                    "isQRCode": true
+                }
+            ],
+            "mostSoldProductByQuantity": {
+                "productid": "33567a74-e183-497e-90ec-ea49ad2c1f8e",
+                "productname": "safi",
+                "totalquantitysold": 8.25
+            },
+            "mostFrequentProduct": {
+                "productid": "33567a74-e183-497e-90ec-ea49ad2c1f8e",
+                "productname": "safi",
+                "timessold": "3"
+            },
+            "longTermDebtUser": {
+                "debtId": "10458b39-cf7e-4a2a-8d9f-65bede0b0081",
+                "customerId": "62559484-208a-44dc-8b7c-6139b5fd8c16",
+                "remainingAmount": "120000.00",
+                "createdAt": "2025-05-27T23:14:27.043Z",
+                "name": "salimu ali"
+            },
+            "mostDebtUser": {
+                "debtId": "10458b39-cf7e-4a2a-8d9f-65bede0b0081",
+                "customerId": "62559484-208a-44dc-8b7c-6139b5fd8c16",
+                "remainingAmount": "120000.00",
+                "createdAt": "2025-05-27T23:14:27.043Z",
+                "name": "salimu ali"
+            },
+            "daysSinceDebt": "35 minutes ago",
             "salesByDay": [
                 {
                     "day": "Mon",
@@ -24,7 +88,7 @@
                 },
                 {
                     "day": "Tue",
-                    "sales": 0
+                    "sales": 990000
                 },
                 {
                     "day": "Wed",
@@ -84,7 +148,7 @@
                 },
                 {
                     "day": "Tue",
-                    "netSales": 0
+                    "netSales": 90000
                 },
                 {
                     "day": "Wed",
@@ -114,7 +178,7 @@
                 },
                 {
                     "day": "Tue",
-                    "purchases": 0
+                    "purchases": 900000
                 },
                 {
                     "day": "Wed",
