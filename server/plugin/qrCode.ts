@@ -1,7 +1,6 @@
 import Elysia from "elysia";
 import jwt from "@elysiajs/jwt";
 import fs from "fs/promises"; // Use async file handling
-import AdmZip from "adm-zip"; // For creating zip files
 import dotenv from "dotenv";
 import { extractId } from "../functions/security/jwtToken";
 import { generateQRCodeWithLogo } from "../functions/qrCodeFunc";
