@@ -62,7 +62,7 @@ export const QrPdf = component$(() => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `qrcodes_${Date.now()}.zip`; // Set the filename
+      a.download = `qrcodes_${Date.now()}.pdf`; // PDF filename
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -70,7 +70,7 @@ export const QrPdf = component$(() => {
       // Show success message
       store.modal = {
         isOpen: true,
-        message: 'QR codes imetengenezwa kwa mafanikio na zipu imeshushwa.',
+        message: 'QR codes imetengenezwa kwa mafanikio na PDF imeshushwa.',
         isSuccess: true,
       };
     } catch (error) {

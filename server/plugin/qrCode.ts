@@ -8,6 +8,7 @@ import { generateQRCodeWithLogo } from "../functions/qrCodeFunc";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { products, purchases, shops, supplierPriceHistory } from "../database/schema/shop";
 import { eq } from "drizzle-orm";
+import { PDFDocument, rgb } from "pdf-lib";
 
 dotenv.config();
 
@@ -79,12 +80,23 @@ const qrCodePlugin = new Elysia()
       .then((res) => res[0]?.name);
 
     if (!shopName) {
-      return { success: false, message: "Shop not found." };
+      return { success: false, message: "Duka halijapatikana." };
     }
 
     const logoPath = process.env.QR_LOGO_PATH || "./default-path";
-    const zip = new AdmZip();
     const tempFiles: string[] = [];
+
+    // initialize pdf
+    const pdfDoc = await PDFDocument.create();
+    
+    // PDF Page Settings
+    // const QR_SIZE = 150; // pixels
+    const MARGIN = 50;
+    const GRID_COLS = 3;
+    const GRID_ROWS = 4;
+    let currentPage = pdfDoc.addPage([595, 842]); // A4 size (portrait)
+    let currentRow = 0;
+    let currentCol = 0;
 
     // Ensure output directory exists once at the top
     await fs.mkdir("./images", { recursive: true });
@@ -98,8 +110,8 @@ const qrCodePlugin = new Elysia()
 
       const priceBought = priceBoughtDb[0]?.priceBought;
 
-      const sanitizedShopName = shopName.replace(/[^a-zA-Z0-9-_]/g, "_");
-      const sanitizedName = product.name.replace(/[^a-zA-Z0-9-_]/g, "_");
+      const sanitizedShopName = shopName.replace(/[^a-zA-Z0-9-_]/g, "_").slice(0, 27); // ensure not too long
+      const sanitizedName = product.name.replace(/[^a-zA-Z0-9-_]/g, "_").slice(0, 27); // ensure not too long
       const fileName = `qrcode_${sanitizedShopName}_${sanitizedName}.png`;
       const outputPath = `./images/${fileName}`;
 
@@ -135,16 +147,75 @@ const qrCodePlugin = new Elysia()
         continue; // skip adding to zip
       }
 
-        // Only if success
-        zip.addLocalFile(outputPath, "", fileName);
-        tempFiles.push(outputPath);
+      // Add to PDF
+      const qrImage = await pdfDoc.embedPng(await fs.readFile(outputPath));
+
+
+      // Make QR size responsive to page dimensions
+      const QR_SIZE = Math.min(
+        (currentPage.getWidth() - (GRID_COLS + 1) * MARGIN) / GRID_COLS,
+        (currentPage.getHeight() - (GRID_ROWS + 1) * MARGIN) / GRID_ROWS
+      );
+      
+      // Calculate position
+      const x = MARGIN + (currentCol * (QR_SIZE + MARGIN));
+      const y = currentPage.getHeight() - MARGIN - (currentRow + 1) * (QR_SIZE + MARGIN);
+      
+      currentPage.drawImage(qrImage, {
+        x,
+        y,
+        width: QR_SIZE,
+        height: QR_SIZE,
+      });
+
+      // Add product name below QR
+      currentPage.drawText(product.name, {
+        x: x + 10,
+        y: y - 20,
+        size: 10,
+        color: rgb(0, 0, 0),
+      });
+
+
+      // Update grid position
+      currentCol++;
+      if (currentCol >= GRID_COLS) {
+        currentCol = 0;
+        currentRow++;
+        
+        // New page if grid full
+        if (currentRow >= GRID_ROWS) {
+          currentPage = pdfDoc.addPage([595, 842]);
+          currentRow = 0;
+          currentCol = 0;
+        }
+      }
+
+      tempFiles.push(outputPath);
+
 
     }
 
-    // Write zip file
-    const zipFileName = `qrcodes_${Date.now()}.zip`;
-    const zipFilePath = `./${zipFileName}`;
-    zip.writeZip(zipFilePath);
+
+
+    const pageCount = pdfDoc.getPageCount();
+
+    for (let i = 0; i < pageCount; i++) {
+      const page = pdfDoc.getPage(i);
+
+      // Add to each page
+      page.drawText(`Shop: ${shopName}`, {
+        x: 50,
+        y: 30,
+        size: 12,
+      });
+
+      page.drawText(`Page ${i + 1}/${pageCount}`, {
+        x: 500,
+        y: 30,
+        size: 10,
+      });
+    }
 
     // Mark products as having QR
     await mainDb
@@ -152,8 +223,9 @@ const qrCodePlugin = new Elysia()
       .set({ isQRCode: true })
       .where(eq(products.isQRCode, false));
 
-    // Read zip as buffer
-    const zipFileBuffer = await fs.readFile(zipFilePath);
+    // Save PDF
+    const pdfBytes = await pdfDoc.save();
+    
 
     // Cleanup QR images
     for (const path of tempFiles) {
@@ -162,17 +234,12 @@ const qrCodePlugin = new Elysia()
       );
     }
 
-    // ✅ Delete the zip file itself
-    await fs.unlink(zipFilePath).catch((err) =>
-      console.error(`Failed to delete zip file ${zipFilePath}:`, err)
-    );
+    // Set response headers for PDF
+    set.headers["Content-Type"] = "application/pdf";
+    set.headers["Content-Disposition"] = `attachment; filename="qrcodes_${Date.now()}.pdf"`;
 
-    
-    // Set response headers
-    set.headers["Content-Type"] = "application/zip";
-    set.headers["Content-Disposition"] = `attachment; filename="${zipFileName}"`;
+    return new Uint8Array(pdfBytes);
 
-    return zipFileBuffer;
   } catch (error) {
     return {
       success: false,
