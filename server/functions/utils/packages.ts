@@ -26,8 +26,6 @@ export const retentionPeriods: Record<SubscriptionLevel, number> = {
   "AI": 24,         // 2 years
 };
 
-
-
 export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string } | undefined > => {
   // Use Promise.all to concurrently fetch product count and subscription details
   const [productsResult, subscriptionResult] = await Promise.all([
@@ -83,5 +81,71 @@ export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ succe
     //         }
     //         break;
     // }
+
+};
+
+// multiple check other services with ease and message only logics
+export type ServiceCheck = "customers" | "prdFreqCheck" | "assistant" | "exportCSV";
+
+// Define access rules for each service
+const serviceAccessRules: Record<ServiceCheck, {
+  minLevel: SubscriptionLevel;
+  message: string;
+}> = {
+  customers: {
+    minLevel: "Lite",
+    message: "Huwezi kuchagua wateja, chagua kifurushi cha Lite au zaidi"
+  },
+  prdFreqCheck: {
+    minLevel: "Business",
+    message: "Ukaguzi wa mara kwa mara unahitaji kifurushi cha Business au juu"
+  },
+  assistant: {
+    minLevel: "Lite",
+    message: "Kusajili msaidizi au mfanyakazi, chagua kifurushi cha Lite au zaidi"
+  },
+  exportCSV: {
+    minLevel: "Lite",
+    message: "Kuhamisha Taarifa kunahitaji kifurushi cha Lite au juu"
+  }
+};
+
+// Subscription level hierarchy (for comparison)
+const subscriptionHierarchy: Record<SubscriptionLevel, number> = {
+  "Msingi": 0,
+  "Lite": 1,
+  "Business": 2,
+  "Pro": 3,
+  "AI": 4,
+  "Trial": 1 // Trial has Lite-level access
+};
+
+export const checkServiceAccess = async ({
+  shopId,
+  service
+}: {
+  shopId: string;
+  service: ServiceCheck;
+}): Promise<{ success: boolean; message?: string } | undefined > => {
+  // Get shop subscription
+  const [shop] = await mainDb
+    .select({ subscription: shops.subscription })
+    .from(shops)
+    .where(eq(shops.id, shopId));
+
+  if (!shop) {
+    return { success: false, message: "Duka halijapatikana" };
+  }
+
+  const currentSubscription = shop.subscription;
+  const requiredLevel = serviceAccessRules[service].minLevel;
+
+  // Compare subscription levels
+  if (subscriptionHierarchy[currentSubscription] < subscriptionHierarchy[requiredLevel]) {
+    return {
+      success: false,
+      message: serviceAccessRules[service].message
+    };
+  }
 
 };

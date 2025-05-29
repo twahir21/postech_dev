@@ -235,7 +235,7 @@ useVisibleTask$(async () => {
         </div>
 
         {/* Top Asked Products */}
-      <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
+        <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
           <h3 class="text-sm flex items-center justify-center">
             <span role="img" aria-label="asked-product" class="pr-1.5">❓</span> 
             Kilichouliziwa sana
@@ -244,13 +244,13 @@ useVisibleTask$(async () => {
         </div>
 
         {/* Total Expired Products */}
-      <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
+        {/* <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
           <h3 class="text-sm flex items-center justify-center">
             <span role="img" aria-label="expired" class="pr-1.5">📅</span> 
             Jumla ya bidhaa zilizo-expire
           </h3>
           <p class="text-1xl font-semibold">0</p>
-        </div>
+        </div> */}
 
 
       </div>

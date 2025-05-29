@@ -4,6 +4,7 @@ import jwt from '@elysiajs/jwt';
 import { salesQueryData } from '../functions/security/validators/data';
 import { debtsFunc, exportSales, getAnalytics, graphFunc, salesAnalytics } from '../functions/analyticsFunc';
 import { extractId } from '../functions/security/jwtToken';
+import { checkServiceAccess } from '../functions/utils/packages';
 
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
@@ -45,7 +46,9 @@ const analyticsRoute = new Elysia()
     const { shopId, userId } = await extractId({ jwt, cookie });
     if (!shopId || !userId) return;
 
-
+    // check if user is allowed to export
+    await checkServiceAccess({ shopId, service: "exportCSV" });
+    
     return await exportSales({
       shopId,
       userId,
