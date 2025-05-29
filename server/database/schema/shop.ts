@@ -142,6 +142,8 @@ import {
     shopId: uuid("shop_id").notNull().references(() => shops.id),
     price: decimal("price", { precision: 15, scale: 2}).notNull(),
     dateAdded: timestamp("date_added").defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
+
 }, (table) => ({
     uniqueSupplierProduct: uniqueIndex("unique_supplier_product").on(table.supplierId, table.productId, table.shopId),
 }));
@@ -219,6 +221,7 @@ import {
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     reason: text("reason").notNull(),
     returnDate: timestamp("return_date").defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
   });
   
   // -----------------

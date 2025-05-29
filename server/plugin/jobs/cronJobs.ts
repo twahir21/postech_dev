@@ -1,8 +1,9 @@
 import { mainDb } from "../../database/schema/connections/mainDb";
-import { emailVerifications, notifications, shops, shopUsers } from "../../database/schema/shop";
-import { eq } from "drizzle-orm";
+import { emailVerifications, expenses, notifications, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory } from "../../database/schema/shop";
+import { and, eq, lt } from "drizzle-orm";
 import nodemailer from "nodemailer";
 import "dotenv/config";
+import { retentionPeriods, type SubscriptionLevel } from "../../functions/utils/packages";
 
 export const clearVerifiedEmails = async() => {
 
@@ -183,4 +184,38 @@ export const isTrialEnd = async () => {
             ? error.message
             :  "Hitilafu imetokea kwenye seva")
     }
+}
+
+export async function cleanupOldData() {
+  // Get all shops and their subscriptions
+  const shopsWithSubs = await mainDb.select({
+    shopId: shops.id,
+    subscription: shops.subscription,
+  }).from(shops);
+
+  const tables = [
+    expenses,
+    sales,
+    purchases,
+    returns,
+    supplierPriceHistory,
+    products,
+  ];
+
+  for (const { shopId, subscription } of shopsWithSubs) {
+    const monthsToKeep = retentionPeriods[subscription as SubscriptionLevel];
+    if (!monthsToKeep) continue; // Skip if subscription is undefined or invalid
+
+    const cutoffDate = new Date();
+    cutoffDate.setMonth(cutoffDate.getMonth() - monthsToKeep);
+
+    for (const table of tables) {
+      await mainDb.delete(table).where(
+        and(
+          eq(table.shopId, shopId),
+          lt(table.createdAt, cutoffDate)
+        )
+      );
+    }
+  }
 }

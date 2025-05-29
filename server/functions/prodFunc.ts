@@ -4,6 +4,7 @@ import { mainDb } from "../database/schema/connections/mainDb";
 import { debts, expenses, products, purchases, sales, supplierPriceHistory } from "../database/schema/shop";
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import { calculateTotal, formatFloatToFixed } from "./security/money";
+import { prodCheck } from "./utils/packages";
 
 // implementing crud for products 
 export const prodPost = async ({ body, headers, shopId, userId, supplierId, categoryId }: {body: productTypes, headers: headTypes, shopId: string, userId: string, categoryId: string, supplierId: string}) => {
@@ -19,6 +20,9 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
         stock = sanitizeNumber(stock);
         minStock = sanitizeNumber(minStock);
         unit = sanitizeString(unit);
+
+        // check if user has reached limit of products
+        await prodCheck({ shopId });
 
 
         // now save to database to products

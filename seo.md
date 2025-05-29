@@ -5,3 +5,5 @@ lighthouse http://localhost:5173 --view --extra-headers "{\"Cookie\": \"auth_tok
 make a background task lazy and called by user traffic
 
 vercel always builds from build command in package json.
+
+## always love to enforce function returns to TS

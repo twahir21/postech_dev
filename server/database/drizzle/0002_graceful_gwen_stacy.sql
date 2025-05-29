@@ -1,0 +1,1 @@
+ALTER TABLE "supplier_price_history" ADD COLUMN "created_at" timestamp DEFAULT now();
