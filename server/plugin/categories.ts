@@ -4,6 +4,7 @@ import jwt from "@elysiajs/jwt";
 import { extractId } from "../functions/security/jwtToken";
 import type { categoriesTypes } from "../types/types";
 import { categData } from "../functions/security/validators/data";
+import { blockUsage } from "../functions/utils/block";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -18,6 +19,8 @@ const categoriesPlugin = new Elysia()
         const { userId, shopId } = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
+        // block usage upon create new category
+        await blockUsage({ shopId });
 
         return await categPost({
             body: body as categoriesTypes,

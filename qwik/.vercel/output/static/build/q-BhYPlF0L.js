@@ -1,0 +1,1 @@
+import{B as o}from"./q-9pm_tjHx.js";import{a as n,x as a,S as s,F as r,b as t}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=l=>n(o,{name:"activity",...l,children:[n(s,null,3,"Ra_0"),n(r,{children:t("polyline",null,{points:"22 12 18 12 15 21 9 3 6 12 2 12"},null,3,null)},3,"Ra_1")],[a]:{name:a},[a]:{name:a}},0,"Ra_2");export{_ as s_0hfHTwLByco};

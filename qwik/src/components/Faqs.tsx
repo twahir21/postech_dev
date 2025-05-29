@@ -12,7 +12,7 @@ export const Faqs = component$(() => {
     },
     {
       question: 'Naweza kulipa vipi kifurushi?',
-      answer: 'Unaweza kulipa kupitia M-Pesa, Tigo Pesa, Airtel Money, au kwa maelezo zaidi wasiliana nasi WhatsApp.',
+      answer: 'Unaweza kulipa kupitia Tigo Pesa na Airtel Money kwa sasa au kwa maelezo zaidi wasiliana nasi WhatsApp.',
     },
     {
       question: 'Je, taarifa zangu ziko salama?',

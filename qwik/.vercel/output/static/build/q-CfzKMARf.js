@@ -1,0 +1,1 @@
+import{u as i}from"./q-Dk67VZbx.js";import{d as u}from"./q-Dk67VZbx.js";const m=(a,o)=>{const[t]=i();let e="",r=!1;(a==="name"||a==="contact")&&(r=o.trim().length>=3,e=r?"":"Lazima iwe na herufi 3 au zaidi"),t.errors[a]=e,t.valid[a]=r};export{u as _hW,m as s_PWKa3tfu9zE};

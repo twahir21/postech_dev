@@ -1,0 +1,1 @@
+import{B as s}from"./q-9pm_tjHx.js";import{a,x as n,S as t,F as e,b as r}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=l=>a(s,{name:"shield",...l,children:[a(t,null,3,"tu_0"),a(e,{children:r("path",null,{d:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"},null,3,null)},3,"tu_1")],[n]:{name:n},[n]:{name:n}},0,"tu_2");export{_ as s_69neyIwHTyo};

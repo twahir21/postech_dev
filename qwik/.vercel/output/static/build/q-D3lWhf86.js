@@ -1,0 +1,1 @@
+import{R as r}from"./q-Ctf5LruS.js";import{i as e,j as n,a as h,S as u}from"./q-Dk67VZbx.js";const m=()=>{const t=e(!1),s=e(!1),o=e(!1),c=e(!1),a=e(!1),f=e(!1),l=e(!1);return n(r,{saleRefetch:t,productRefetch:s,customerRefetch:o,qrCodeRefetch:c,supplierRefetch:a,categoryRefetch:f,refetchAnalytics:l}),h(u,null,3,"yB_0")};export{m as s_VKFlAWJuVm8};

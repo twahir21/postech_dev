@@ -1,0 +1,1 @@
+import{B as e}from"./q-9pm_tjHx.js";import{a as s,x as a,S as l,F as r,b as m}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=n=>s(e,{name:"message-square",...n,children:[s(l,null,3,"Ng_0"),s(r,{children:m("path",null,{d:"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"},null,3,null)},3,"Ng_1")],[a]:{name:a},[a]:{name:a}},0,"Ng_2");export{_ as s_SP9BuitBSx8};

@@ -1,0 +1,1 @@
+import{u as m}from"./q-Dk67VZbx.js";import{d as l}from"./q-Dk67VZbx.js";const i=()=>{const[n,a,r]=m();let e=r.value.username;e||(e="Mgeni");const t=o=>o.trim().split(" ").map(s=>s.charAt(0).toUpperCase()+s.slice(1).toLowerCase()).join(" ");a.username=t(e)};export{l as _hW,i as s_g2bZU3wQmcA};

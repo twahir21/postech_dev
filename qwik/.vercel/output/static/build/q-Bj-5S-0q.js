@@ -1,0 +1,1 @@
+import{u as r}from"./q-Dk67VZbx.js";import{d as p}from"./q-Dk67VZbx.js";const i=(e,a)=>{const[o,s]=r();let t=a.trim();(e==="name"||e==="username")&&(t=t.toLowerCase()),o[e]=t,s(e,t)};export{p as _hW,i as s_BxmUZ9PgBok};

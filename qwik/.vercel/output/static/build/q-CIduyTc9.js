@@ -1,0 +1,1 @@
+import{B as o}from"./q-9pm_tjHx.js";import{a as l,x as n,S as r,F as s,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=a=>l(o,{name:"filter",...a,children:[l(r,null,3,"WM_0"),l(s,{children:e("polygon",null,{points:"22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"},null,3,null)},3,"WM_1")],[n]:{name:n},[n]:{name:n}},0,"WM_2");export{_ as s_i8nc8gZvM0E};

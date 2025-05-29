@@ -1,0 +1,1 @@
+import{B as o}from"./q-9pm_tjHx.js";import{a as l,x as a,S as r,F as s,b as t}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const u=n=>l(o,{name:"bluetooth",...n,children:[l(r,null,3,"y6_0"),l(s,{children:t("path",null,{d:"m7 7 10 10-5 5V2l5 5L7 17"},null,3,null)},3,"y6_1")],[a]:{name:a},[a]:{name:a}},0,"y6_2");export{u as s_1EIFzCzYRkI};

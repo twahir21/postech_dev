@@ -1,0 +1,1 @@
+import{B as r}from"./q-9pm_tjHx.js";import{a as l,x as n,S as o,F as t,b as a}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=s=>l(r,{name:"signal-low",...s,children:[l(o,null,3,"Qn_0"),l(t,{children:[a("path",null,{d:"M2 20h.01"},null,3,null),a("path",null,{d:"M7 20v-4"},null,3,null)]},3,"Qn_1")],[n]:{name:n},[n]:{name:n}},0,"Qn_2");export{_ as s_OOIwVxnG2C8};

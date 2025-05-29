@@ -1,0 +1,1 @@
+import{u as c}from"./q-Dk67VZbx.js";import{d as v}from"./q-Dk67VZbx.js";const o=()=>{const[r,s,e]=c();let t=0;const l=setInterval(()=>{s.value=e.text.slice(0,t+1),t++,t>=e.text.length&&clearInterval(l)},e.speed??60),a=setInterval(()=>{r.value=!r.value},500);return()=>{clearInterval(l),clearInterval(a)}};export{v as _hW,o as s_7Z227c6pAXk};

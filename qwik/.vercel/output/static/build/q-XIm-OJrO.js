@@ -1,0 +1,1 @@
+import{B as m}from"./q-9pm_tjHx.js";import{a as n,x as l,S as r,F as u,b as a}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const p=s=>n(m,{name:"axis-3d",...s,children:[n(r,null,3,"uq_0"),n(u,{children:[a("path",null,{d:"M4 4v16h16"},null,3,null),a("path",null,{d:"m4 20 7-7"},null,3,null)]},3,"uq_1")],[l]:{name:l},[l]:{name:l}},0,"uq_2");export{p as s_MmVkgGzJNpo};

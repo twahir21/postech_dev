@@ -1,0 +1,1 @@
+import{B as r}from"./q-9pm_tjHx.js";import{a as l,x as n,S as a,F as s,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=o=>l(r,{name:"chevron-right",...o,children:[l(a,null,3,"Cn_0"),l(s,{children:e("polyline",null,{points:"9 18 15 12 9 6"},null,3,null)},3,"Cn_1")],[n]:{name:n},[n]:{name:n}},0,"Cn_2");export{_ as s_o5f9Kd7Oyz4};

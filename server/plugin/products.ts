@@ -4,9 +4,7 @@ import { extractId } from "../functions/security/jwtToken";
 import { prodDel, prodGet, prodPost, prodUpdate, QrPost } from "../functions/prodFunc";
 import type { productTypes, QrData } from "../types/types";
 import { prodData, QrPostData } from "../functions/security/validators/data";
-import { mainDb } from "../database/schema/connections/mainDb";
-import { shopUsers } from "../database/schema/shop";
-import { eq } from "drizzle-orm";
+import { blockUsage } from "../functions/utils/block";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -33,6 +31,9 @@ export const prodPlugin = new Elysia()
                 message: "Category Id and supplier Id zinatakiwa"
             }
         }
+
+        // block creating new product if unpaid
+        await blockUsage({ shopId });
 
         return await prodPost({ 
             body: body as productTypes, 
@@ -84,21 +85,8 @@ export const prodPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
-        // cache result of isPaid for 1hour,
-        // verify if user is paid.
-        const isPaid = await mainDb.select({
-                            isPaid: shopUsers.isPaid
-                        })
-                        .from(shopUsers)
-                        .where(eq(shopUsers.shopId, shopId));
+        await blockUsage({ shopId });
 
-        if (isPaid[0]?.isPaid === false) {
-            return {
-                success: false,
-                message: "Kifurushi kimeisha, tafadhali lipia ili kuendelea."
-            }
-        }
-        
         return await QrPost({ 
             body: body as QrData, 
             userId, 

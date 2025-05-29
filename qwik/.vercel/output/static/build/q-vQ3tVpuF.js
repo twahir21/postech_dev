@@ -1,0 +1,1 @@
+import{B as l}from"./q-9pm_tjHx.js";import{a,x as n,S as s,F as r,b as t}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=o=>a(l,{name:"navigation-2",...o,children:[a(s,null,3,"ST_0"),a(r,{children:t("polygon",null,{points:"12 2 19 21 12 17 5 21 12 2"},null,3,null)},3,"ST_1")],[n]:{name:n},[n]:{name:n}},0,"ST_2");export{_ as s_EZLt0Y1CGBg};

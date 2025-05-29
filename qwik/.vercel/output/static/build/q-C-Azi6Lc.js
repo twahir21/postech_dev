@@ -1,0 +1,1 @@
+import{u as a}from"./q-Dk67VZbx.js";const o=async()=>{const[e,t]=a();await fetch("/auth/request-reset",{method:"POST",body:JSON.stringify({email:e.value}),headers:{"Content-Type":"application/json"}}),t.value=!0};export{o as s_umhrDRdtv3I};

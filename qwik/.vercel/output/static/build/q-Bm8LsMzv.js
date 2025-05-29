@@ -1,0 +1,1 @@
+import{u as r}from"./q-Dk67VZbx.js";import{d as m}from"./q-Dk67VZbx.js";const i=()=>{const[c]=r(),n=s=>{const o=s.target,e=c.value,t=document.querySelector("[data-menu-toggle]");e&&!e.contains(o)&&!(t!=null&&t.contains(o))&&e.classList.add("hidden")};return document.addEventListener("click",n),()=>document.removeEventListener("click",n)};export{m as _hW,i as s_2BRS04gn2tk};

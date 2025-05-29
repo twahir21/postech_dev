@@ -1,0 +1,1 @@
+import{u as t}from"./q-Dk67VZbx.js";import{d}from"./q-Dk67VZbx.js";const a=()=>{const[e]=t();localStorage.getItem("theme")==="dark"&&(e.value="dark",document.documentElement.classList.add("dark"))};export{d as _hW,a as s_hs55Cc65pvA};

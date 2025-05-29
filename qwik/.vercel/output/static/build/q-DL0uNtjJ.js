@@ -1,0 +1,1 @@
+import{u as i}from"./q-Dk67VZbx.js";import{d}from"./q-Dk67VZbx.js";const c=(s,r)=>{const[e]=i();if(s==="category"){const o=e.category.find(t=>t.id===r);o&&(e.category=[o])}else if(s==="supplier"){const o=e.supplier.find(t=>t.id===r);o&&(e.supplier=[o])}else e[s]=r};export{d as _hW,c as s_AFdSfPbmnZo};

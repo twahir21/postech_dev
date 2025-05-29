@@ -1,0 +1,1 @@
+import{u as s}from"./q-Dk67VZbx.js";import{d as p}from"./q-Dk67VZbx.js";const o=r=>{const[t]=s();if(r==="C")t.input="";else if(r==="=")try{t.input=t.input=Function('"use strict"; return ('+t.input+")")()}catch{t.input="Error"}else t.input+=r};export{p as _hW,o as s_WFN8cGssxGo};

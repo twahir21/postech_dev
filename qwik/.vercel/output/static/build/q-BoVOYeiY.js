@@ -1,0 +1,1 @@
+import{B as r}from"./q-9pm_tjHx.js";import{a as e,x as a,S as l,F as m,b as s}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const h=n=>e(r,{name:"framer",...n,children:[e(l,null,3,"ea_0"),e(m,{children:s("path",null,{d:"M5 16V9h14V2H5l14 14h-7m-7 0 7 7v-7m-7 0h7"},null,3,null)},3,"ea_1")],[a]:{name:a},[a]:{name:a}},0,"ea_2");export{h as s_puPTjic5xW4};

@@ -1,0 +1,1 @@
+import{u as e}from"./q-Dk67VZbx.js";import{C as o}from"./q-DrN8Jx7F.js";import"./q-B4L2hSEC.js";const m=async()=>{const[s]=e();if(s.isLoading)return;const a=await new o("shop").get();if(!a.success){s.isLoading=!1;return}s.email=a.data[0].email.email,s.shopName=a.data[0].shopName.shopName,s.isLoading=!1};export{m as s_f63WMV0vhSw};

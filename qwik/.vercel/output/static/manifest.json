@@ -1,9 +1,43 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "qwik-project-name",
-  "short_name": "Welcome to Qwik",
+  "name": "myPosTech",
+  "lang": "sw",
+  "short_name": "myPosTech home",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#fff",
-  "description": "A Qwik project app."
+  "description": "myPosTech - Mfumo bora wa POS unaorahisisha mauzo na usimamizi wa biashara kwa kutumia QR Code na teknolojia ya kisasa.",
+
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://www.mypostech.store/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
+    },
+    {
+      "src": "https://www.mypostech.store/thumbnail.webp",
+      "sizes": "412x412",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://www.mypostech.store/thumbnail2.webp",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity", "finance"],
+  "screenshots": [
+    {
+      "src": "https://www.mypostech.store/mfumo.png",
+      "sizes": "640x360",
+      "type": "image/png",
+      "label": "Dashboard kuu ya Postech"
+    }
+  ]
 }
+
+

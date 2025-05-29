@@ -1,0 +1,1 @@
+import{B as l}from"./q-9pm_tjHx.js";import{a as r,x as a,S as s,F as e,b as o}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=n=>r(l,{name:"loader-2",...n,children:[r(s,null,3,"Er_0"),r(e,{children:o("path",null,{d:"M21 12a9 9 0 1 1-6.219-8.56"},null,3,null)},3,"Er_1")],[a]:{name:a},[a]:{name:a}},0,"Er_2");export{i as s_kT4DLnWZNCA};

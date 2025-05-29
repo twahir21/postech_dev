@@ -1,0 +1,1 @@
+import{u as o}from"./q-Dk67VZbx.js";import{d as n}from"./q-Dk67VZbx.js";const i=()=>{const[a,s,u,e]=o();e.value&&(clearTimeout(e.value),e.value=void 0),s.value=0,a.value=u.duration??2e3};export{n as _hW,i as s_Qb1wcJpqx5s};

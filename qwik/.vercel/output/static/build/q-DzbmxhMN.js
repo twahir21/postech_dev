@@ -1,0 +1,1 @@
+import{B as s}from"./q-9pm_tjHx.js";import{a as n,x as l,S as e,F as m,b as a}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const u=r=>n(s,{name:"music-3",...r,children:[n(e,null,3,"Iq_0"),n(m,{children:[a("circle",null,{cx:"12",cy:"18",r:"4"},null,3,null),a("path",null,{d:"M16 18V2"},null,3,null)]},3,"Iq_1")],[l]:{name:l},[l]:{name:l}},0,"Iq_2");export{u as s_Uw7BsMUbq0A};

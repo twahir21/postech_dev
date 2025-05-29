@@ -1,0 +1,1 @@
+import{B as l}from"./q-9pm_tjHx.js";import{a as n,x as a,S as o,F as s,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=r=>n(l,{name:"arrow-big-down",...r,children:[n(o,null,3,"i1_0"),n(s,{children:e("path",null,{d:"M9 3h6v11h4l-7 7-7-7h4z"},null,3,null)},3,"i1_1")],[a]:{name:a},[a]:{name:a}},0,"i1_2");export{_ as s_MrfEzPCxovk};

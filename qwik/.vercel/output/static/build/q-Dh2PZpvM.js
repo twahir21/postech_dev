@@ -1,0 +1,1 @@
+import{B as r}from"./q-9pm_tjHx.js";import{a as n,x as l,S as s,F as t,b as a}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const x=e=>n(r,{name:"line-chart",...e,children:[n(s,null,3,"ex_0"),n(t,{children:[a("path",null,{d:"M3 3v18h18"},null,3,null),a("path",null,{d:"m19 9-5 5-4-4-3 3"},null,3,null)]},3,"ex_1")],[l]:{name:l},[l]:{name:l}},0,"ex_2");export{x as s_79XHZwa1H00};

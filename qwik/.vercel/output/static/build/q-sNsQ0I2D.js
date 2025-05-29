@@ -1,0 +1,1 @@
+import{B as n}from"./q-9pm_tjHx.js";import{a as s,x as a,S as r,F as t,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const p=l=>s(n,{name:"star-half",...l,children:[s(r,null,3,"Zs_0"),s(t,{children:e("path",null,{d:"M12 17.8 5.8 21 7 14.1 2 9.3l7-1L12 2"},null,3,null)},3,"Zs_1")],[a]:{name:a},[a]:{name:a}},0,"Zs_2");export{p as s_VqpN1jwkKdg};

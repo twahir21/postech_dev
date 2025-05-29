@@ -1,0 +1,1 @@
+import{B as e}from"./q-9pm_tjHx.js";import{a as r,x as n,S as l,F as t,b as s}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const c=a=>r(e,{name:"rectangle-vertical",...a,children:[r(l,null,3,"4Q_0"),r(t,{children:s("rect",null,{x:"6",y:"2",width:"12",height:"20",rx:"2"},null,3,null)},3,"4Q_1")],[n]:{name:n},[n]:{name:n}},0,"4Q_2");export{c as s_TnsuBdXiu20};

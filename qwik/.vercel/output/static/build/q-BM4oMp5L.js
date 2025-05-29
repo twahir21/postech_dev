@@ -1,0 +1,1 @@
+import{B as l}from"./q-9pm_tjHx.js";import{a as n,x as a,S as r,F as e,b as m}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=s=>n(l,{name:"sigma",...s,children:[n(r,null,3,"40_0"),n(e,{children:m("path",null,{d:"M18 7V4H6l6 8-6 8h12v-3"},null,3,null)},3,"40_1")],[a]:{name:a},[a]:{name:a}},0,"40_2");export{i as s_e1JW9TXsW08};

@@ -1,0 +1,1 @@
+import{u as o}from"./q-Dk67VZbx.js";const a=()=>{const[s]=o();s.isLogin=!s.isLogin,s.name="",s.email="",s.username="",s.password="",s.errors={},s.valid={},s.showPassword=!1};export{a as s_RLBscMEkl2s};

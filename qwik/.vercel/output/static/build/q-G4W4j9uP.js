@@ -1,0 +1,1 @@
+import{B as e}from"./q-9pm_tjHx.js";import{a as r,x as n,S as l,F as t,b as o}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const x=a=>r(e,{name:"rectangle-horizontal",...a,children:[r(l,null,3,"wV_0"),r(t,{children:o("rect",null,{x:"2",y:"6",width:"20",height:"12",rx:"2"},null,3,null)},3,"wV_1")],[n]:{name:n},[n]:{name:n}},0,"wV_2");export{x as s_XEgxx9wMCgY};

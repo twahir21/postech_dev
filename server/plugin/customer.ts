@@ -4,6 +4,7 @@ import { extractId } from "../functions/security/jwtToken";
 import type { CustomerTypes } from "../types/types";
 import { CustomerDel, customerFetch, customerGet, customerPost, customerUpdate } from "../functions/customerFunc";
 import { customerData } from "../functions/security/validators/data";
+import { blockUsage } from "../functions/utils/block";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -31,7 +32,9 @@ export const CustomersPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
-
+        // block creating customers
+        await blockUsage({ shopId });
+        
         return await customerPost({ 
             body: body as CustomerTypes, 
             userId, 

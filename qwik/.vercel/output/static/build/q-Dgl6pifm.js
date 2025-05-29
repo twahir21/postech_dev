@@ -1,0 +1,1 @@
+import{B as r}from"./q-9pm_tjHx.js";import{a as n,x as l,S as s,F as t,b as a}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const u=o=>n(r,{name:"option",...o,children:[n(s,null,3,"U2_0"),n(t,{children:[a("path",null,{d:"M3 3h6l6 18h6"},null,3,null),a("path",null,{d:"M14 3h7"},null,3,null)]},3,"U2_1")],[l]:{name:l},[l]:{name:l}},0,"U2_2");export{u as s_GXBYWppnUjw};

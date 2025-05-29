@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Disallow sensitive or irrelevant directories
+Disallow: /admin/
+Disallow: /temp/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /scan-qrcode/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /profile/
+
+
+# Sitemap location
+Sitemap: https://mypostech.store/sitemap.xml
