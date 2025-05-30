@@ -27,6 +27,7 @@ export const HomeComponent = component$(() => {
   const netSalesStore = useStore<{ day: string; netSales: number }[]>([]);
   const isGraphReady = useSignal(false);
 
+
 useVisibleTask$(async () => {
     const analyticsApi = new CrudService("analytics");
     const analyticsData = await analyticsApi.get();

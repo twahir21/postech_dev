@@ -274,7 +274,9 @@ export const SettingsComponent = component$(() => {
             Huduma yako ipo active. Utalipia tena tarehe : <span class="font-semibold">01-05-2025</span>
           </p>
         )}
-        <button class="mt-3 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+        <button class="mt-3 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+        onClick$={() => navigation("/pricing")}
+        >
           🧾 Angalia vifurushi
         </button>
       </section>
