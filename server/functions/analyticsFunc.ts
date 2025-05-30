@@ -3,6 +3,7 @@ import { mainDb } from '../database/schema/connections/mainDb';
 import { askedProducts, categories, customers, debtPayments, debts, expenses, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, suppliers, users } from '../database/schema/shop';
 import { formatDistanceToNow } from "date-fns";
 import type { exportSet, headTypes, ProductQuery, SalesQuery } from '../types/types';
+import { prodCheck } from './utils/packages';
 
 
 
@@ -245,6 +246,9 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
             netSalesByDay.push({ day, netSales });
         }
 
+        // return product data
+        const result = await prodCheck({ shopId });
+
         return {
             success: true,
             data: [{
@@ -261,7 +265,8 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
                   salesByDay,
                   expensesByDay,
                   netSalesByDay,
-                  purchasesPerDay
+                  purchasesPerDay,
+                  prodMessage: result.message
                 }]
         };
 

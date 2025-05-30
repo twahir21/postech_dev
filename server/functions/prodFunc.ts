@@ -22,8 +22,12 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
         unit = sanitizeString(unit);
 
         // check if user has reached limit of products
-        await prodCheck({ shopId });
+        const prdResult = await prodCheck({ shopId });
 
+        if (!prdResult.success) return {
+          success: false,
+          message: prdResult.message
+        }; // you must define otherwise function will not work
 
         // now save to database to products
         const [insertedProduct] = await mainDb.insert(products).values({

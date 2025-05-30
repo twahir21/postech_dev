@@ -47,8 +47,15 @@ const analyticsRoute = new Elysia()
     if (!shopId || !userId) return;
 
     // check if user is allowed to export
-    await checkServiceAccess({ shopId, service: "exportCSV" });
-    
+    const serviceResult = await checkServiceAccess({ shopId, service: "exportCSV" });
+
+    if (!serviceResult.success) {
+      return {
+        success: false,
+        message: serviceResult.message
+      }
+    }
+
     return await exportSales({
       shopId,
       userId,

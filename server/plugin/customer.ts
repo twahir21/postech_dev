@@ -27,7 +27,14 @@ export const CustomersPlugin = new Elysia()
         if (!shopId || !userId) return;
 
         // check if user allowed to fetch
-        await checkServiceAccess({ shopId, service: "customers" });
+        const customerCheck = await checkServiceAccess({ shopId, service: "customers" });
+
+        if (!customerCheck.success) {
+            return  {
+                success: false,
+                message: customerCheck.message
+            }
+        }
 
         return await customerFetch({ userId, shopId, headers});
     })

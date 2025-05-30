@@ -6,7 +6,7 @@ import { products, shops } from "../../database/schema/shop";
 export type SubscriptionLevel = "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial";
 
 // define limits
-const subscriptionLimits: Record<SubscriptionLevel, number> = {
+export const subscriptionLimits: Record<SubscriptionLevel, number> = {
   "Trial": 50,
   "Msingi": 50,
   "Lite": 300,
@@ -26,7 +26,7 @@ export const retentionPeriods: Record<SubscriptionLevel, number> = {
   "AI": 24,         // 2 years
 };
 
-export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string } | undefined > => {
+export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string }> => {
   // Use Promise.all to concurrently fetch product count and subscription details
   const [productsResult, subscriptionResult] = await Promise.all([
     mainDb.select({ total: count() }).from(products).where(eq(products.shopId, shopId)),
@@ -45,6 +45,11 @@ export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ succe
       success: false,
       message: `Aina za bidhaa ulizosajili zimetosha, ongeza kifurushi cha juu kufungua aina zaidi ya ${limit}`
     };
+  }
+
+  return {
+    success: true,
+    message: `Umesajili bidhaa ${prodCount} kati ya ${limit}`
   }
       // this is young and simple approach.
     // switch(subscription) {
@@ -126,7 +131,7 @@ export const checkServiceAccess = async ({
 }: {
   shopId: string;
   service: ServiceCheck;
-}): Promise<{ success: boolean; message?: string } | undefined > => {
+}): Promise<{ success: boolean; message?: string }> => {
   // Get shop subscription
   const [shop] = await mainDb
     .select({ subscription: shops.subscription })
@@ -146,6 +151,11 @@ export const checkServiceAccess = async ({
       success: false,
       message: serviceAccessRules[service].message
     };
+  }
+
+  return {
+    success: true,
+    message: "done!"
   }
 
 };
