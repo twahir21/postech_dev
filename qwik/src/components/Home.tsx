@@ -60,6 +60,8 @@ useVisibleTask$(async () => {
     analyticsStore.subscription = analytics.subscription;
     analyticsStore.remainainingDays = analytics.trialEnd;
 
+    isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
+
 });
 
 

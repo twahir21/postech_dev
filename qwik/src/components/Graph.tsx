@@ -79,9 +79,9 @@ export const Graph = component$((props: { data: SalesData[] }) => {
 
   return (
     <div class="max-w-3xl mx-auto bg-gray-200 p-8 rounded-lg shadow-lg mb-10 mt-6">
-      <h1 class="text-lg font-bold mb-4">📊 Sales Data</h1>
+      <h1 class="text-lg font-bold mb-4">📊 Chati ya Mauzo</h1>
       {props.data.length === 0 ? (
-        <p class="text-red-600 font-semibold">No data to display</p>
+        <p class="text-red-600 font-semibold">Hakuna taarifa kwa ajili ya kuchora.</p>
       ) : (
         <canvas id="salesChart" height="150"></canvas>
       )}
