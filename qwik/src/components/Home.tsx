@@ -2,37 +2,61 @@ import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qw
 import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
 import { CrudService } from "~/routes/api/base/oop";
+import type { AnalyticsTypes } from "~/routes/api/types/analyTypes";
+import { formatMoney, toSwahiliFraction } from "~/routes/function/helpers";
 
 export const HomeComponent = component$(() => {
 
   const analyticsStore = useStore({
     profit: "0" as string,
     sales: "0" as string,
-    expenses: "0" as string,
     purchases: "0" as string,
-    profitableProductname: '' as string,
+    expenses: "0" as string,
+    profitableProductname: 'hakuna' as string,
     profitableProductProfit: '0' as string,
-    mostFreqPrd: '0' as string,
-    mostFreqPrdquantity: '0' as string,
-    mostPrdQuantity: '0' as string,
-    mostPrdQuantitytimes: '0' as string,
+    mostSoldPrdQuantity: "0" as string,
+    mostSoldPrdname: 'hakuna' as string,
+    productUnit: 'hakuna' as string,
+    timessold: 0 as number,
     longDebt: "" as string,
     amount: '0' as string,
     mostDebt: '' as string,
     amountDebt: '0' as string,
     daysDebt: '' as string,
     lowestPrdName: '' as string,
-    lowestPrdStock: 0 as number
+    lowestPrdStock: 0 as number,
+    productMessage: "Hakuna bidhaa zilizoorodheshwa" as string,
+    subscription: "Trial" as string,
   });
   const netSalesStore = useStore<{ day: string; netSales: number }[]>([]);
   const isGraphReady = useSignal(false);
 
 
 useVisibleTask$(async () => {
-    const analyticsApi = new CrudService("analytics");
+    const analyticsApi = new CrudService<AnalyticsTypes>("analytics");
     const analyticsData = await analyticsApi.get();
-    console.log("Analytics: ", analyticsData);
+    if (!analyticsData.success) return;
+    const analytics = analyticsData.data[0];
 
+    // assign data to the store
+    analyticsStore.profit = formatMoney(analytics.netProfit.netProfit);
+    analyticsStore.sales = formatMoney(analytics.netProfit.totalSales);
+    analyticsStore.expenses = formatMoney(analytics.netProfit.totalExpenses);
+    analyticsStore.purchases = formatMoney(analytics.netProfit.totalPurchases);
+
+    // profitable
+    analyticsStore.profitableProductname = analytics.highestProfitProduct?.productname ?? 'Hakuna';
+    analyticsStore.profitableProductProfit = formatMoney(analytics.highestProfitProduct?.profit ?? 0);
+    // most sold maybe null
+    analyticsStore.mostSoldPrdQuantity = toSwahiliFraction(analytics.mostSoldProductByQuantity?.totalquantitysold ?? 0);
+    analyticsStore.mostSoldPrdname = analytics.mostSoldProductByQuantity?.productname ?? 'Hakuna';
+    analyticsStore.timessold = analytics.mostSoldProductByQuantity?.timesSold ?? 0;
+    analyticsStore.productUnit = analytics.mostSoldProductByQuantity?.unit ?? 'Hakuna';
+
+    // message
+    analyticsStore.productMessage = analytics.prodMessage;
+
+    analyticsStore.subscription = analytics.subscription;
 });
 
 
@@ -144,6 +168,16 @@ useVisibleTask$(async () => {
         <p class="text-xl font-bold">{analyticsStore.sales}/=</p>
       </div>
 
+
+      {/* Total Purchases */}
+      <div class="bg-pink-200 text-pink-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
+            <span role="img" aria-label="return" class="pr-1.5">🛒</span> 
+            Jumla ya Manunuzi
+          </h3>
+          <p class="text-1xl font-semibold">{analyticsStore.purchases}/=</p>
+      </div>
+
       {/* Total Expenses */}
       <div class="bg-red-200 text-red-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
@@ -159,24 +193,43 @@ useVisibleTask$(async () => {
           <span role="img" aria-label="product" class="pr-1.5">🛒</span> 
           Bidhaa yenye faida kubwa
         </h3>
-        <p class="text-lg font-semibold">
-          {analyticsStore.profitableProductname} ({analyticsStore.profitableProductProfit}/=)
+
+        <p class="text-lg font-semibold mt-2">
+          {analyticsStore.profitableProductname}
         </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-2 text-md mt-1">
+          <span class="bg-purple-50 px-3 py-1 rounded-full shadow-sm">
+            Faida ni {analyticsStore.profitableProductProfit}/=          
+          </span>
+        </div>
       </div>
+
+      <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+  <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+  <h3 class="text-sm font-medium">Bidhaa inayouzwa sana</h3>
+  <p class="text-lg font-semibold mt-2">Fungua kifurushi cha Pro kuona</p>
+</div>
+
 
       {/* Most Sold Product */}
       <div class="bg-purple-200 text-purple-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="sold" class="pr-1.5">🔥</span> 
+        <h3 class="text-sm flex items-center justify-center font-medium">
+          <span role="img" aria-label="sold" class="pr-1.5">🔥</span>
           Bidhaa inayouzwa sana
         </h3>
-        <p class="text-sm font-semibold">
-          Kiasi: {analyticsStore.mostPrdQuantity} – ({analyticsStore.mostPrdQuantitytimes} units)
+        <p class="text-lg font-semibold mt-2">
+          {analyticsStore.mostSoldPrdname}
         </p>
-        <p class="text-sm font-semibold">
-          Mara: {analyticsStore.mostFreqPrd} – ({analyticsStore.mostFreqPrdquantity} )
-        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-2 text-sm mt-1">
+          <span class="bg-purple-100 px-3 py-1 rounded-full shadow-sm">
+            {analyticsStore.productUnit}: {analyticsStore.mostSoldPrdQuantity}
+          </span>
+          <span class="bg-purple-100 px-3 py-1 rounded-full shadow-sm">
+            Mara: {analyticsStore.timessold}
+          </span>
+        </div>
       </div>
+
 
       {/* Most Debt User */}
       <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
@@ -223,17 +276,8 @@ useVisibleTask$(async () => {
           <span role="img" aria-label="countdown" class="pr-1.5">📦</span> 
           Bidhaa ulizosajili
         </h3>
-        <p class="text-sm font-semibold">Umesajili bidhaa 10 kati ya 300</p>
+        <p class="text-sm font-semibold">{analyticsStore.productMessage}</p>
       </div>
-
-        {/* Total Return */}
-      <div class="bg-pink-200 text-pink-800 p-4 rounded-2xl shadow text-center">
-          <h3 class="text-sm flex items-center justify-center">
-            <span role="img" aria-label="return" class="pr-1.5">🔄</span> 
-            Jumla ya Vilivyorudi
-          </h3>
-          <p class="text-1xl font-semibold">20,000/=</p>
-        </div>
 
         {/* Top Asked Products */}
         <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">

@@ -61,11 +61,6 @@
                 "productname": "safi",
                 "totalquantitysold": 8.25
             },
-            "mostFrequentProduct": {
-                "productid": "33567a74-e183-497e-90ec-ea49ad2c1f8e",
-                "productname": "safi",
-                "timessold": "3"
-            },
             "longTermDebtUser": {
                 "debtId": "10458b39-cf7e-4a2a-8d9f-65bede0b0081",
                 "customerId": "62559484-208a-44dc-8b7c-6139b5fd8c16",

@@ -62,3 +62,19 @@ export const fetchCategories = async () => {
       return [];
     }
 };
+
+export const formatMoney = (amount: number | undefined): string =>
+      typeof amount === 'number' ? new Intl.NumberFormat().format(amount) : '0';
+
+
+export const toSwahiliFraction = (value: number): string => {
+  const whole = Math.floor(value);
+  const fraction = +(value - whole).toFixed(2); // normalize to 2 decimals
+
+  let suffix = "";
+  if (fraction === 0.25) suffix = " na robo";
+  else if (fraction === 0.5) suffix = " na nusu";
+  else if (fraction === 0.75) suffix = " na robo tatu";
+
+  return suffix ? `${whole} ${suffix}` : `${whole}`;
+};

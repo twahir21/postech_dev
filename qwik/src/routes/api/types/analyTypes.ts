@@ -60,13 +60,9 @@ export interface lowStockProducts {
 export interface mostSoldProductByQuantity {
     productid: string;
     productname: string;
-    totalquantitysold: number
-}
- 
-export interface mostFrequentProduct {
-    productid: string;
-    productname: string;
-    timessold: number
+    totalquantitysold: number;
+    timesSold: number;
+    unit: string;
 }
 
 export interface longTermDebtUser {
@@ -110,13 +106,13 @@ export interface purchasesByDay {
 
 // Final analytics Data types (Full version)
 export interface AnalyticsTypes {
+    id?: string;
     profitPerProduct: ProfitPerProduct[];
-    highestProfitProduct: highestProfitProduct;
+    highestProfitProduct: highestProfitProduct | null;
     netProfit: netProfit;
     lowestProduct: lowestProduct;
     lowStockProducts: lowStockProducts[];
-    mostSoldProductByQuantity: mostFrequentProduct;
-    mostFrequentProduct: mostFrequentProduct;
+    mostSoldProductByQuantity: mostSoldProductByQuantity | null;
     longTermDebtUser: longTermDebtUser;
     mostDebtUser: mostDebtUser;
     daysSinceDebt: string;
@@ -124,4 +120,6 @@ export interface AnalyticsTypes {
     expensesByDay: expensesByDay[];
     netSalesByDay: netSalesByDay[];
     purchasesPerDay: purchasesByDay[];
+    prodMessage: string;
+    subscription: "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial";
 }

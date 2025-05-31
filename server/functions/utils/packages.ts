@@ -26,7 +26,7 @@ export const retentionPeriods: Record<SubscriptionLevel, number> = {
   "AI": 24,         // 2 years
 };
 
-export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string }> => {
+export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string; data?: SubscriptionLevel }> => {
   // Use Promise.all to concurrently fetch product count and subscription details
   const [productsResult, subscriptionResult] = await Promise.all([
     mainDb.select({ total: count() }).from(products).where(eq(products.shopId, shopId)),
@@ -49,6 +49,7 @@ export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ succe
 
   return {
     success: true,
+    data: shopSubscription,
     message: `Umesajili bidhaa ${prodCount} kati ya ${limit}`
   }
       // this is young and simple approach.

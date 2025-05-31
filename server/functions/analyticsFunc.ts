@@ -1,8 +1,8 @@
 import { eq, and, sql, lte, asc, desc, ilike, gte, or } from 'drizzle-orm';
 import { mainDb } from '../database/schema/connections/mainDb';
-import { askedProducts, categories, customers, debtPayments, debts, expenses, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, suppliers, users } from '../database/schema/shop';
+import { customers, debts, expenses, products, purchases, sales } from '../database/schema/shop';
 import { formatDistanceToNow } from "date-fns";
-import type { exportSet, headTypes, ProductQuery, SalesQuery } from '../types/types';
+import type { exportSet, headTypes, SalesQuery } from '../types/types';
 import { prodCheck } from './utils/packages';
 
 
@@ -16,7 +16,6 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
             profitData,
             lowestStockProductResult,
             lowStockProductsResult,
-            mostFrequentSalesProductResult,
             mostSoldByQuantityProductResult,
             debtorData,
             weeklySummaryData
@@ -56,33 +55,22 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
                 ))
                 .orderBy(asc(products.stock)),
 
-            // --- Most Frequent Sales Product ---
-            mainDb.execute(sql`
-                SELECT
-                    p.id AS productId,
-                    p.name AS productName,
-                    COUNT(s.id) AS timesSold
-                FROM sales s
-                INNER JOIN products p ON s.product_id = p.id
-                WHERE s.shop_id = ${shopId}
-                GROUP BY p.id, p.name
-                ORDER BY timesSold DESC
-                LIMIT 1
-            `),
-
             // --- Most Sold By Quantity Product ---
             mainDb.execute(sql`
                 SELECT
                     p.id AS productId,
                     p.name AS productName,
-                    SUM(s.quantity) AS totalQuantitySold
+                    p.unit AS unit,
+                    SUM(s.quantity) AS totalQuantitySold,
+                    COUNT(*) AS timesSold
                 FROM sales s
                 INNER JOIN products p ON s.product_id = p.id
                 WHERE s.shop_id = ${shopId}
-                GROUP BY p.id, p.name
+                GROUP BY p.id, p.name, p.unit
                 ORDER BY totalQuantitySold DESC
                 LIMIT 1
             `),
+
 
             // --- Combined Debtors Query (Longest Unpaid and Highest Debt) ---
             // This query fetches both the oldest and highest debt in one go by leveraging window functions or by fetching top N and sorting in application if N is small.
@@ -202,8 +190,13 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
 
         const lowestProduct = lowestStockProductResult[0] || null;
         const lowStockProducts = lowStockProductsResult || [];
-        const mostFrequentProduct = mostFrequentSalesProductResult.rows?.[0] || null;
-        const mostSoldProductByQuantity = mostSoldByQuantityProductResult.rows?.[0] || null;
+        const mostSoldProductByQuantity = mostSoldByQuantityProductResult.rows?.[0]
+            ? {
+                ...mostSoldByQuantityProductResult.rows[0],
+                timesSold: Number(mostSoldByQuantityProductResult.rows[0].timessold || 0),
+                unit: mostSoldByQuantityProductResult.rows[0].unit || "kipimo"
+            }
+            : null;
 
         const [longTermDebtUserArray, mostDebtUserArray] = debtorData;
         const longTermDebtUser = longTermDebtUserArray[0] || null;
@@ -258,7 +251,6 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
                   lowestProduct,
                   lowStockProducts,
                   mostSoldProductByQuantity,
-                  mostFrequentProduct,
                   longTermDebtUser,
                   mostDebtUser,
                   daysSinceDebt,
@@ -266,7 +258,8 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
                   expensesByDay,
                   netSalesByDay,
                   purchasesPerDay,
-                  prodMessage: result.message
+                  prodMessage: result.message,
+                  subscription: result.data // Include subscription level
                 }]
         };
 
@@ -403,7 +396,7 @@ export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId:
         }
 }
 
-export const exportSales = async ({userId, shopId, headers, set } : { shopId: string, userId: string, headers: headTypes, set: exportSet }) => {
+export const exportSales = async ({ userId, shopId, headers, set } : { shopId: string, userId: string, headers: headTypes, set: exportSet }) => {
     try {
       
           // 🔥 Fetch sales for this shop
@@ -615,10 +608,6 @@ export const debtsFunc = async({ userId, shopId, headers }: { userId: string, sh
           .innerJoin(customers, eq(customers.id, debts.customerId))
           .orderBy(desc(debts.remainingAmount)) // 💰 Highest remaining debt first
           .limit(1);
-    
-          // most frequent user
-          
-    
     
           return {
             success: true,
