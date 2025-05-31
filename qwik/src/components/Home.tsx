@@ -27,6 +27,7 @@ export const HomeComponent = component$(() => {
     lowestPrdStock: 0 as number,
     productMessage: "Hakuna bidhaa zilizoorodheshwa" as string,
     subscription: "Trial" as string,
+    remainainingDays: "Zimebaki siku 0" as string,
   });
   const netSalesStore = useStore<{ day: string; netSales: number }[]>([]);
   const isGraphReady = useSignal(false);
@@ -57,6 +58,8 @@ useVisibleTask$(async () => {
     analyticsStore.productMessage = analytics.prodMessage;
 
     analyticsStore.subscription = analytics.subscription;
+    analyticsStore.remainainingDays = analytics.trialEnd;
+
 });
 
 
@@ -204,13 +207,6 @@ useVisibleTask$(async () => {
         </div>
       </div>
 
-      <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
-  <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
-  <h3 class="text-sm font-medium">Bidhaa inayouzwa sana</h3>
-  <p class="text-lg font-semibold mt-2">Fungua kifurushi cha Pro kuona</p>
-</div>
-
-
       {/* Most Sold Product */}
       <div class="bg-purple-200 text-purple-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center font-medium">
@@ -232,23 +228,39 @@ useVisibleTask$(async () => {
 
 
       {/* Most Debt User */}
-      <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="debt" class="pr-1.5">💳</span> 
-          Mwenye deni Kubwa
-        </h3>
-        <p class="text-lg font-semibold">{analyticsStore.mostDebt} – ({analyticsStore.amountDebt}/=)</p>
-      </div>
+      { analyticsStore.subscription === "Msingi" ? (
+        <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+          <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+          <h3 class="text-sm font-medium">Mtumiaji mwenye deni kubwa</h3>
+          <p class="text-lg font-semibold mt-2">Fungua kifurushi cha Pro kuona</p>
+        </div>
+      ) : (
+        <div class="bg-red-200 text-red-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
+            <span role="img" aria-label="most-debt" class="pr-1.5">💳</span> 
+            Mtumiaji mwenye deni kubwa
+          </h3>
+          <p class="text-lg font-semibold">{analyticsStore.mostDebt} – ({analyticsStore.amountDebt}/=)</p>
+          <p class="text-xs text-gray-600 italic">(Last payment: {analyticsStore.daysDebt})</p>
+        </div>
+      )}
 
       {/* Long Debt User */}
-      <div class="bg-teal-200 text-teal-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="long-debt" class="pr-1.5">⏳</span> 
-          Mdeni wa muda mrefu
-        </h3>
-        <p class="text-lg font-semibold">{analyticsStore.longDebt} – ({analyticsStore.amount}/=)</p>
-        <p class="text-xs text-gray-600 italic">(Last payment: {analyticsStore.daysDebt})</p>
-      </div>
+      { analyticsStore.subscription === "Msingi" ? (
+        <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+          <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+          <h3 class="text-sm font-medium">Mtumiaji mwenye deni la muda mrefu</h3>
+          <p class="text-lg font-semibold mt-2">Fungua kifurushi cha Pro kuona</p>
+        </div>
+      ) : (
+        <div class="bg-yellow-200 text-yellow-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
+            <span role="img" aria-label="long-debt" class="pr-1.5">⏳</span> 
+            Mtumiaji mwenye deni la muda mrefu
+          </h3>
+          <p class="text-lg font-semibold">{analyticsStore.longDebt} – ({analyticsStore.amount}/=)</p>
+        </div>
+      )}
 
       {/* Low Stock */}
       <div class="bg-orange-200 text-orange-800 p-4 rounded-2xl shadow text-center">
@@ -267,7 +279,7 @@ useVisibleTask$(async () => {
           <span role="img" aria-label="countdown" class="pr-1.5">⏰</span> 
           Kulipia Huduma
         </h3>
-        <p class="text-lg font-semibold">Zimebaki siku 20</p>
+        <p class="text-lg font-semibold">{analyticsStore.remainainingDays}</p>
       </div>
 
       {/* Product registered */}
@@ -280,6 +292,13 @@ useVisibleTask$(async () => {
       </div>
 
         {/* Top Asked Products */}
+        { analyticsStore.subscription === "Msingi" ? (
+          <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+            <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+            <h3 class="text-sm font-medium">Kilichouliziwa sana</h3>
+            <p class="text-lg font-semibold mt-2">Fungua kifurushi cha Pro kuona</p>
+        </div>
+        ) : (
         <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
           <h3 class="text-sm flex items-center justify-center">
             <span role="img" aria-label="asked-product" class="pr-1.5">❓</span> 
@@ -287,6 +306,7 @@ useVisibleTask$(async () => {
           </h3>
           <p class="text-1xl font-semibold">Moh Energy</p>
         </div>
+        )}
 
         {/* Total Expired Products */}
         {/* <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">

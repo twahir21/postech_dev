@@ -4,6 +4,7 @@ import { customers, debts, expenses, products, purchases, sales } from '../datab
 import { formatDistanceToNow } from "date-fns";
 import type { exportSet, headTypes, SalesQuery } from '../types/types';
 import { prodCheck } from './utils/packages';
+import { timeRemainingUntil } from './utils/block';
 
 
 
@@ -241,6 +242,9 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
 
         // return product data
         const result = await prodCheck({ shopId });
+        const trialData = result.data?.trialEnd?.toString();
+        if (!trialData) return;
+        const trialEnd = timeRemainingUntil(trialData);
 
         return {
             success: true,
@@ -259,7 +263,8 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
                   netSalesByDay,
                   purchasesPerDay,
                   prodMessage: result.message,
-                  subscription: result.data // Include subscription level
+                  subscription: result.data?.shopSubscription, // Include subscription level
+                  trialEnd // Include trial end date
                 }]
         };
 

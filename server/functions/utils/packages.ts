@@ -26,15 +26,16 @@ export const retentionPeriods: Record<SubscriptionLevel, number> = {
   "AI": 24,         // 2 years
 };
 
-export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string; data?: SubscriptionLevel }> => {
+export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string; data?: { shopSubscription: SubscriptionLevel; trialEnd: Date | null } }> => {
   // Use Promise.all to concurrently fetch product count and subscription details
   const [productsResult, subscriptionResult] = await Promise.all([
     mainDb.select({ total: count() }).from(products).where(eq(products.shopId, shopId)),
-    mainDb.select({ subscrib: shops.subscription }).from(shops).where(eq(shops.id, shopId))
+    mainDb.select({ subscrib: shops.subscription, trialEnd: shops.trialEnd }).from(shops).where(eq(shops.id, shopId))
   ]);
-
+  
   const prodCount = productsResult[0]?.total;
   const shopSubscription = (subscriptionResult[0]?.subscrib || "Trial") as SubscriptionLevel; // Get subscription, default to "Trial" or handle empty result
+  const trialEnd = subscriptionResult[0]?.trialEnd;
 
   // Get the maximum allowed products for the retrieved subscription level
   const limit = subscriptionLimits[shopSubscription];
@@ -49,45 +50,9 @@ export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ succe
 
   return {
     success: true,
-    data: shopSubscription,
+    data: { shopSubscription, trialEnd },
     message: `Umesajili bidhaa ${prodCount} kati ya ${limit}`
   }
-      // this is young and simple approach.
-    // switch(subscription) {
-    //     case "Trial":
-    //         if (prodCount > 50){
-    //             return {
-    //                 success: false,
-    //                 message: "Aina za bidhaa ulizosajili zimetosha, ongeza kifurushi cha juu kufungua aina zaidi ya 50"
-    //             }
-    //         }
-    //         break;
-    //     case "Msingi":
-    //         if (prodCount > 50){
-    //             return {
-    //                 success: false,
-    //                 message: "Aina za bidhaa ulizosajili zimetosha, ongeza kifurushi cha juu kufungua aina zaidi ya 50"
-    //             }
-    //         }
-    //         break;
-    //     case "Lite":
-    //         if (prodCount > 300){
-    //             return {
-    //                 success: false,
-    //                 message: "Aina za bidhaa ulizosajili zimetosha, ongeza kifurushi cha juu kufungua aina zaidi ya 300"
-    //             }
-    //         }
-    //         break; 
-    //     case "Pro":
-    //         if (prodCount > 1500){
-    //             return {
-    //                 success: false,
-    //                 message: "Aina za bidhaa ulizosajili zimetosha, ongeza kifurushi cha juu kufungua aina zaidi ya 1500"
-    //             }
-    //         }
-    //         break;
-    // }
-
 };
 
 // multiple check other services with ease and message only logics

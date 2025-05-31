@@ -122,4 +122,5 @@ export interface AnalyticsTypes {
     purchasesPerDay: purchasesByDay[];
     prodMessage: string;
     subscription: "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial";
+    trialEnd: string;
 }
