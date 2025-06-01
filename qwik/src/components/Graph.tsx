@@ -38,7 +38,7 @@ export const Graph = component$(() => {
         labels,
         datasets: [
           {
-            label: "Mauzo",
+            label: "Faida",
             data,
             backgroundColor: [
               "rgba(255, 99, 132, 0.6)",
@@ -71,7 +71,7 @@ export const Graph = component$(() => {
 
   return (
     <div class="max-w-3xl mx-auto bg-gradient-to-br from-green-50 via-blue-50 to-yellow-50 p-8 rounded-lg shadow-lg border border-black mb-10 mt-6">
-      <h1 class="text-lg font-bold mb-4">📊 Chati ya Mauzo</h1>
+      <h1 class="text-lg font-bold mb-4">📊 Chati ya Faida</h1>
       {netSales.value.length === 0 ? (
         <p class="text-red-600 font-semibold">Hakuna taarifa kwa ajili ya kuchora.</p>
       ) : (

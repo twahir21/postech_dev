@@ -5,5 +5,19 @@ interface NetSalesData {
   netSales: Signal<{ day: string; netSales: number }[]>;
 }
 
-export const netSalesGraph = createContextId<NetSalesData>('netSales-graph');
+interface NetExpensesData {
+  netExpenses: Signal<{ day: string; netExpenses: number }[]>;
+}
 
+interface NetPurchasesData {
+  netPurchases: Signal<{ day: string; netPurchases: number }[]>;
+}
+
+interface SalesData {
+  sales: Signal<{ day: string; Sales: number }[]>;
+}
+
+export const netSalesGraph = createContextId<NetSalesData>('netSales-graph');
+export const netExpensesGraph = createContextId<NetExpensesData>('netExpenses-graph');
+export const netPurchasesGraph = createContextId<NetPurchasesData>('netPurchases-graph');
+export const salesGraph = createContextId<SalesData>('sales-graph');
