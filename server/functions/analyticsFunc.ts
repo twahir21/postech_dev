@@ -450,66 +450,76 @@ export const exportSales = async ({ userId, shopId, set } : { shopId: string, us
         }
 }
 
-export const graphFunc = async ({ shopId, userId }: {shopId: string, userId: string}) => {
+export const graphFunc = async ({ shopId, userId }: { shopId: string; userId: string }) => {
+  try {
+    const weekDaysOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-        try {
-    
-          // get the concept of graphs
-    
-          // 1. total stocks in a week
-          const stocksByDay = await mainDb
-          .select({
-            day: sql`TO_CHAR(${products.createdAt}, 'Dy')`.as('day_of_week'),
-            totalStock: sql`SUM(${products.stock})`.as('total_stock'),
-          })
-          .from(products)
-          .where(eq(products.shopId, shopId))
-          .groupBy(sql`day_of_week`)
-          .orderBy(sql`day_of_week`);
-    
-    
-          //2. Debtusers by a week
-          const DebtsByCustomer = await mainDb
-          .select({
-            customerName: customers.name,
-            totalDebts: sql`SUM(${debts.remainingAmount})`.as('total_debts'),
-          })
-          .from(debts)
-          .innerJoin(customers, eq(debts.customerId, customers.id))
-          .where(eq(debts.shopId, shopId))
-          .groupBy(customers.name)
-          .orderBy(sql`total_debts DESC`);
-  
-    
-          //3. CashDebtData
-          const cashDebtData = await mainDb
-          .select({
-            type: sales.saleType,
-            amount: sql`SUM(${sales.priceSold} * ${sales.quantity})`.as('amount')
-          })
-          .from(sales)
-          .where(eq(sales.shopId, shopId))
-          .groupBy(sales.saleType);
-    
-            
-          return {
-            success: true,
-            stocksByDay,
-            DebtsByCustomer,
-            cashDebtData
-          }
-    
-    
-    
-        } catch (error) {
-          return {
-            success: false,
-            message: error instanceof Error
-                    ? error.message
-                    : "Hitilafu imetokea kwenye seva"
-          }
-        }
-}
+    // 1. Total stocks added per day
+    const stocksByDay = await mainDb
+      .select({
+        day: sql`TO_CHAR(${products.createdAt}, 'Dy')`.as('day_of_week'),
+        totalStock: sql`SUM(${products.stock})`.as('total_stock'),
+      })
+      .from(products)
+      .where(eq(products.shopId, shopId))
+      .groupBy(sql`day_of_week`)
+      .orderBy(sql`day_of_week`);
+
+    const stocksByDayMap = new Map<string, number>();
+    weekDaysOrder.forEach(day => stocksByDayMap.set(day, 0));
+
+    for (const row of stocksByDay) {
+      const day = row.day as string;
+      if (stocksByDayMap.has(day)) {
+        stocksByDayMap.set(day, Number(row.totalStock || 0));
+      }
+    }
+
+    const dailyStockTrend = Array.from(stocksByDayMap).map(([day, totalStock]) => ({
+      day,
+      totalStock
+    }));
+
+    // 2. Debt by customer
+    const DebtsByCustomer = await mainDb
+      .select({
+        customerName: customers.name,
+        totalDebts: sql`SUM(${debts.remainingAmount})`.as('total_debts'),
+      })
+      .from(debts)
+      .innerJoin(customers, eq(debts.customerId, customers.id))
+      .where(eq(debts.shopId, shopId))
+      .groupBy(customers.name)
+      .orderBy(sql`total_debts DESC`);
+
+    // 3. Cash vs debt sales
+    const cashDebtData = await mainDb
+      .select({
+        type: sales.saleType,
+        amount: sql`SUM(${sales.priceSold} * ${sales.quantity})`.as('amount')
+      })
+      .from(sales)
+      .where(eq(sales.shopId, shopId))
+      .groupBy(sales.saleType);
+
+    return {
+      success: true,
+      data: [{
+        stockTrend: dailyStockTrend,
+        DebtsByCustomer,
+        cashDebtData
+      }],
+      message: "Taarifa za mauzo zimepatikana kwa mafanikio"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error
+        ? error.message
+        : "Hitilafu imetokea kwenye seva"
+    };
+  }
+};
 
 export const debtsFunc = async({ userId, shopId }: { userId: string, shopId: string }) => {
 

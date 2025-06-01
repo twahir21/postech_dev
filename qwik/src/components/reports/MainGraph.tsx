@@ -1,31 +1,27 @@
-import { component$, useResource$, useSignal } from "@builder.io/qwik";
+import { component$, useContext, useResource$, useSignal } from "@builder.io/qwik";
 import { DebtComponentGraph } from "./Debt";
 import { CashDebt } from "./CashDebt";
 import { Salexp } from "./Salexp";
 import { StockComponent } from "./Stock";
+import { CrudService } from "~/routes/api/base/oop";
+import type { GraphData } from "~/routes/api/types/graphTypes";
+import { stockGraph } from "../context/store/netSales";
 
 export const MainGraph =  component$(() => {
   const selected = useSignal<'debts' | 'cash' | 'expenses' | 'stock' | null>(null);
+  const { stock } = useContext(stockGraph);
   useResource$(async () => {
-    try {
-      const res = await fetch("http://localhost:3000/graph", {
-        credentials: 'include'
-      });
-  
-      if (!res.ok) {
-        console.error("Invalid response from server");
-      }
-  
-      const data = await res.json();
+    const graphAPI = new CrudService<GraphData>("graph");
+    const result = await graphAPI.get();
 
-      console.log("Graph: ", data)
-    } catch (error) {
-      if (error instanceof Error ){
-        console.error(error.message);
-      }else{
-        console.log("Unknown error occured")
-      }
-    }
+    if (!result.success) return;
+    // Update stock data with the fetched graph data
+    stock.value = result.data[0].stockTrend.map((item) => ({
+      day: item.day,
+      totalStock: item.totalStock
+    }));
+
+    console.log("Graph data loaded successfully:", result.data[0]);
   });
 
   return (

@@ -2,7 +2,7 @@ import { component$, Slot, useContextProvider, useSignal } from "@builder.io/qwi
 import { routeLoader$, type RequestHandler } from "@builder.io/qwik-city";
 import { RefetchContext } from "~/components/context/refreshContext";
 import { CrudService } from "./api/base/oop";
-import { netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph } from "~/components/context/store/netSales";
+import { netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph, stockGraph } from "~/components/context/store/netSales";
 
 
 
@@ -94,11 +94,14 @@ export default component$(() => {
   const netExpenses = useSignal<{ day: string; netExpenses: number }[]>([]);
   const netPurchases = useSignal<{ day: string; netPurchases: number }[]>([]);
   const sales = useSignal<{ day: string; Sales: number }[]>([]);
+  const stock = useSignal<{ day: string; totalStock: number }[]>([]);
 
   useContextProvider(netSalesGraph, { netSales });
   useContextProvider(netExpensesGraph, { netExpenses });
   useContextProvider(netPurchasesGraph, { netPurchases });
   useContextProvider(salesGraph, { sales });
+  // Stock graph
+  useContextProvider(stockGraph, { stock });
 
   return <Slot />;
 });
