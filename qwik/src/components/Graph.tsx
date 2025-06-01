@@ -1,15 +1,9 @@
-import { component$, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useContext, useVisibleTask$ } from "@builder.io/qwik";
 import Chart from "chart.js/auto";
+import { netSalesGraph } from "./context/store/netSales";
 
-type SalesData = {
-  day: string;
-  netSales: number;
-};
-
-
-export const Graph = component$((props: { data: SalesData[] }) => {
-
-  console.log("Data: ", props.data)
+export const Graph = component$(() => {
+  const { netSales } = useContext(netSalesGraph);
 
   useVisibleTask$(() => {
     const canvas = document.getElementById("salesChart") as HTMLCanvasElement | null;
@@ -31,14 +25,12 @@ export const Graph = component$((props: { data: SalesData[] }) => {
     }
 
     const salesMap = new Map<string, number>();
-    props.data.forEach((entry) => {
+    netSales.value.forEach((entry) => {
       salesMap.set(entry.day, entry.netSales);
     });
 
     const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     const data = labels.map((day) => salesMap.get(day) || 0);
-    console.log("✅ Final Chart Data:", data);
-
 
     const chart = new Chart(ctx, {
       type: "bar",
@@ -78,9 +70,9 @@ export const Graph = component$((props: { data: SalesData[] }) => {
 
 
   return (
-    <div class="max-w-3xl mx-auto bg-gray-200 p-8 rounded-lg shadow-lg mb-10 mt-6">
+    <div class="max-w-3xl mx-auto bg-gradient-to-br from-green-50 via-blue-50 to-yellow-50 p-8 rounded-lg shadow-lg border border-black mb-10 mt-6">
       <h1 class="text-lg font-bold mb-4">📊 Chati ya Mauzo</h1>
-      {props.data.length === 0 ? (
+      {netSales.value.length === 0 ? (
         <p class="text-red-600 font-semibold">Hakuna taarifa kwa ajili ya kuchora.</p>
       ) : (
         <canvas id="salesChart" height="150"></canvas>

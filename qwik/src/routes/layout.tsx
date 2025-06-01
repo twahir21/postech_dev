@@ -2,6 +2,7 @@ import { component$, Slot, useContextProvider, useSignal } from "@builder.io/qwi
 import { routeLoader$, type RequestHandler } from "@builder.io/qwik-city";
 import { RefetchContext } from "~/components/context/refreshContext";
 import { CrudService } from "./api/base/oop";
+import { netSalesGraph } from "~/components/context/store/netSales";
 
 
 
@@ -87,6 +88,10 @@ export default component$(() => {
     categoryRefetch,
     refetchAnalytics
   });
+
+  // graphs
+  const netSales = useSignal<{ day: string; netSales: number }[]>([]);
+  useContextProvider(netSalesGraph, { netSales });
 
   return <Slot />;
 });

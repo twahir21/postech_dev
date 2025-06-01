@@ -1,9 +1,10 @@
-import { component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useContext, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
 import { CrudService } from "~/routes/api/base/oop";
 import type { AnalyticsTypes } from "~/routes/api/types/analyTypes";
 import { formatMoney, toSwahiliFraction } from "~/routes/function/helpers";
+import { netSalesGraph } from "./context/store/netSales";
 
 export const HomeComponent = component$(() => {
 
@@ -29,8 +30,9 @@ export const HomeComponent = component$(() => {
     subscription: "Trial" as string,
     remainainingDays: "Zimebaki siku 0" as string,
   });
-  const netSalesStore = useStore<{ day: string; netSales: number }[]>([]);
   const isGraphReady = useSignal(false);
+  const { netSales } = useContext(netSalesGraph);
+
 
 
 useVisibleTask$(async () => {
@@ -59,6 +61,12 @@ useVisibleTask$(async () => {
 
     analyticsStore.subscription = analytics.subscription;
     analyticsStore.remainainingDays = analytics.trialEnd;
+
+    // store netsales data
+    netSales.value = analytics.netSalesByDay.map(data => ({
+      day: data.day,
+      netSales: data.netSales || 0 // ensure it's a number
+    }));
 
     isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
 
@@ -321,7 +329,7 @@ useVisibleTask$(async () => {
 
 
       </div>
-      {isGraphReady.value && <Graph data={netSalesStore} />}
+      {isGraphReady.value && <Graph />}
       <RecentProductsTable />
     </>
   );
