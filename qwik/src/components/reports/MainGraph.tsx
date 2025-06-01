@@ -18,7 +18,7 @@ export const MainGraph =  component$(() => {
   
       const data = await res.json();
 
-      console.log(data)
+      console.log("Graph: ", data)
     } catch (error) {
       if (error instanceof Error ){
         console.error(error.message);
@@ -42,8 +42,8 @@ export const MainGraph =  component$(() => {
           class="border rounded-xl p-4 bg-white shadow hover:bg-green-50 transition text-left"
           onClick$={() => (selected.value = 'cash')}
         >
-          <h3 class="text-lg font-semibold">💵 Mauzo ya Cash</h3>
-          <p class="text-sm text-gray-600">Mapato yote kwa pesa taslimu</p>
+          <h3 class="text-lg font-semibold">💵 Cash vs Madeni</h3>
+          <p class="text-sm text-gray-600">Mapato yote kwa asilimia</p>
         </button>
         <button
           class="border rounded-xl p-4 bg-white shadow hover:bg-red-50 transition text-left"
@@ -56,7 +56,7 @@ export const MainGraph =  component$(() => {
           class="border rounded-xl p-4 bg-white shadow hover:bg-yellow-50 transition text-left"
           onClick$={() => (selected.value = 'stock')}
         >
-          <h3 class="text-lg font-semibold">📦 Stoo</h3>
+          <h3 class="text-lg font-semibold">📦 Stoku (Hisa)</h3>
           <p class="text-sm text-gray-600">Hisa zilizopo kwa sasa</p>
         </button>
       </div>
@@ -66,9 +66,9 @@ export const MainGraph =  component$(() => {
         <div class="border rounded-xl p-4 shadow mt-4 bg-gradient-to-br from-green-50 via-blue-50 to-yellow-50">
           <h2 class="text-lg font-bold mb-2">
             {selected.value === 'debts' && '📊 Madeni'}
-            {selected.value === 'cash' && '💵 Mauzo ya Cash'}
+            {selected.value === 'cash' && '💵 Cash vs Madeni'}
             {selected.value === 'expenses' && '💸 Matumizi'}
-            {selected.value === 'stock' && '📦 Stoo'}
+            {selected.value === 'stock' && '📦 Stoku (Hisa)'}
           </h2>
           <div class="text-sm text-gray-700 ">
             {/* Render actual components based on selection */}

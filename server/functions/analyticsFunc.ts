@@ -1,8 +1,8 @@
 import { eq, and, sql, lte, asc, desc, ilike, gte, or } from 'drizzle-orm';
 import { mainDb } from '../database/schema/connections/mainDb';
-import { customers, debts, expenses, products, purchases, sales } from '../database/schema/shop';
+import { customers, debts, products, purchases, sales } from '../database/schema/shop';
 import { formatDistanceToNow } from "date-fns";
-import type { exportSet, headTypes, SalesQuery } from '../types/types';
+import type { exportSet, SalesQuery } from '../types/types';
 import { prodCheck } from './utils/packages';
 import { timeRemainingUntil } from './utils/block';
 
@@ -278,7 +278,7 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
     }
 };
 
-export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId: string, shopId: string, headers: headTypes, query: SalesQuery}) => {
+export const salesAnalytics = async ({ userId, shopId, query}: {userId: string, shopId: string, query: SalesQuery}) => {
             try {
 
           // Extract query parameters or set defaults
@@ -401,7 +401,7 @@ export const salesAnalytics = async ({ userId, shopId, headers, query}: {userId:
         }
 }
 
-export const exportSales = async ({ userId, shopId, headers, set } : { shopId: string, userId: string, headers: headTypes, set: exportSet }) => {
+export const exportSales = async ({ userId, shopId, set } : { shopId: string, userId: string, set: exportSet }) => {
     try {
       
           // 🔥 Fetch sales for this shop
@@ -450,7 +450,7 @@ export const exportSales = async ({ userId, shopId, headers, set } : { shopId: s
         }
 }
 
-export const graphFunc = async ({ shopId, userId, headers }: {shopId: string, userId: string, headers: headTypes}) => {
+export const graphFunc = async ({ shopId, userId }: {shopId: string, userId: string}) => {
 
         try {
     
@@ -467,27 +467,6 @@ export const graphFunc = async ({ shopId, userId, headers }: {shopId: string, us
           .groupBy(sql`day_of_week`)
           .orderBy(sql`day_of_week`);
     
-          //2. Expenses by a week
-          const expensesByDay = await mainDb
-          .select({
-            day: sql`TO_CHAR(${expenses.createdAt}, 'Dy')`.as ('day_of_week'),
-            totalExpenses: sql`SUM(${expenses.amount})` .as('total_expenses')
-          })
-          .from(expenses)
-          .where(eq(expenses.shopId, shopId))
-          .groupBy(sql`day_of_week`)
-          .orderBy(sql`day_of_week`)
-    
-          //3. Purchases by a week
-          const purchasesByDay = await mainDb
-          .select({
-            day: sql`TO_CHAR(${purchases.createdAt}, 'Dy')`.as ('day_of_week'),
-            totalPurchases: sql`SUM(${purchases.priceBought} * ${purchases.quantity})` .as('total_purchases')
-          })
-          .from(purchases)
-          .where(eq(purchases.shopId, shopId))
-          .groupBy(sql`day_of_week`)
-          .orderBy(sql`day_of_week`)
     
           //2. Debtusers by a week
           const DebtsByCustomer = await mainDb
@@ -500,38 +479,9 @@ export const graphFunc = async ({ shopId, userId, headers }: {shopId: string, us
           .where(eq(debts.shopId, shopId))
           .groupBy(customers.name)
           .orderBy(sql`total_debts DESC`);
+  
     
-          //4. total sales
-          const salesByDay = await mainDb
-          .select({
-            day: sql`TO_CHAR(${sales.createdAt}, 'Dy')`.as ('day_of_week'),
-            totalSales: sql`SUM(${sales.priceSold} * ${sales.quantity})` .as('total_sales')
-          }).from(sales)
-          .where(eq(sales.shopId, shopId))
-          .groupBy(sql`day_of_week`)
-          .orderBy(sql`day_of_week`)
-    
-          //5. net sales = sales - purchases - expenses
-          const netSalesByDay = salesByDay.map((sale) => {
-            const purchase = purchasesByDay.find(p => p.day === sale.day);
-            const expense = expensesByDay.find(e => e.day === sale.day);
-          
-            const totalPurchases = purchase ? Number(purchase.totalPurchases) : 0;
-            const totalExpenses = expense ? Number(expense.totalExpenses) : 0;
-            const totalSales = Number(sale.totalSales);
-          
-            const netSales = totalSales - (totalPurchases + totalExpenses);
-          
-            return {
-              day: sale.day,
-              totalSales,
-              totalPurchases,
-              totalExpenses,
-              netSales,
-            };
-          });
-    
-          //6. CashDebtData
+          //3. CashDebtData
           const cashDebtData = await mainDb
           .select({
             type: sales.saleType,
@@ -541,16 +491,11 @@ export const graphFunc = async ({ shopId, userId, headers }: {shopId: string, us
           .where(eq(sales.shopId, shopId))
           .groupBy(sales.saleType);
     
-          
-        
+            
           return {
             success: true,
             stocksByDay,
-            expensesByDay,
-            salesByDay,
-            purchasesByDay,
             DebtsByCustomer,
-            netSalesByDay,
             cashDebtData
           }
     
@@ -566,7 +511,7 @@ export const graphFunc = async ({ shopId, userId, headers }: {shopId: string, us
         }
 }
 
-export const debtsFunc = async({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes}) => {
+export const debtsFunc = async({ userId, shopId }: { userId: string, shopId: string }) => {
 
         try {
     
