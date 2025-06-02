@@ -4,7 +4,7 @@ import { Graph } from "./Graph";
 import { CrudService } from "~/routes/api/base/oop";
 import type { AnalyticsTypes } from "~/routes/api/types/analyTypes";
 import { formatMoney, toSwahiliFraction } from "~/routes/function/helpers";
-import { lowStockProductsData, netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph, trialEndData } from "./context/store/netSales";
+import { lowStockProductsData, netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph, subscriptionData, trialEndData } from "./context/store/netSales";
 import { RefetchContext } from "./context/refreshContext";
 
 export const HomeComponent = component$(() => {
@@ -28,7 +28,7 @@ export const HomeComponent = component$(() => {
     lowestPrdName: '' as string,
     lowestPrdStock: 0 as number,
     productMessage: "Hakuna bidhaa zilizoorodheshwa" as string,
-    subscription: "Trial" as string,
+    subscription: "Trial" as "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial",
     remainingDays: "Zimebaki siku 0" as string,
   });
   const isGraphReady = useSignal(false);
@@ -38,6 +38,7 @@ export const HomeComponent = component$(() => {
   const { sales } = useContext(salesGraph);
   const { trialEnd } = useContext(trialEndData);
   const { lowStockProducts } = useContext(lowStockProductsData);
+  const { subscription } = useContext(subscriptionData);
 
   // refetch when changes occur in data
   const { productRefetch } = useContext(RefetchContext);
@@ -101,9 +102,12 @@ useVisibleTask$(async ({ track }) => {
       priceSold: formatMoney(Number(product.priceSold)),
       stock: product.stock
     }));
+    
+
+    // store subscription
+    subscription.value = analytics.subscription.trim() as "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial";
 
     console.log("Analytics: ", analytics);
-
     isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
 
 });
@@ -186,11 +190,11 @@ useVisibleTask$(async ({ track }) => {
 
 
       {/* Most Debt User */}
-      { analyticsStore.subscription === "Msingi" ? (
+      { isGraphReady.value && (analyticsStore.subscription === "Msingi" ? (
         <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
           <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
           <h3 class="text-sm font-medium">Mtumiaji mwenye deni kubwa</h3>
-          <p class="text-lg font-semibold mt-2">Fungua kifurushi cha Pro kuona</p>
+          <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
         </div>
       ) : (
         <div class="bg-red-200 text-red-800 p-4 rounded-2xl shadow text-center">
@@ -201,14 +205,14 @@ useVisibleTask$(async ({ track }) => {
           <p class="text-lg font-semibold">{analyticsStore.mostDebt} – ({analyticsStore.amountDebt}/=)</p>
           <p class="text-xs text-gray-600 italic">(Last payment: {analyticsStore.daysDebt})</p>
         </div>
-      )}
+      ))}
 
       {/* Long Debt User */}
-      { analyticsStore.subscription === "Msingi" ? (
+      { isGraphReady.value &&  (analyticsStore.subscription === "Msingi" ? (
         <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
           <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
           <h3 class="text-sm font-medium">Mtumiaji mwenye deni la muda mrefu</h3>
-          <p class="text-lg font-semibold mt-2">Fungua kifurushi cha Pro kuona</p>
+          <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
         </div>
       ) : (
         <div class="bg-yellow-200 text-yellow-800 p-4 rounded-2xl shadow text-center">
@@ -218,7 +222,7 @@ useVisibleTask$(async ({ track }) => {
           </h3>
           <p class="text-lg font-semibold">{analyticsStore.longDebt} – ({analyticsStore.amount}/=)</p>
         </div>
-      )}
+      ))}
 
       {/* Low Stock */}
       <div class="bg-orange-200 text-orange-800 p-4 rounded-2xl shadow text-center">
@@ -250,11 +254,11 @@ useVisibleTask$(async ({ track }) => {
       </div>
 
         {/* Top Asked Products */}
-        { analyticsStore.subscription === "Msingi" ? (
+        { isGraphReady.value && (analyticsStore.subscription === "Msingi" ? (
           <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
             <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
             <h3 class="text-sm font-medium">Kilichouliziwa sana</h3>
-            <p class="text-lg font-semibold mt-2">Fungua kifurushi cha Pro kuona</p>
+            <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
         </div>
         ) : (
         <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
@@ -264,7 +268,7 @@ useVisibleTask$(async ({ track }) => {
           </h3>
           <p class="text-1xl font-semibold">Moh Energy</p>
         </div>
-        )}
+        ))}
 
         {/* Total Expired Products */}
         {/* <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
