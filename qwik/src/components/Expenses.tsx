@@ -1,59 +1,44 @@
-import { component$, useResource$, useSignal } from '@builder.io/qwik';
+import {
+  component$,
+  useSignal,
+  useVisibleTask$,
+  useStore,
+  $,
+} from '@builder.io/qwik';
+import { CrudService } from '~/routes/api/base/oop';
+import { formatDateTime, formatMoney } from '~/routes/function/helpers';
 
 export const ExpensesComponent = component$(() => {
-  const dummyExpenses = [
-    {
-      id: 1,
-      category: 'Usafiri',
-      amount: 5000,
-      date: '2025-04-10',
-      note: 'Nauli ya kwenda sokoni',
-    },
-    {
-      id: 2,
-      category: 'Matumizi ya Nyumbani',
-      amount: 8000,
-      date: '2025-04-12',
-      note: 'Ununuzi wa chakula',
-    },
-    {
-      id: 3,
-      category: 'Mengineyo',
-      amount: 2500,
-      date: '2025-04-15',
-      note: 'Vocha ya simu',
-    },
-  ];
+  const totalExpenses = useSignal('0');
+  const page = useSignal(1);
+  const perPage = 6;
+  const state = useStore({
+    items: [] as { description: string; amount: number; date: string }[],
+    totalPages: 1,
+  });
 
-  const totalExpenses = useSignal("0");
+  interface ExpensesApiResponse {
+    id?: string;
+    items: { description: string; amount: number; date: string }[];
+    totalAmount: string;
+    totalPages: number;
+  }
 
-  useResource$(async () => {
-    try {
-      const res = await fetch("http://localhost:3000/analytics", {
-        credentials: 'include'
-      });
+  const fetchExpenses = $(async () => {
+    const expApi = new CrudService<ExpensesApiResponse>('expenses');
+    const expResult = await expApi.getWithParams({ page: page.value, limit: perPage });
 
-      if (!res.ok) {
-        console.error("Response from the server is not ok")
-      }
-
-      const data = await res.json();
-      
-  
-      const formatMoney = (amount: number | undefined) =>
-        typeof amount === 'number' ? new Intl.NumberFormat().format(amount) : '0';
-      totalExpenses.value = formatMoney(data?.netProfit?.totalExpenses);
-      
-      // then fetch total rows for expenses and purchases
-  
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error);
-      }else{
-        console.error("Unknown error occured!")
-      }
+    if (expResult.success) {
+      const { items, totalAmount, totalPages } = expResult.data[0];
+      totalExpenses.value = formatMoney(Number(totalAmount));
+      state.items = items;
+      state.totalPages = totalPages;
     }
-  })
+  });
+
+  useVisibleTask$(() => {
+    fetchExpenses();
+  });
 
   return (
     <div class="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
@@ -61,7 +46,9 @@ export const ExpensesComponent = component$(() => {
       <div class="bg-green-100 rounded-xl shadow p-4 md:p-6 text-gray-800">
         <h2 class="text-lg md:text-2xl font-bold mb-3">📉 Muhtasari wa Matumizi</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm md:text-base">
-          <div class="bg-rose-100 p-3 rounded-xl">💸 Jumla ya Matumizi: <strong>{totalExpenses.value} TZS</strong></div>
+          <div class="bg-rose-100 p-3 rounded-xl">
+            💸 Jumla ya Matumizi: <strong>{totalExpenses.value} TZS</strong>
+          </div>
         </div>
       </div>
 
@@ -69,18 +56,54 @@ export const ExpensesComponent = component$(() => {
       <div>
         <h2 class="text-xl font-bold mb-3 text-teal-700">📋 Orodha ya Matumizi</h2>
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {dummyExpenses.map((expense) => (
-            <div key={expense.id} class="bg-white rounded-xl shadow-md p-4 border border-gray-200 hover:shadow-lg transition">
-              <div class="flex justify-between items-center mb-2">
-                <h3 class="font-semibold text-lg text-gray-800">📁 {expense.category}</h3>
-                <span class="text-sm text-gray-500">{expense.date}</span>
+          {state.items.map((expense, index) => (
+            <div
+              key={index}
+              class="bg-white rounded-xl shadow-md p-4 border border-gray-200 hover:shadow-lg transition"
+            >
+              <div class="text-sm text-gray-500 font-bold mb-2">
+                {formatDateTime(expense.date)}
               </div>
               <div class="text-sm text-gray-700 space-y-1">
-                <p>💰 Gharama: <span class="font-semibold text-red-600">{expense.amount.toLocaleString()} TZS</span></p>
-                <p>📝 Maelezo: {expense.note}</p>
+                <p>
+                  💰 Gharama:{' '}
+                  <span class="font-semibold text-red-600">
+                    {formatMoney(Number(expense.amount))} TZS
+                  </span>
+                </p>
+                <p>📝 Maelezo: {expense.description}</p>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Pagination */}
+        <div class="flex justify-center mt-6 space-x-4">
+          <button
+            onClick$={() => {
+              if (page.value > 1) {
+                page.value--;
+                fetchExpenses();
+              }
+            }}
+            class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+            disabled={page.value === 1}
+          >
+            ⬅️ Nyuma
+          </button>
+          <span class="px-4 py-2">{`Ukurasa ${page.value} ya ${state.totalPages}`}</span>
+          <button
+            onClick$={() => {
+              if (page.value < state.totalPages) {
+                page.value++;
+                fetchExpenses();
+              }
+            }}
+            class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+            disabled={page.value === state.totalPages}
+          >
+            Mbele ➡️
+          </button>
         </div>
       </div>
     </div>

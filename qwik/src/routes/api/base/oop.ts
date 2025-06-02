@@ -49,6 +49,27 @@ class CrudService<T extends CrudItem> {
     }
   }
 
+  async getWithParams(queryParams?: Record<string, string | number>): Promise<CrudResponse<T[]>> {
+  try {
+    const queryString = queryParams
+      ? "?" + new URLSearchParams(queryParams as Record<string, string>).toString()
+      : "";
+
+    const res = await fetch(`${this.baseUrl}${queryString}`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    return await res.json();
+  } catch (err) {
+    return {
+      success: false,
+      message: err instanceof Error ? err.message : "Imeshindwa kupata taarifa kutoka kwenye seva"
+    };
+  }
+}
+
+
   async getById(id: string): Promise<CrudResponse<T>> {
     try {
       const res = await fetch(`${this.baseUrl}/${id}`, {
