@@ -1,34 +1,10 @@
-import { component$, useContext, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import { RefetchContext } from "./context/refreshContext";
+import { component$, useContext, useSignal } from "@builder.io/qwik";
+import { lowStockProductsData } from "./context/store/netSales";
 
 export const RecentProductsTable = component$(() => {
-  const lowStockProducts = useSignal<any[]>([]);
   const errorMessage = useSignal<string | null>(null);
 
-  const { productRefetch } = useContext(RefetchContext);
-
-  useVisibleTask$(async ({ track }) => {
-    track(() => productRefetch.value);
-
-    try {
-      const response = await fetch("http://localhost:3000/analytics", {
-        method: "GET",
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch analytics");
-      }
-
-      const data = await response.json();
-
-      lowStockProducts.value = data.lowStockProducts || [];
-    } catch (error: any) {
-      console.error("Error fetching analytics:", error);
-      errorMessage.value = error.message;
-    }
-  });
+  const { lowStockProducts } = useContext(lowStockProductsData);
 
   return (
     <div class="overflow-x-auto">
@@ -59,12 +35,12 @@ export const RecentProductsTable = component$(() => {
           <tbody>
             {lowStockProducts.value.map((product, index) => (
               <tr
-                key={product.id || index}
+                key={index}
                 class={index % 2 === 0 ? "bg-gray-100" : "bg-white hover:bg-gray-200"}
               >
                 <td class="border border-gray-300 px-4 py-2">{index + 1}</td>
                 <td class="border border-gray-300 px-4 py-2">{product.name}</td>
-                <td class="border border-gray-300 px-4 py-2">{product.priceSold || '-'}</td>
+                <td class="border border-gray-300 px-4 py-2">{product.priceSold + "/=" || '-'}</td>
                 <td class="border border-gray-300 px-4 py-2">{product.stock}</td>
               </tr>
             ))}

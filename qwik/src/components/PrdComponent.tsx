@@ -1,4 +1,6 @@
-import { component$, useSignal, useTask$, $ } from '@builder.io/qwik';
+import { component$, useSignal, useTask$, $, useStore } from '@builder.io/qwik';
+import { CrudService } from '~/routes/api/base/oop';
+import { Toast } from './ui/Toast';
 
 interface Product {
   id: string;
@@ -27,6 +29,12 @@ export const CrudPrdComponent =  component$(() => {
   const selectedProduct = useSignal<Product | null>(null);
   const isEditing = useSignal(false);
   const isDeleting = useSignal(false);
+
+  const modal = useStore({
+    isOpen: false as boolean,
+    message: "" as string,
+    isSuccess: false as boolean
+  });
 
 
   const fetchProducts = $(async () => {
@@ -72,32 +80,21 @@ export const CrudPrdComponent =  component$(() => {
   const totalPages = () => Math.ceil(total.value / perPage);
 
   const editProduct = $((product: Product) => {
-    selectedProduct.value = { ...product }; // Prepopulate the form with product data
+    selectedProduct.value = {
+      ...product,
+      priceSold: parseFloat(product.priceSold as any),
+      priceBought: parseFloat(product.priceBought as any),
+      stock: parseInt(product.stock as any, 10),
+    };    
     isEditing.value = true;
   });
   
   const deleteProduct = $(async (productId: string) => {
-    try {
-      const res = await fetch(`http://localhost:3000/products/${productId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (!res.ok) {
-        const text = await res.text(); // Fallback for non-JSON errors
-        throw new Error(`Failed to delete product: ${text}`);
-      }
-  
-      // If deletion is successful, remove the product from the list
-      products.value = products.value.filter(product => product.id !== productId);
-    } catch (err) {
-      console.error('Failed to delete product:', err);
-    } finally {
-      isDeleting.value = false;
-    }
+    const newApi = new CrudService<Product>('products');
+    const res = await newApi.delete(productId);
+    isDeleting.value = true;
+    if (!res.success) return;
+    products.value = products.value.filter(product => product.id !== productId);
   });
   
 
@@ -170,7 +167,7 @@ export const CrudPrdComponent =  component$(() => {
                         isDeleting.value = true;
                         }}
                     >
-                        Delete
+                        Futa
                     </button>
                     </td>
 
@@ -191,10 +188,10 @@ export const CrudPrdComponent =  component$(() => {
           products.value.map((product) => (
             <div key={product.id} class="border rounded-lg p-3 bg-white shadow-sm">
               <div class="font-semibold">{product.name}</div>
-              <div class="text-sm">Price Sold: Tsh {product.priceSold}</div>
-              <div class="text-sm">Price Bought: Tsh {product.priceBought}</div>
-              <div class="text-sm">Stock: {product.stock}</div>
-              <div class="text-sm">Unit: {product.unit}</div>
+              <div class="text-sm">Bei ya kuuza: Tsh {product.priceSold}</div>
+              <div class="text-sm">Bei ya kununua: Tsh {product.priceBought}</div>
+              <div class="text-sm">Hisa: {product.stock}</div>
+              <div class="text-sm">Kategoria: {product.unit}</div>
               <div class="text-sm mt-1">
                 <span
                   class={`inline-block px-2 py-1 text-xs rounded-full ${
@@ -217,7 +214,7 @@ export const CrudPrdComponent =  component$(() => {
                     isDeleting.value = true;
                   }}
                 >
-                  Delete
+                  Futa
                 </button>
               </div>
             </div>
@@ -232,27 +229,27 @@ export const CrudPrdComponent =  component$(() => {
           disabled={currentPage.value === 1}
           class="px-4 py-2 bg-gray-200 text-sm rounded disabled:opacity-50"
         >
-          Previous
+          Nyuma
         </button>
         <span class="text-sm">
-          Page {currentPage.value} of {totalPages()}
+          Kurasa {currentPage.value} kati ya {totalPages()}
         </span>
         <button
           onClick$={() => currentPage.value++}
           disabled={currentPage.value >= totalPages()}
           class="px-4 py-2 bg-gray-200 text-sm rounded disabled:opacity-50"
         >
-          Next
+          Mbele
         </button>
       </div>
 
       {isEditing.value && selectedProduct.value && (
   <div class="fixed inset-0 flex items-center justify-center z-10 bg-gray-600 bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-      <h2 class="text-lg font-semibold">Edit Product</h2>
+      <h2 class="text-lg font-semibold">Edit Bidhaa</h2>
 
       <div class="mt-4">
-        <label class="block text-sm">Name</label>
+        <label class="block text-sm">Jina:</label>
         <input
           type="text"
           class="w-full p-2 border border-gray-300 rounded"
@@ -261,7 +258,7 @@ export const CrudPrdComponent =  component$(() => {
         />
       </div>
       <div class="mt-4">
-        <label class="block text-sm">PriceSold</label>
+        <label class="block text-sm">Bei ya kuuza:</label>
         <input
           type="number"
           class="w-full p-2 border border-gray-300 rounded"
@@ -275,7 +272,7 @@ export const CrudPrdComponent =  component$(() => {
       </div>
 
       <div class="mt-4">
-        <label class="block text-sm">PriceBought</label>
+        <label class="block text-sm">Bei ya kununua:</label>
         <input
             type="number"
             class="w-full p-2 border border-gray-300 rounded"
@@ -284,8 +281,7 @@ export const CrudPrdComponent =  component$(() => {
               const value = (e.target as HTMLInputElement).value;
               selectedProduct.value!.priceBought = parseFloat(value);
             }
-          }
-            
+          }  
         />
 
       </div>
@@ -303,7 +299,7 @@ export const CrudPrdComponent =  component$(() => {
         />
       </div>
       <div class="mt-4">
-        <label class="block text-sm">Kiwango:</label>
+        <label class="block text-sm">Kategoria:</label>
         <input
           type="text"
           class="w-full p-2 border border-gray-300 rounded"
@@ -315,33 +311,30 @@ export const CrudPrdComponent =  component$(() => {
         <button
           class="px-4 py-2 bg-gray-700 text-white rounded"
           onClick$={async () => {
-            try {
-              const res = await fetch(`http://localhost:3000/products/${selectedProduct.value!.id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept-Language': 'sw', // Adjust as necessary
-                },
-                body: JSON.stringify(selectedProduct.value),
-                credentials: 'include',
-              });
-              if (!res.ok) {
-                const text = await res.text();
-                throw new Error(`Failed to update product: ${text}`);
-              }
-              const updatedProduct = await res.json();
-              // Update product in the local list
-              const index = products.value.findIndex(p => p.id === updatedProduct.id);
+            const newApi = new CrudService<Product>(`products`);
+            if (!selectedProduct.value) return;
+            const res = await newApi.updateById(selectedProduct.value, selectedProduct.value!.id);
+
+            // give the toast
+            modal.isOpen = true;
+            modal.isSuccess = res.success;
+            modal.message = res.message || "Bidhaa imehaririwa kwa mafanikio";
+
+            if (!res.success){
+              modal.isOpen = true;
+              modal.message = res.message || "Seva imefeli";
+              modal.isSuccess = false;
+              return;
+            }
+
+            const index = products.value.findIndex(p => p.id === res.data.id);
               if (index > -1) {
-                products.value[index] = updatedProduct;
+                products.value[index] = res.data;
               }
               isEditing.value = false;
-            } catch (err) {
-              console.error('Failed to update product:', err);
-            }
           }}
         >
-          Save
+          Hifadhi
         </button>
         <button
           class="px-4 py-2 bg-gray-300 text-black rounded"
@@ -350,7 +343,7 @@ export const CrudPrdComponent =  component$(() => {
             selectedProduct.value = null;
           }}
         >
-          Cancel
+          Ghairi
         </button>
       </div>
     </div>
@@ -361,14 +354,14 @@ export const CrudPrdComponent =  component$(() => {
 {isDeleting.value && (
   <div class="fixed inset-0 flex items-center justify-center z-10 bg-gray-600 bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-      <h2 class="text-lg font-semibold">Confirm Deletion</h2>
-      <p class="mt-2 text-sm">Are you sure you want to delete this product?</p>
+      <h2 class="text-lg font-semibold">Hakiki Ufutaji</h2>
+      <p class="mt-2 text-sm">Je, unataka kufuta bidhaa hii?</p>
       <div class="mt-4 flex gap-2">
         <button
           class="px-4 py-2 bg-red-500 text-white rounded"
           onClick$={() => deleteProduct(selectedProduct.value!.id)}
         >
-          Delete
+          Futa
         </button>
         <button
           class="px-4 py-2 bg-gray-300 text-black rounded"
@@ -377,13 +370,24 @@ export const CrudPrdComponent =  component$(() => {
             selectedProduct.value = null;
           }}
         >
-          Cancel
+          Ghairi
         </button>
       </div>
     </div>
   </div>
 )}
 
+      {/* Modal Popup */}
+      {modal.isOpen && (
+          <Toast
+          isOpen={modal.isOpen}
+          type={modal.isSuccess}
+          message={modal.message}
+          onClose$={$(() => {
+            modal.isOpen = false;
+          })}
+          />
+      )}
 
     </div>
   );

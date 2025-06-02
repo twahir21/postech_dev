@@ -1,5 +1,6 @@
 import { component$, useSignal, useStore, $, useTask$ } from '@builder.io/qwik';
 import { format } from 'date-fns';
+import { env } from '~/routes/api/base/config';
 import { CrudService } from '~/routes/api/base/oop';
 
 interface Sale {
@@ -20,6 +21,10 @@ export const SalesComponent = component$(() => {
   const totalPages = useSignal(1);
   const sales = useSignal<Sale[]>([]);
   const isLoading = useSignal(true);
+
+  const frontendURL = env.mode === 'development'
+                      ? env.frontendURL_DEV
+                      : env.frontendURL;
 
   const filters = useStore({
     startDate: '',
@@ -168,29 +173,29 @@ export const SalesComponent = component$(() => {
       {/* Footer */}
       {!isLoading.value && (
         <div class="flex flex-col md:flex-row justify-between items-center mt-4 gap-3">
-          <div class="flex gap-2">
+          <div class="flex justify-center mt-6 space-x-4">
             <button
-              class="bg-gray-300 text-black px-3 py-2 rounded"
+            class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
               disabled={page.value <= 1}
               onClick$={() => (page.value = Math.max(1, page.value - 1))}
             >
-              Nyuma
+            ⬅️ Nyuma
             </button>
-            <span>
+            <span class="px-4 py-2">
               Kurasa {page.value} kati ya {totalPages.value}
             </span>
             <button
-              class="bg-gray-300 text-black px-3 py-2 rounded"
+              class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
               disabled={page.value >= totalPages.value}
               onClick$={() => (page.value = Math.min(totalPages.value, page.value + 1))}
             >
-              Mbele
+            Mbele ➡️
             </button>
           </div>
 
           {/* Export CSV */}
           <a
-            href={`http://localhost:3000/export-sales`}
+            href={`${frontendURL}/export-sales`}
             class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-900"
           >
             ⬇️ Toa kwa CSV

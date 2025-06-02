@@ -4,7 +4,8 @@ import { Graph } from "./Graph";
 import { CrudService } from "~/routes/api/base/oop";
 import type { AnalyticsTypes } from "~/routes/api/types/analyTypes";
 import { formatMoney, toSwahiliFraction } from "~/routes/function/helpers";
-import { netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph, trialEndData } from "./context/store/netSales";
+import { lowStockProductsData, netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph, trialEndData } from "./context/store/netSales";
+import { RefetchContext } from "./context/refreshContext";
 
 export const HomeComponent = component$(() => {
 
@@ -35,9 +36,16 @@ export const HomeComponent = component$(() => {
   const { netExpenses } = useContext(netExpensesGraph);
   const { netPurchases } = useContext(netPurchasesGraph);
   const { sales } = useContext(salesGraph);
-  const { trialEnd } = useContext(trialEndData)
+  const { trialEnd } = useContext(trialEndData);
+  const { lowStockProducts } = useContext(lowStockProductsData);
 
-useVisibleTask$(async () => {
+  // refetch when changes occur in data
+  const { productRefetch } = useContext(RefetchContext);
+  
+useVisibleTask$(async ({ track }) => {
+  // values to track;
+  track(() => productRefetch.value); // track the refetch signal
+
     const analyticsApi = new CrudService<AnalyticsTypes>("analytics");
     const analyticsData = await analyticsApi.get();
     if (!analyticsData.success) return;
@@ -85,6 +93,13 @@ useVisibleTask$(async () => {
     sales.value = analytics.salesByDay.map(data => ({
       day: data.day,
       Sales: data.sales || 0 // ensure it's a number
+    }));
+
+    // store low stock products
+    lowStockProducts.value = analytics.lowStockProducts.map(product => ({
+      name: product.name,
+      priceSold: formatMoney(Number(product.priceSold)),
+      stock: product.stock
     }));
 
     console.log("Analytics: ", analytics);

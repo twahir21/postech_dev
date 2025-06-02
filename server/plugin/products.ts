@@ -3,7 +3,7 @@ import Elysia from "elysia";
 import { extractId } from "../functions/security/jwtToken";
 import { prodDel, prodGet, prodPost, prodUpdate, QrPost } from "../functions/prodFunc";
 import type { productTypes, QrData } from "../types/types";
-import { prodData, QrPostData } from "../functions/security/validators/data";
+import { prodData, prodUpdateValidation, QrPostData } from "../functions/security/validators/data";
 import { blockUsage } from "../functions/utils/block";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
@@ -79,7 +79,7 @@ export const prodPlugin = new Elysia()
             productId,
         });
     }, {
-        body: prodData
+        body: prodUpdateValidation
     })
     .post("/get-data", async ({ jwt, cookie, body, headers }) => {
         const { userId, shopId} = await extractId({ jwt, cookie});

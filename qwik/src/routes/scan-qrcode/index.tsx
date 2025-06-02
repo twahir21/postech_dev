@@ -117,6 +117,17 @@ const handleSubmit = $(async () => {
     return;
   }
 
+  if (!state.customerId && state.editableFields.saleType === "debt") {
+    // If saleType is "debt" and no customer is selected, show an error
+    state.modal = {
+      isOpen: true,
+      message: "Lazima uchague mteja au msajili kwanza",
+      isSuccess: false
+    };
+    state.isSubmitting = false;
+    return;
+  }
+
   const requestData = {
     ...state.query,
     ...state.editableFields,

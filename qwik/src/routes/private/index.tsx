@@ -13,6 +13,7 @@ import { MainGraph } from "~/components/reports/MainGraph";
 import { OthersComponent } from "~/components/Others";
 import { CrudService } from "../api/base/oop";
 import { useAuthLoader } from "../layout";
+import { AskedProducts } from "~/components/Asked";
 
 
 export default component$(() => {
@@ -125,7 +126,6 @@ export default component$(() => {
         <nav class="mt-5">
           {[
             { name: "Nyumbani", emoji: "🏠" },
-            // { name: "Muongozo", emoji: "📖" },
             { name: "Anza hapa", emoji: "🚀" },
             { name: "Mauzo", emoji: "💰" },
             { name: "Mengineyo", emoji: "🧿" },
@@ -134,6 +134,7 @@ export default component$(() => {
             { name: "Ripoti", emoji: "📉" },
             { name: "Bidhaa", emoji: "📦" },
             { name: "Wateja", emoji: "👥" },
+            { name: "Zinazoulizwa", emoji: "⭐" },
             { name: "Wasambazaji", emoji: "🔗" },
             { name: "Mipangilio", emoji: "⚙️" },
           ].map(({ name, emoji }) => (
@@ -234,7 +235,6 @@ export default component$(() => {
           <h1 class="text-xl font-bold pb-2">Karibu, {store.username}</h1>
 
           {store.currentPage === "Nyumbani" && <HomeComponent />}
-          {/* {store.currentPage === "Muongozo" && <UsageComponent />} */}
           {store.currentPage === "Anza hapa" &&  <ProductComponent />}
           {store.currentPage === "Mauzo" && <SalesComponent />}
           {store.currentPage === "Mengineyo" && <OthersComponent />}
@@ -243,6 +243,7 @@ export default component$(() => {
           {store.currentPage === "Ripoti" && <MainGraph />}
           {store.currentPage === "Bidhaa" && <CrudPrdComponent /> }
           {store.currentPage === "Wateja" && <CustomerComponent />}
+          {store.currentPage === "Zinazoulizwa" && <AskedProducts />}
           {store.currentPage === "Wasambazaji" && <SuppCrudComponent />} 
           {store.currentPage === "Mipangilio" && <SettingsComponent />}
         </main>

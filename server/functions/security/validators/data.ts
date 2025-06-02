@@ -99,26 +99,79 @@ export const prodData = t.Object({
         }
     }),
     categoryId: t.String({
-        minLength: 1,
+        minLength: 3,
         maxLength: 70,
         error() {
             return {
                 success: false,
-                message: "ID haliwezi kuwa na herufi chini ya 3 na juu ya 40"
+                message: "ID haliwezi kuwa na herufi chini ya 3 na juu ya 70"
             }
         }
     }),
 
     supplierId: t.String({
-        minLength: 1,
+        minLength: 3,
         maxLength: 70,
         error() {
             return {
                 success: false,
-                message: "ID haliwezi kuwa na herufi chini ya 3 na juu ya 40"
+                message: "ID haliwezi kuwa na herufi chini ya 3 na juu ya 70"
             }
         }
     }),
+})
+
+export const prodUpdateValidation = t.Object({
+    name: t.String({
+        maxLength: 40,
+        minLength: 3,
+        error() {
+            return {
+                success: false,
+                message: "Jina haliwezi kuwa na herufi chini ya 3 na juu ya 40"
+            }
+        }
+    }),
+    unit: t.String({
+        minLength: 1,
+        maxLength: 20,
+        error() {
+            return {
+                success: false,
+                message: "Jina haliwezi kuwa na herufi chini ya 3 na juu ya 40"
+            }
+        }
+    }),
+    priceBought: t.Number({
+        maximum: 999999999999.99,
+        minimum: 1,
+        error() {
+            return {
+                success: false,
+                message: "Bei ya kununua sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
+            }
+        }
+    }),
+    priceSold: t.Number({
+        maximum: 999999999999.99,
+        minimum: 1,
+        error() {
+            return {
+                success: false,
+                message: "Bei ya kuuza sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
+            }
+        }
+    }),
+    stock: t.Number({
+        maximum: 999999999999.99,
+        minimum: 0,
+        error() {
+            return {
+                success: false,
+                message: "Hisa sio sahihi kama ni chini ya 0 au juu ya trillioni 100"
+            }
+        }
+    })
 })
 
 export const QrPostData = t.Object({
