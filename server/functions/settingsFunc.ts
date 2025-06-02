@@ -154,18 +154,18 @@ export const deleteShop = async ({ shopId, userId, cookie }: {userId: string, sh
         await mainDb.delete(suppliers).where(eq(suppliers.shopId, shopId));
         await mainDb.delete(customers).where(eq(customers.shopId, shopId));
         await mainDb.delete(categories).where(eq(categories.shopId, shopId));
-        await mainDb.delete(shopUsers).where(eq(shopUsers.shopId, shopId));
-        await mainDb.delete(shops).where(eq(shops.id, shopId));
+        // await mainDb.delete(shopUsers).where(eq(shopUsers.shopId, shopId));
+        // await mainDb.delete(shops).where(eq(shops.id, shopId));
         
         // Delete orphaned users
-        await mainDb.execute(sql`
-          DELETE FROM users 
-          WHERE id IN (
-            SELECT users.id FROM users
-            LEFT JOIN shop_users ON users.id = shop_users.user_id
-            WHERE shop_users.id IS NULL
-          );
-        `);
+        // await mainDb.execute(sql`
+        //   DELETE FROM users 
+        //   WHERE id IN (
+        //     SELECT users.id FROM users
+        //     LEFT JOIN shop_users ON users.id = shop_users.user_id
+        //     WHERE shop_users.id IS NULL
+        //   );
+        // `);
         
   
         // delete the coookies

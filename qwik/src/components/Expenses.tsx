@@ -55,7 +55,7 @@ export const ExpensesComponent = component$(() => {
       {/* Expense List */}
       <div>
         <h2 class="text-xl font-bold mb-3 text-teal-700">📋 Orodha ya Matumizi</h2>
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {state.items.length > 0 ? (<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {state.items.map((expense, index) => (
             <div
               key={index}
@@ -75,7 +75,11 @@ export const ExpensesComponent = component$(() => {
               </div>
             </div>
           ))}
-        </div>
+        </div>): (
+          <div class="text-gray-500">
+            <p>Hakuna matumizi yaliyopatikana.</p>
+          </div>
+        )}
 
         {/* Pagination */}
         <div class="flex justify-center mt-6 space-x-4">

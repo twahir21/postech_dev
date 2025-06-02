@@ -21,8 +21,13 @@ interface Stock {
   stock: Signal<{ day: string; totalStock: number }[]>;
 }
 
+interface trialEnd{
+  trialEnd: Signal<string>;
+}
+
 export const netSalesGraph = createContextId<NetSalesData>('netSales-graph');
 export const netExpensesGraph = createContextId<NetExpensesData>('netExpenses-graph');
 export const netPurchasesGraph = createContextId<NetPurchasesData>('netPurchases-graph');
 export const salesGraph = createContextId<SalesData>('sales-graph');
 export const stockGraph = createContextId<Stock>('stock-graph');
+export const trialEndData = createContextId<trialEnd>('trialEnd');

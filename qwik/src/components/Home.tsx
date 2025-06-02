@@ -4,7 +4,7 @@ import { Graph } from "./Graph";
 import { CrudService } from "~/routes/api/base/oop";
 import type { AnalyticsTypes } from "~/routes/api/types/analyTypes";
 import { formatMoney, toSwahiliFraction } from "~/routes/function/helpers";
-import { netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph } from "./context/store/netSales";
+import { netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph, trialEndData } from "./context/store/netSales";
 
 export const HomeComponent = component$(() => {
 
@@ -28,13 +28,14 @@ export const HomeComponent = component$(() => {
     lowestPrdStock: 0 as number,
     productMessage: "Hakuna bidhaa zilizoorodheshwa" as string,
     subscription: "Trial" as string,
-    remainainingDays: "Zimebaki siku 0" as string,
+    remainingDays: "Zimebaki siku 0" as string,
   });
   const isGraphReady = useSignal(false);
   const { netSales } = useContext(netSalesGraph);
   const { netExpenses } = useContext(netExpensesGraph);
   const { netPurchases } = useContext(netPurchasesGraph);
   const { sales } = useContext(salesGraph);
+  const { trialEnd } = useContext(trialEndData)
 
 useVisibleTask$(async () => {
     const analyticsApi = new CrudService<AnalyticsTypes>("analytics");
@@ -61,8 +62,10 @@ useVisibleTask$(async () => {
     analyticsStore.productMessage = analytics.prodMessage;
 
     analyticsStore.subscription = analytics.subscription;
-    analyticsStore.remainainingDays = analytics.trialEnd;
+    analyticsStore.remainingDays = analytics.trialEnd;
 
+    // store end date for SaaS
+    trialEnd.value = analytics.trialEnd;
     // store netsales data
     netSales.value = analytics.netSalesByDay.map(data => ({
       day: data.day,
@@ -219,7 +222,7 @@ useVisibleTask$(async () => {
           <span role="img" aria-label="countdown" class="pr-1.5">⏰</span> 
           Kulipia Huduma
         </h3>
-        <p class="text-lg font-semibold">{analyticsStore.remainainingDays}</p>
+        <p class="text-lg font-semibold">{analyticsStore.remainingDays}</p>
       </div>
 
       {/* Product registered */}

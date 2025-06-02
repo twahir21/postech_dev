@@ -1,16 +1,16 @@
 // src/components/SettingsPage.tsx
-import { component$, useSignal, useStore, useResource$, $ } from '@builder.io/qwik';
+import { component$, useSignal, useStore, useResource$, $, useContext } from '@builder.io/qwik';
 import { useNavigate } from '@builder.io/qwik-city';
 import { env } from '~/routes/api/base/config';
 import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './ui/Toast';
+import { trialEndData } from './context/store/netSales';
 
 export const SettingsComponent = component$(() => {
   const currentPassword = useSignal('');
   const newPassword = useSignal('');
   const confirmPassword = useSignal('');
   const isTrial = true;
-  const trialEnds = '30-4-2025';
 
   interface Store {
     shopName?: string;
@@ -31,6 +31,9 @@ export const SettingsComponent = component$(() => {
     }
   }
 
+  const { trialEnd } = useContext(trialEndData);
+  const trialEnds = trialEnd.value || '30-4-2025'; // Use context value if available
+
   const store = useStore<Store>({
     shopName: 'Loading ...',
     email: 'Loading ...',
@@ -38,7 +41,7 @@ export const SettingsComponent = component$(() => {
     newPassword: '',
     confirmPassword: '',
     isTrial: true,
-    trialEnds: '2025-04-30', // Consider using a Date object if needed
+    trialEnds: trialEnds, // Use the derived trialEnds variable
     isLoading: false,
     isPassword: false,
     isDelete: false,
@@ -127,7 +130,7 @@ export const SettingsComponent = component$(() => {
 
   // logic to delete the shop
   const handleConfirmDelete = $(async () => {
-    if (confirmInput.value.trim().toLowerCase() === "nipo tayari kufuta duka") {
+    if (confirmInput.value.trim().toLowerCase() === "nipo tayari kufuta taarifa za duka") {
       // original delete logic
       if (store.isDelete) return; // prevent multiple reqs
 
@@ -147,7 +150,7 @@ export const SettingsComponent = component$(() => {
       store.modal = {
         isOpen: true,
         isSuccess: delResult.success,
-        message: delResult.message || (delResult.success ? "Umefanikiwa" : "Imeshindwa kufuta duka")
+        message: delResult.message || (delResult.success ? "Umefanikiwa" : "Imeshindwa kufuta taarifa za duka")
       }
       return navigation(frontendURL);
     }
@@ -266,7 +269,7 @@ export const SettingsComponent = component$(() => {
         <h2 class="text-lg font-semibold mb-2">💳 Malipo ya huduma</h2>
         {isTrial ? (
           <p class="text-sm text-gray-600">
-            Kwa sasa upo kwenye ofa ya siku <span class="font-bold text-green-600">14 bure</span>. Itaisha {' '}
+            Kwa sasa upo kwenye ofa ya siku <span class="font-bold text-green-600">14 bure</span>. {' '}
             <span class="font-semibold">{trialEnds}</span>.
           </p>
         ) : (
@@ -284,7 +287,7 @@ export const SettingsComponent = component$(() => {
       {/* Danger Zone */}
       <section class="bg-red-100 border border-red-400 rounded-xl p-4">
         <h2 class="text-lg font-semibold text-red-700 mb-2">⚠️ Eneo Hatari</h2>
-        <p class="text-sm text-red-700 mb-3">Kufuta duka ni moja kwa moja, taarifa zako haziwezi kurudishwa.</p>
+        <p class="text-sm text-red-700 mb-3">Kufuta taarifa za duka ni moja kwa moja, taarifa zako haziwezi kurudishwa.</p>
         <button class={`${store.isDelete ? 'bg-red-400': 'bg-red-600'} text-white px-4 py-2 rounded hover:bg-red-700`}
         disabled={store.isDelete}
         onClick$={() => showModal.value = true}
@@ -306,7 +309,7 @@ export const SettingsComponent = component$(() => {
           <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
             <h3 class="text-lg font-bold mb-4 text-red-600">⚠️ Thibitisha Kufuta Duka</h3>
             <p class="mb-3 text-sm">
-              Andika: <strong class="text-red-700">nipo tayari kufuta duka</strong> kuthibitisha.
+              Andika: <strong class="text-red-700">nipo tayari kufuta taarifa za duka</strong> kuthibitisha.
             </p>
 
             <input
@@ -318,9 +321,9 @@ export const SettingsComponent = component$(() => {
 
             {/* Validation message */}
             {confirmInput.value.length > 0 && (
-              <p class={`text-sm ${confirmInput.value === 'nipo tayari kufuta duka' ? 'text-green-600' : 'text-red-600'}`}>
+              <p class={`text-sm ${confirmInput.value === 'nipo tayari kufuta taarifa za duka' ? 'text-green-600' : 'text-red-600'}`}>
                 {
-                  confirmInput.value === 'nipo tayari kufuta duka'
+                  confirmInput.value === 'nipo tayari kufuta taarifa za duka'
                     ? '✅ Umeandika sahihi'
                     : '❌ Andika sentensi kamili ili kuthibitisha'
                 }
@@ -340,11 +343,11 @@ export const SettingsComponent = component$(() => {
 
               <button 
                 class={`px-4 py-2 rounded text-white ${
-                  confirmInput.value === 'nipo tayari kufuta duka'
+                  confirmInput.value === 'nipo tayari kufuta taarifa za duka'
                     ? 'bg-red-600 hover:bg-red-700'
                     : 'bg-red-300 cursor-not-allowed'
                 }`}
-                disabled={confirmInput.value !== 'nipo tayari kufuta duka'}
+                disabled={confirmInput.value !== 'nipo tayari kufuta taarifa za duka'}
                 onClick$={handleConfirmDelete}
               >
                 {

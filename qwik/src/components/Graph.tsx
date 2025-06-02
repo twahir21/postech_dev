@@ -47,6 +47,7 @@ export const Graph = component$(() => {
               "rgba(75, 192, 192, 0.6)",
               "rgba(153, 102, 255, 0.6)",
               "rgba(255, 159, 64, 0.6)",
+              "rgba(100, 200, 100, 0.6)",  
             ],
             borderColor: "rgba(0, 0, 0, 0.1)",
             borderWidth: 1,
