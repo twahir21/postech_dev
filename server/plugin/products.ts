@@ -33,12 +33,19 @@ export const prodPlugin = new Elysia()
         }
 
         // block creating new product if unpaid
-        await blockUsage({ shopId });
+        const result = await blockUsage({ shopId });
 
-        return await prodPost({ 
-            body: body as productTypes, 
-            userId, 
-            shopId, 
+        if (!result?.success) {
+            return {
+                success: false,
+                message: result?.message || "Huduma haijalipiwa"
+            };
+        }
+
+        return await prodPost({
+            body: body as productTypes,
+            userId,
+            shopId,
             headers,
             categoryId: (body as productTypes).categoryId || "",
             supplierId: (body as productTypes).supplierId || "",
@@ -85,7 +92,14 @@ export const prodPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
-        await blockUsage({ shopId });
+        const result = await blockUsage({ shopId });
+
+        if (!result?.success){
+            return {
+                success: false,
+                message: result?.message || "Huduma haijalipiwa"
+            }
+        }
 
         return await QrPost({ 
             body: body as QrData, 

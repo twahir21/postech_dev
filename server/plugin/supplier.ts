@@ -28,7 +28,14 @@ const suppPlugin = new Elysia()
         if (!shopId || !userId) return;
 
         // block creating new supplier
-        await blockUsage({ shopId });
+        const result = await blockUsage({ shopId });
+
+        if (!result?.success) {
+            return {
+                success: false,
+                message: result?.message || "Huduma haijalipiwa"
+            }
+        }
         return suppPost ({ shopId, body: body as suppTypes, headers })
     }, {
         body: suppData

@@ -43,14 +43,21 @@ export const CustomersPlugin = new Elysia()
         if (!shopId || !userId) return;
 
         // block creating customers
-        await blockUsage({ shopId });
-        
-        return await customerPost({ 
-            body: body as CustomerTypes, 
-            userId, 
-            shopId, 
+        const result = await blockUsage({ shopId });
+
+        if (!result?.success) {
+            return {
+                success: false,
+                message: result?.message || "Huduma haijalipiwa"
+            };
+        }
+
+        return await customerPost({
+            body: body as CustomerTypes,
+            userId,
+            shopId,
             headers,
-        }); 
+        });
     }, {
         body: customerData
     })

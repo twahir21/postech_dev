@@ -20,7 +20,14 @@ const categoriesPlugin = new Elysia()
         if (!shopId || !userId) return;
 
         // block usage upon create new category
-        await blockUsage({ shopId });
+        const result = await blockUsage({ shopId });
+
+        if (!result?.success) {
+            return {
+                success: false,
+                message: result?.message || "Huduma haijalipiwa"
+            };
+        }
 
         return await categPost({
             body: body as categoriesTypes,

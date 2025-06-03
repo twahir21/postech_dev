@@ -319,7 +319,7 @@ const handleButtonClick = $((btn: string) => {
                 class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
               >
                 <option value="cash">Cash</option>
-                <option value="debt">Deni</option>
+                {state.editableFields.typeDetected === "sales" && (<option value="debt">Deni</option>)}
               </select>
             </div>
 
