@@ -8,6 +8,7 @@ import {
 import { useLocation } from "@builder.io/qwik-city";
 import { CrudService } from "../api/base/oop";
 import { Toast } from "~/components/ui/Toast";
+import { formatDateTime, formatMoney } from "../function/helpers";
 
 export default component$(() => {
   const location = useLocation();
@@ -17,7 +18,7 @@ export default component$(() => {
     query: {} as Record<string, string>,
     isLoading: true,
     productId: "",
-    generatedAt: "",
+    // generatedAt: "",
     editableFields: {
       quantity: "1",
       saleType: "cash",
@@ -54,18 +55,39 @@ export default component$(() => {
     const params: Record<string, string> = {};
 
     urlParams.forEach((value, key) => {
+      // Assign directly to state for known keys
       if (key === "productId") {
-        state.productId = value; // Assign productId directly to state
-      }else if(key === "supplierId"){
-        state.supplierId = value;
-      } 
-      else if (!["shopId", "userId"].includes(key)) {
-        params[key] = value;
+        state.productId = value;
+        return;
       }
+
+      if (key === "supplierId") {
+        state.supplierId = value;
+        return;
+      }
+
+      // Skip keys we don't want to include in params
+      if (["shopId", "userId"].includes(key)) return;
+
+      // Map keys to human-readable labels with optional formatting
+      const labelMap: Record<string, string> = {
+        generatedAt: "Imetengenezwa",
+        name: "Jina la bidhaa",
+        priceBought: "Bei ya kununua"
+      };
+
+      const label = labelMap[key] || key;
+
+      params[label] =
+        key === "generatedAt"
+          ? formatDateTime(value) || "Hakuna"
+          : key === "priceBought"
+          ? `${formatMoney(Number(value))}/=`
+          : value;
     });
 
+
     state.query = params;
-    state.generatedAt = params.generatedAt || "Hakuna"; // Store generatedAt with a fallback
     state.editableFields.quantity = params.quantity || "1";
     state.editableFields.saleType = params.saleType || "cash";
     state.editableFields.discount = params.discount || "0";
@@ -352,7 +374,7 @@ const handleButtonClick = $((btn: string) => {
             )}
 
             {/* Fetch Customers */}
-            {state.editableFields.saleType === "debt" && (
+            {state.editableFields.saleType === "debt" && state.editableFields.typeDetected === "sales" && (
               <div class="sm:col-span-2">
                 <p class="text-gray-600 font-medium mb-2">Chagua Mteja:</p>
                 {state.customers.length > 0 ? (

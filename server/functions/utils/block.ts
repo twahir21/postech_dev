@@ -5,7 +5,7 @@ import { isPaidCache } from "./caches";
 import { differenceInMinutes, differenceInHours, differenceInDays, differenceInMonths, formatDistanceToNow } from 'date-fns';
 
 
-export const blockUsage = async ({ shopId }: { shopId: string }) => {
+export const blockUsage = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string }> => {
   // 1. Generate unique cache key per shop
   const cacheKey = `shop:${shopId}:paid`;
   
@@ -37,6 +37,11 @@ export const blockUsage = async ({ shopId }: { shopId: string }) => {
       success: false,
       message: "Kifurushi kimeisha, tafadhali lipia ili kuendelea."
     };
+  }
+
+  return {
+    success: true,
+    message: "umelipia"
   }
 };
 

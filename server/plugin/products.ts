@@ -94,10 +94,10 @@ export const prodPlugin = new Elysia()
 
         const result = await blockUsage({ shopId });
 
-        if (!result?.success){
+        if (!result.success){
             return {
                 success: false,
-                message: result?.message || "Huduma haijalipiwa"
+                message: result.message || "Huduma haijalipiwa"
             }
         }
 
