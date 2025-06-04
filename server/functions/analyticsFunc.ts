@@ -21,20 +21,30 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
             debtorData,
             weeklySummaryData
         ] = await Promise.all([
-            mainDb.execute(sql`
-                SELECT
-                    p.id AS productId,
-                    p.name AS productName,
-                    COALESCE(SUM(s.quantity * s.price_sold), 0) AS totalSales,
-                    COALESCE(SUM(pur.quantity * pur.price_bought), 0) AS totalCost,
-                    COALESCE(SUM(s.quantity * s.price_sold), 0) - COALESCE(SUM(pur.quantity * pur.price_bought), 0) AS profit
-                FROM products p
-                LEFT JOIN sales s ON s.product_id = p.id AND s.shop_id = ${shopId}
-                LEFT JOIN purchases pur ON pur.product_id = p.id AND pur.shop_id = ${shopId}
-                WHERE p.shop_id = ${shopId}
-                GROUP BY p.id, p.name
-                ORDER BY profit DESC
-            `),
+        mainDb.execute(sql`
+            SELECT
+                p.id AS productId,
+                p.name AS productName,
+                COALESCE(s.totalSales, 0) AS totalSales,
+                COALESCE(pur.totalCost, 0) AS totalCost,
+                COALESCE(s.totalSales, 0) - COALESCE(pur.totalCost, 0) AS profit
+            FROM products p
+            LEFT JOIN (
+                SELECT product_id, SUM(quantity * price_sold) AS totalSales
+                FROM sales
+                WHERE shop_id = ${shopId}
+                GROUP BY product_id
+            ) s ON s.product_id = p.id
+            LEFT JOIN (
+                SELECT product_id, SUM(quantity * price_bought) AS totalCost
+                FROM purchases
+                WHERE shop_id = ${shopId}
+                GROUP BY product_id
+            ) pur ON pur.product_id = p.id
+            WHERE p.shop_id = ${shopId}
+            ORDER BY profit DESC
+        `),
+
             // --- Lowest Stock Product ---
             mainDb
                 .select()
@@ -172,6 +182,8 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
         const totalPurchasesFromProducts = profitPerProduct.reduce((sum, item) => {
             return sum + Number(item.totalcost || 0);
         }, 0);
+
+        console.log(totalPurchasesFromProducts, profitPerProduct)
 
         // --- Total Expenses (can be fetched separately or combined if daily summaries are not needed) ---
         // For simplicity and distinctness, keeping this separate if it's a single aggregate.

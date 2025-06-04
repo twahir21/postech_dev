@@ -16,6 +16,7 @@ export default component$(() => {
   // Define state
   const state = useStore({
     query: {} as Record<string, string>,
+    rawParams: {} as Record<string, string>,
     isLoading: true,
     productId: "",
     // generatedAt: "",
@@ -54,6 +55,8 @@ export default component$(() => {
     const urlParams = new URLSearchParams(location.url.search);
     const params: Record<string, string> = {};
 
+    const uiParams: Record<string, string> = {};
+
     urlParams.forEach((value, key) => {
       // Assign directly to state for known keys
       if (key === "productId") {
@@ -78,7 +81,9 @@ export default component$(() => {
 
       const label = labelMap[key] || key;
 
-      params[label] =
+      params[key] = value; // origional
+
+      uiParams[label] =
         key === "generatedAt"
           ? formatDateTime(value) || "Hakuna"
           : key === "priceBought"
@@ -88,6 +93,7 @@ export default component$(() => {
 
 
     state.query = params;
+    state.rawParams = uiParams;
     state.editableFields.quantity = params.quantity || "1";
     state.editableFields.saleType = params.saleType || "cash";
     state.editableFields.discount = params.discount || "0";
@@ -163,6 +169,8 @@ const handleSubmit = $(async () => {
     calculatedTotal: state.calculatedTotal,
   };
 
+  console.log("Data: ", requestData, state.query.bei)
+
         interface sendData {
         id?: string;
         quantity: number;
@@ -213,13 +221,13 @@ const handleButtonClick = $((btn: string) => {
 
       {state.isLoading ? (
         <p class="text-gray-600">Loading...</p>
-      ) : Object.keys(state.query).length === 0 ? (
+      ) : Object.keys(state.rawParams).length === 0 ? (
         <p class="text-red-500">❌ Hakuna query parameters zilizopatikana!</p>
       ) : (
         <div class="bg-white rounded-xl shadow-lg p-4 border border-gray-200 space-y-4">
           {/* Display product details */}
           <div class="grid sm:grid-cols-2 gap-4">
-            {Object.entries(state.query).map(([key, value]) => {
+            {Object.entries(state.rawParams).map(([key, value]) => {
               if (
                 ["quantity", "saleType", "discount", "description", "priceSold", "typeDetected"].includes(
                   key

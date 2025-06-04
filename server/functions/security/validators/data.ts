@@ -188,7 +188,7 @@ export const QrPostData = t.Object({
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
+                message: "Mahesabu sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
@@ -198,7 +198,7 @@ export const QrPostData = t.Object({
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
+                message: "Hisa sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
@@ -208,7 +208,7 @@ export const QrPostData = t.Object({
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
+                message: "Pungzo sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
@@ -218,7 +218,7 @@ export const QrPostData = t.Object({
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
+                message: "Bei ya kununua sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     }),
@@ -228,7 +228,7 @@ export const QrPostData = t.Object({
         error() {
             return {
                 success: false,
-                message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
+                message: "Bei ya kuuza sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
     })
