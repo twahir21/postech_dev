@@ -190,6 +190,7 @@ import {
   export const debtPayments = pgTable("debt_payments", {
     id: uuid("id").defaultRandom().primaryKey(),
     debtId: uuid("debt_id").references(() => debts.id,{onDelete: "cascade"}),
+    customerId: uuid("customer_id").notNull().references(() => customers.id, { onDelete: "cascade" }),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     amountPaid: decimal("amount_paid", { precision: 15, scale: 2}).notNull(), 
     paymentDate: timestamp("payment_date").defaultNow(),

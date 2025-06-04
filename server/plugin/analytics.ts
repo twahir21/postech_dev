@@ -2,7 +2,7 @@
 import { Cookie, Elysia } from 'elysia';
 import jwt from '@elysiajs/jwt';
 import { salesQueryData } from '../functions/security/validators/data';
-import { debtsFunc, exportSales, getAnalytics, graphFunc, salesAnalytics } from '../functions/analyticsFunc';
+import { exportSales, getAnalytics, graphFunc, salesAnalytics } from '../functions/analyticsFunc';
 import { extractId } from '../functions/security/jwtToken';
 import { checkServiceAccess } from '../functions/utils/packages';
 
@@ -69,16 +69,6 @@ const analyticsRoute = new Elysia()
 
     return await graphFunc({
       userId, shopId
-    })
-  })
-
-  .get("/debts", async ({ jwt, cookie,  }) => {
-    const { userId, shopId } = await extractId({ jwt, cookie });
-    if (!shopId || !userId) return;
-
-
-    return await debtsFunc({
-      shopId, userId
     })
   })
   

@@ -29,8 +29,8 @@ export const DebtComponent = component$(() => {
     <>
       <div class="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
         {/* Summary */}
-        <div class="bg-white rounded-xl shadow p-4 md:p-6 text-gray-800">
-        <h2 class="text-lg md:text-2xl font-bold mb-3">📊 Muhtasari wa Madeni</h2>
+        <div class="bg-gray-50 rounded-xl shadow p-4 md:p-6 text-gray-800 border border-yellow-700 mb-4">
+        <h2 class="text-lg md:text-2xl font-bold mb-3 text-gray-600">📊 Muhtasari wa Madeni</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm md:text-base">
             <div class="bg-teal-100 p-3 rounded-xl">💰 Jumla ya Madeni: <strong>12,000 TZS</strong></div>
             <div class="bg-yellow-100 p-3 rounded-xl">👥 Wateja Wenye Madeni: <strong>1</strong></div>
@@ -39,19 +39,9 @@ export const DebtComponent = component$(() => {
         </div>
         </div>
 
-        {/* Analytics */}
-        <div class="bg-white rounded-xl shadow p-4 md:p-6 text-gray-800">
-          <h2 class="text-lg md:text-2xl font-bold mb-3">📈 Takwimu Muhimu</h2>
-          <div class="grid gap-3 text-sm md:text-base md:grid-cols-3">
-            <div class="bg-orange-50 rounded p-3">🔥 Wateja Wanaodaiwa Zaidi: <strong>John Doe</strong> (12,000 TZS)</div>
-            <div class="bg-purple-50 rounded p-3">🕰️ Madeni ya Muda Mrefu: <strong>John Doe</strong> (Tangu 2025-03-01)</div>
-            <div class="bg-indigo-50 rounded p-3">🔁 Wateja Wanaorudia Mara Kwa Mara: <strong>John Doe</strong></div>
-          </div>
-        </div>
-
         {/* Debt Cards */}
-        <div>
-          <h2 class="text-2xl md:text-3xl font-bold mb-4 text-teal-700">📒 Madeni ya Wateja</h2>
+        <div class="mt-20">
+          <h2 class="text-2xl md:text-2xl font-bold mb-4  text-teal-700">📒 Madeni ya Wateja</h2>
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
             {dummyDebts.map((debt) => {
               const remaining = debt.total - debt.paid;

@@ -436,3 +436,26 @@ export const authToken = t.Object({
         }
     })
 })
+
+export const debtQuery = t.Object({
+    page: t.Number({
+        maximum: 10000,
+        minimum: 0,
+        error() {
+            return {
+                success: false,
+                message: "Ukurasa hauwezi kuwa chini ya 0 au juu ya 10,000"
+            }
+        }
+    }),
+    pageSize: t.Number({
+        maximum: 10000,
+        minimum: 1,
+        error() {
+            return {
+                success: false,
+                message: "Ukubwa wa ukurasa hauwezi kuwa chini ya 1 au juu ya 10,000"
+            }
+        }
+    }),
+})
