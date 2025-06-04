@@ -26,8 +26,9 @@ interface DebtPaymentHistory {
 }
 
 // Combined query with pagination
-export async function debtFunc ({ shopId, userId, query }: { shopId: string, userId: string, query: { page: number, pageSize: number } }) {
-    const { page, pageSize } = query;
+export async function debtFunc ({ shopId, userId, query }: { shopId: string, userId: string, query: { page: number, pageSize: number } }): Promise<{ success: boolean, data?: unknown, message: string }> {
+    try {
+            const { page, pageSize } = query;
     console.log("query", query);
   // First get the statistical data
   const [stats] = await mainDb.select({
@@ -74,15 +75,25 @@ const paymentHistory = await mainDb.select({
 
 
   return {
-    statistics: stats as DebtStatistics,
-    customerDebts: customerDebts as CustomerDebt[],
-    recentPayments: paymentHistory as DebtPaymentHistory[],
-    pagination: {
-      currentPage: page,
-      pageSize,
-      totalCount: await getTotalDebtersCount(shopId)
-    }
+    success: true,
+    data: [{
+        statistics: stats as DebtStatistics,
+        customerDebts: customerDebts as CustomerDebt[],
+        recentPayments: paymentHistory as DebtPaymentHistory[],
+        pagination: {
+        currentPage: page,
+        pageSize,
+        totalCount: await getTotalDebtersCount(shopId)
+        }
+    }],
+    message: "Madeni ya wateja yamepatikana kwa mafanikio."
   };
+    } catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : "Seva imeshindwa."
+        }
+    }
 }
 
 // Helper function to get total count (for proper pagination)

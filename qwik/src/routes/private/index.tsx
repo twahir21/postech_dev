@@ -10,7 +10,7 @@ import { ExpensesComponent } from "~/components/Expenses";
 import { SuppCrudComponent } from "~/components/Supp";
 import { SettingsComponent } from "~/components/Settings";
 import { MainGraph } from "~/components/reports/MainGraph";
-import { OthersComponent } from "~/components/Others";
+// import { OthersComponent } from "~/components/Others";
 import { CrudService } from "../api/base/oop";
 import { useAuthLoader } from "../layout";
 import { AskedProducts } from "~/components/Asked";
@@ -128,7 +128,7 @@ export default component$(() => {
             { name: "Nyumbani", emoji: "🏠" },
             { name: "Anza hapa", emoji: "🚀" },
             { name: "Mauzo", emoji: "💰" },
-            { name: "Mengineyo", emoji: "🧿" },
+            // { name: "Mengineyo", emoji: "🧿" },
             { name: "Madeni", emoji: "💳" },
             { name: "Matumizi", emoji: "💸" },
             { name: "Ripoti", emoji: "📉" },
@@ -237,7 +237,7 @@ export default component$(() => {
           {store.currentPage === "Nyumbani" && <HomeComponent />}
           {store.currentPage === "Anza hapa" &&  <ProductComponent />}
           {store.currentPage === "Mauzo" && <SalesComponent />}
-          {store.currentPage === "Mengineyo" && <OthersComponent />}
+          {/* {store.currentPage === "Mengineyo" && <OthersComponent />} */}
           {store.currentPage === "Madeni" && <DebtComponent />}
           {store.currentPage === "Matumizi" && <ExpensesComponent />}
           {store.currentPage === "Ripoti" && <MainGraph />}

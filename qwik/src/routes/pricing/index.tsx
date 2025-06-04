@@ -44,7 +44,6 @@ export default component$(() => {
           <li>✔ Ripoti za kila siku na wiki</li>
           <li>✔ Kutunza Kumbukumbu miezi 3</li>
           <li>✔ Kujua bidhaa inayoulizwa sana</li>
-          <li>✔ Usajili wa mfanyakazi 1</li>
           <li>✔ Mpaka aina za bidhaa 300</li>
           <li>✔ Kufanya matunzo ya taarifa za mauzo kwenye simu (CSV backup)</li>
 
@@ -64,7 +63,7 @@ export default component$(() => {
         <p class="text-2xl font-bold mt-4">Tsh 30,000/= <span class="text-sm text-gray-500">kwa mwezi</span></p>
         <ul class="mt-4 space-y-2 text-sm">
           <li>⭐ Kifurushi cha myPosTech Lite </li>
-          <li>✔ Usimamizi wa wafanyakazi wote</li>
+          <li>✔ Usimamizi na usajili wa wafanyakazi wote</li>
           <li>✔ Taarifa za hisa (stock) na bidhaa zinazouzwa zaidi</li>
           <li>✔ Ripoti za kila siku, wiki, mwezi</li>
           <li>✔ Kujua bidhaa zilizo-expire</li>
