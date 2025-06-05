@@ -3,6 +3,7 @@ import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './ui/Toast';
 import type { CustomerDebt, DataItemDebts, RecentPayment } from '~/routes/api/types/debTypes';
 import { formatDateTime, formatMoney } from '~/routes/function/helpers';
+import { Popup } from './ui/Popup';
 
 export const DebtComponent = component$(() => {
   // const dummyDebts = [
@@ -86,7 +87,7 @@ export const DebtComponent = component$(() => {
               return (
                 <div
                   key={index}
-                  class="bg-white rounded-2xl shadow-md p-4 md:p-6 flex flex-col gap-3 border border-gray-200 hover:shadow-lg transition"
+                  class="bg-white relative rounded-2xl shadow-md p-4 md:p-6 flex flex-col gap-3 border border-gray-200 hover:shadow-lg transition"
                 >
                   <div class="flex justify-between items-center">
                     <h3 class="font-semibold text-lg md:text-xl text-gray-800">{debt.name}</h3>
@@ -113,9 +114,8 @@ export const DebtComponent = component$(() => {
                     </details>
                   )}
 
-                  <button class="mt-3 text-sm md:text-base bg-teal-600 hover:bg-teal-700 text-white py-1.5 px-4 rounded-md self-start">
-                    Ongeza Malipo
-                  </button>
+                  {/* FIRE THE POPUP FORM  */}
+                  <Popup />
                 </div>
               );
             })}
