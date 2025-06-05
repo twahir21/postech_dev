@@ -11,6 +11,7 @@ export interface CustomerDebt {
   totalDebt: string;          // String representation of a number
   remainingAmount: string;    // String representation of a number
   lastPaymentDate: null | string; // ISO date string or null
+  createdAt: null | string;
 }
 
 export interface RecentPayment {

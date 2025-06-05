@@ -45,6 +45,7 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
     totalDebt: debts.totalAmount,
     remainingAmount: debts.remainingAmount,
     lastPaymentDate: debts.lastPaymentDate,
+    createdAt: debts.createdAt
   })
     .from(debts)
     .innerJoin(customers, eq(debts.customerId, customers.id))

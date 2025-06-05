@@ -412,6 +412,10 @@ export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, h
         } else {
           await mainDb.insert(debts).values({
             customerId,
+            productId,
+            quantity,
+            priceSold: formatFloatToFixed(priceSold),
+            totalSales: formatFloatToFixed(calculatedTotal),
             totalAmount: formatFloatToFixed(calculatedTotal),
             remainingAmount: formatFloatToFixed(calculatedTotal),
             shopId,

@@ -174,9 +174,13 @@ import {
   // -----------------
   export const debts = pgTable("debts", {
     id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id").notNull().references(() => products.id, {onDelete: "cascade"}),
     customerId: uuid("customer_id").notNull().references(() => customers.id, { onDelete: "cascade" }),
     totalAmount: decimal("total_amount", { precision: 15, scale: 2}).notNull(),
+    quantity: doublePrecision("quantity").notNull().default(0), // Amount added to stock
     remainingAmount: decimal("remaining_amount", { precision: 15, scale: 2}).notNull(),
+    priceSold: decimal("price_sold", { precision: 15, scale: 2}).notNull(), // is string but store up to 999 trillion and support USD dollar
+    totalSales: decimal("total_sales", { precision: 15, scale: 2}).notNull(),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     lastPaymentDate: timestamp("last_payment_date"),
     createdAt: timestamp("created_at").defaultNow(),
@@ -201,7 +205,7 @@ import {
   // -----------------
   export const customers = pgTable("customers", {
     id: uuid("id").defaultRandom().primaryKey(),
-    name: text("name").notNull(),
+    name: text("name").notNull().unique(),
     shopId: uuid("shop_id").notNull().references(() => shops.id), // NEW: Links product to a shop
     contact: text("contact").notNull(), // index via this
     // total_debt and longest_debt are calculated via queries (aggregated), so they are not stored here

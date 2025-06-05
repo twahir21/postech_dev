@@ -85,7 +85,7 @@ export function formatDateTime(input: string): string {
 
   // Validate the date
   if (isNaN(date.getTime())) {
-    return 'Invalid Date';
+    return 'Hakuna';
   }
 
   const day = String(date.getUTCDate()).padStart(2, '0');
@@ -96,4 +96,19 @@ export function formatDateTime(input: string): string {
   const seconds = String(date.getUTCSeconds()).padStart(2, '0');
 
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
+export function formatDateOnly(input: string): string {
+  const date = new Date(input);
+
+  // Validate the date
+  if (isNaN(date.getTime())) {
+    return 'Hakuna';
+  }
+
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // UTC month (0–11)
+  const year = date.getUTCFullYear();
+
+  return `${day}/${month}/${year}`;
 }

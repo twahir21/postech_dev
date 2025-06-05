@@ -1,0 +1,1 @@
+ALTER TABLE "debts" ADD COLUMN "total_sales" numeric(15, 2) NOT NULL;
