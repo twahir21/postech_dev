@@ -4,6 +4,7 @@ import { Toast } from './ui/Toast';
 import type { CustomerDebt, DataItemDebts, RecentPayment } from '~/routes/api/types/debTypes';
 import { formatDateOnly, formatDateTime, formatMoney } from '~/routes/function/helpers';
 import { Popup } from './ui/Popup';
+import { Receipt } from './ui/Receipt';
 
 export const DebtComponent = component$(() => {
   // const dummyDebts = [
@@ -54,8 +55,6 @@ export const DebtComponent = component$(() => {
       modal.isSuccess = false;
       return;
     }
-
-    console.log("Debt results:", debtResults.data);
 
     // store total debts
     modal.allDebts = formatMoney(Number(debtResults.data[0].statistics.totalDebts))
@@ -108,12 +107,12 @@ const groupedDebts = Object.values(
         {/* Debt Cards */}
         <div class="mt-20">
           <h2 class="text-2xl md:text-2xl font-bold mb-4  text-teal-700">📒 Madeni ya Wateja</h2>
-          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+          <div class="grid gap-y-6 gap-x-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
             {groupedDebts.length > 0 ? groupedDebts.map((debt, index) => {
               return (
                 <div
                   key={index}
-                  class="bg-white relative rounded-2xl shadow-md p-4 md:p-6 flex flex-col gap-3 border border-gray-200 hover:shadow-lg transition"
+                  class="bg-white relative rounded-2xl shadow-md p-5 md:p-8 flex flex-col gap-4 border border-gray-200 hover:shadow-lg transition"
                 >
                   <div class="flex justify-between items-center">
                     <h3 class="font-semibold text-lg md:text-xl text-gray-800">{debt.name}</h3>
@@ -129,7 +128,7 @@ const groupedDebts = Object.values(
 
                   {modal.arrData.recentPayments.length > 0 && (
                     <details class="mt-2 text-sm md:text-base">
-                      <summary class="cursor-pointer text-blue-600 hover:underline">📜 Angalia Historia</summary>
+                      <summary class="cursor-pointer text-blue-600 hover:underline">📜 Angalia Malipo</summary>
                       {/* <ul class="ml-4 mt-1 list-disc text-gray-700">
                         {debt.lastPaymentDate!.map((h, i) => (
                           <li key={i}>
@@ -142,6 +141,8 @@ const groupedDebts = Object.values(
 
                   {/* FIRE THE POPUP FORM  */}
                   <Popup />
+
+                  <Receipt />
                 </div>
               );
               }) : (

@@ -20,7 +20,6 @@ export const Graph = component$(() => {
 
     // Cleanup old chart if reloaded
     if ((canvas as any)._chartInstance) {
-      console.log("♻️ Destroying old chart instance");
       (canvas as any)._chartInstance.destroy();
     }
 

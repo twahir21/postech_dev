@@ -49,7 +49,6 @@ export const Popup = component$(() => {
           <form
             preventdefault:submit
             onSubmit$={() => {
-              console.log('Amount paid:', state.amountPaid);
               state.showPopup = false;
             }}
             class="flex flex-col gap-4"

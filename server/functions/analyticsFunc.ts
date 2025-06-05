@@ -183,7 +183,6 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
             return sum + Number(item.totalcost || 0);
         }, 0);
 
-        console.log(totalPurchasesFromProducts, profitPerProduct)
 
         // --- Total Expenses (can be fetched separately or combined if daily summaries are not needed) ---
         // For simplicity and distinctness, keeping this separate if it's a single aggregate.

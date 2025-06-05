@@ -28,8 +28,7 @@ interface DebtPaymentHistory {
 // Combined query with pagination
 export async function debtFunc ({ shopId, userId, query }: { shopId: string, userId: string, query: { page: number, pageSize: number } }): Promise<{ success: boolean, data?: unknown, message: string }> {
     try {
-            const { page, pageSize } = query;
-    console.log("query", query);
+    const { page, pageSize } = query;
   // First get the statistical data
   const [stats] = await mainDb.select({
     totalDebts: sql<number>`SUM(${debts.totalAmount})`,

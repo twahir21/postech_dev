@@ -21,7 +21,6 @@ export const MainGraph =  component$(() => {
       totalStock: item.totalStock
     }));
 
-    console.log("Graph data loaded successfully:", result.data[0]);
   });
 
   return (

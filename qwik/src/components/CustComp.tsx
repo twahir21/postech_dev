@@ -60,7 +60,7 @@ export const CustomersCrudComponent =  component$(() => {
   
   const deleteCustomers = $(async (customerId: string) => {
     try {
-      const delAPI = new CrudService(`${customerId}`);
+      const delAPI = new CrudService(`customers/${customerId}`);
       const isDeleted = await delAPI.deleteAll();
       if (!isDeleted.success) {
         store.modal = {
@@ -69,6 +69,12 @@ export const CustomersCrudComponent =  component$(() => {
           message: isDeleted.message || "Imeshindwa kufuta taarifa"
         }
         return;
+      }
+
+      store.modal = {
+        isOpen: true,
+        isSuccess: true,
+        message: isDeleted.message || "Imefanikiwa kufuta mteja"
       }
   
       // If deletion is successful, remove the customer from the list
@@ -280,8 +286,8 @@ export const CustomersCrudComponent =  component$(() => {
 {isDeleting.value && (
   <div class="fixed inset-0 flex items-center justify-center z-10 bg-gray-600 bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-      <h2 class="text-lg font-semibold">Confirm Deletion</h2>
-      <p class="mt-2 text-sm">Are you sure you want to delete this customer?</p>
+      <h2 class="text-lg font-semibold">Hakiki Ufutaji ... </h2>
+      <p class="mt-2 text-sm">Je, unataka kumfuta mteja huyu ?</p>
       <div class="mt-4 flex gap-2">
         <button
           class="px-4 py-2 bg-red-500 text-white rounded"

@@ -169,7 +169,6 @@ const handleSubmit = $(async () => {
     calculatedTotal: state.calculatedTotal,
   };
 
-  console.log("Data: ", requestData, state.query.bei)
 
         interface sendData {
         id?: string;
