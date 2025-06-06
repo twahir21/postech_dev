@@ -7,19 +7,30 @@ import {
 } from '@builder.io/qwik';
 import { CrudService } from '~/routes/api/base/oop';
 import { formatDateTime, formatMoney } from '~/routes/function/helpers';
+import { Trash2Icon } from 'lucide-qwik';
+import { Toast } from './ui/Toast';
 
 export const ExpensesComponent = component$(() => {
+
   const totalExpenses = useSignal('0');
   const page = useSignal(1);
+  const isDeleting = useSignal(false);
+  const selectedExp = useSignal('');
   const perPage = 6;
   const state = useStore({
-    items: [] as { description: string; amount: number; date: string }[],
+    items: [] as { description: string; amount: number; date: string; id:string }[],
     totalPages: 1,
   });
 
+  const modal = useStore({
+    isOpen: false,
+    isSuccess: false,
+    message: ''
+  })
+
   interface ExpensesApiResponse {
     id?: string;
-    items: { description: string; amount: number; date: string }[];
+    items: { description: string; amount: number; date: string; id: string }[];
     totalAmount: string;
     totalPages: number;
   }
@@ -35,6 +46,20 @@ export const ExpensesComponent = component$(() => {
       state.totalPages = totalPages;
     }
   });
+
+  const deleteExpenses = $(async (id: string) => {
+    const newDelApi = new CrudService("expenses");
+    const delRes = await newDelApi.delete(id);
+
+    modal.isOpen = true;
+    modal.isSuccess = delRes.success;
+    modal.message  = delRes.message || (delRes.success ? "umefanikiwa kufuta" : "imeshindwa kufuta");
+
+    isDeleting.value = false; // close the popup
+    fetchExpenses(); // refetch again
+
+  });
+  
 
   useVisibleTask$(() => {
     fetchExpenses();
@@ -71,7 +96,9 @@ export const ExpensesComponent = component$(() => {
                     {formatMoney(Number(expense.amount))} TZS
                   </span>
                 </p>
-                <p>📝 Maelezo: {expense.description}</p>
+                <p class="flex justify-between">📝 Maelezo: {expense.description}
+                   <span class="cursor-pointer" onClick$={() => { isDeleting.value = true; selectedExp.value = expense.id }}> <Trash2Icon /> </span>
+                </p>
               </div>
             </div>
           ))}
@@ -109,6 +136,44 @@ export const ExpensesComponent = component$(() => {
             Mbele ➡️
           </button>
         </div>
+
+        {isDeleting.value && (
+          <div class="fixed inset-0 flex items-center justify-center z-10 bg-gray-600 bg-opacity-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+              <h2 class="text-lg font-semibold">Hakiki Ufutaji</h2>
+              <p class="mt-2 text-sm">Je, unataka kufuta matumizi haya?</p>
+              <div class="mt-4 flex gap-2">
+                <button
+                  class="px-4 py-2 bg-red-500 text-white rounded"
+                  onClick$={() => deleteExpenses(selectedExp.value)}
+                >
+                  Futa
+                </button>
+                <button
+                  class="px-4 py-2 bg-gray-300 text-black rounded"
+                  onClick$={() => {
+                    isDeleting.value = false;
+                    selectedExp.value = '';
+                  }}
+                >
+                  Ghairi
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal Popup */}
+        {modal.isOpen && (
+          <Toast
+            isOpen={modal.isOpen}
+            type={modal.isSuccess}
+            message={modal.message}
+            onClose$={$(() => {
+              modal.isOpen = false;
+            })}
+          />
+        )}
       </div>
     </div>
   );

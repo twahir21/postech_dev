@@ -45,6 +45,7 @@ export const expFunc = async ({ shopId, userId, page = 1, limit = 5 }: { shopId:
         description: expenses.description,
         amount: expenses.amount,
         date: expenses.date,
+        id: expenses.id
       })
       .from(expenses)
       .where(eq(expenses.shopId, shopId))
@@ -72,3 +73,23 @@ export const expFunc = async ({ shopId, userId, page = 1, limit = 5 }: { shopId:
     };
   }
 };
+
+export const delExp = async ({ shopId, userId, expenseId }: {shopId: string; userId: string; expenseId: string }): Promise<{ success: boolean; message: string }> => {
+  try {
+      // delete from the database
+      await mainDb.delete(expenses).where(eq(expenses.id, expenseId));
+
+      return {
+        success: true,
+        message: "Umefanikiwa kufuta taarifa"
+      }
+
+  } catch (error) {
+        return {
+      success: false,
+      message: error instanceof Error
+        ? error.message
+        : 'Hitilafu imetokea kwenye seva',
+    };
+  }
+}
