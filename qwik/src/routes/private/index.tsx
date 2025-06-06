@@ -114,7 +114,7 @@ export default component$(() => {
         </button>
         <span class="inline-flex items-center pl-1">
           <img 
-            src="/newLogo.png" 
+            src="/newLogo.webp" 
             alt="Profile" 
             class="w-10 h-10 rounded-full border-2 border-blue-600 ml-2" 
             width="70" 

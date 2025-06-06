@@ -32,14 +32,14 @@ export const Last = component$(() => {
         <div class="flex justify-center">
           {/* Mobile screenshot (visible only on small screens) */}
           <img
-            src="/mobile.png"
+            src="/mobile.webp"
             alt="Screenshot ya simu"
             class="block md:hidden rounded-xl shadow-md w-52"
             loading="lazy"
           />
           {/* Desktop screenshot (visible only on medium and up) */}
           <img
-            src="/desktop.png"
+            src="/desktop.webp"
             alt="Screenshot ya dashboard"
             class="hidden md:block rounded-xl shadow-md w-full max-w-md"
             loading="lazy"

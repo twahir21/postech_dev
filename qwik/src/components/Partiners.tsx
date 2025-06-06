@@ -18,13 +18,13 @@ export const Partiners = component$(() => {
 
   <h3 class="text-lg font-semibold mb-4 text-gray-700">Powered by:</h3>
   <div class="flex justify-center items-center gap-6 flex-wrap">
-    <img src="/clickpesa.jpeg" alt="clickPesa" class="h-8" />
-    <img src="/vercel.png" alt="Vercel" class="h-6" />
-    <img src="/elysia.png" alt="Elysia.js" class="h-6" />
-    <img src="/drizzle.png" alt="Drizzle ORM" class="h-6" />
+    <img src="/clickpesa.webp" alt="clickPesa" class="h-8" />
+    <img src="/vercel.webp" alt="Vercel" class="h-6" />
+    <img src="/elysia.webp" alt="Elysia.js" class="h-6" />
+    <img src="/drizzle.webp" alt="Drizzle ORM" class="h-6" />
     <img src="/bun.webp" alt="Bun" class="h-6" />
     <img src="/vite.svg" alt="Vite" class="h-6" />
-    <img src="/qwik.png" alt="Qwik" class="h-6" />
+    <img src="/qwik.webp" alt="Qwik" class="h-6" />
   </div>
 
   <div class="mt-12 animate-pulse text-xl font-semibold text-gray-700">

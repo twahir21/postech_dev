@@ -27,3 +27,13 @@
 
 // installing fira code font for better experience
 // use sudo apt install fonts-firacode then in settings under fonts use 'Fira Code' and restart vscode
+// * Simplify life with Qwik extension like q-component (takes name of file) and qwik href for file navigation
+// * and q-component-with-child, q-store, q-signal and others
+// * event listerners like q-onclick q-onblur and so on
+// * use q-$-hook to wrap function in $() => {}
+
+// ! elysia is also out
+// * use elycrud for creating crud api in elysia
+
+// ! drizzle
+// * add shortland for better experience

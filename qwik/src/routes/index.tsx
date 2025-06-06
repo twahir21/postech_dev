@@ -251,20 +251,22 @@ export default component$(() => {
 
     {/* Right side - image */}
     <div class="w-full md:w-1/2">
-      {/* Small screens: hero.png */}
+      {/* Small screens: hero.webp */}
       <img
-        src="/hero.png"
+        src="/hero.webp"
         alt="myPosTech mobile hero"
-        class="w-ful max-w-sm mx-auto drop-shadow-xl rounded-xl block md:hidden"
-        loading="lazy"
+        class="w-full aspect-auto max-w-sm mx-auto drop-shadow-xl rounded-xl block md:hidden"
+        loading="eager"
+        decoding="async"
       />
       
-      {/* Desktop: hero-big.png */}
+      {/* Desktop: hero-big.webp */}
       <img
         src="/hero-big.webp"
         alt="myPosTech desktop hero"
-        class="w-full max-w-sm mx-auto drop-shadow-xl rounded-xl hidden md:block"
-        loading="lazy"
+        class="w-full max-w-sm aspect-auto mx-auto drop-shadow-xl rounded-xl hidden md:block"
+        loading="eager"
+        decoding="async"
       />
     </div>
 
@@ -274,10 +276,11 @@ export default component$(() => {
         <section id="about" class="flex items-center min-h-screen px-6 mx-auto bg-gray-200 dark:bg-gray-600">
           <div class="hidden md:block w-1/2">
             <img
-              src="/gpt.png"
+              src="/about.webp"
               alt="About myPosTech Visual"
-              class="w-full max-w-sm mx-auto drop-shadow-xl rounded-full"
+              class="w-full aspect-auto max-w-sm mx-auto drop-shadow-xl rounded-full"
               loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -441,7 +444,7 @@ export const head: DocumentHead = {
                     "@type": "Organization",
                     "name": "myPosTech",
                     "url": "https://mypostech.store",
-                    "logo": "https://mypostech.store/newLogo.png"
+                    "logo": "https://mypostech.store/newLogo.webp"
                   },
                   {
                     "@type": "LocalBusiness",

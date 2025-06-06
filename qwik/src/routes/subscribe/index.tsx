@@ -95,7 +95,7 @@ return (
                       class="h-5 w-5 text-green-600 focus:ring-green-500"
                     />
                     <img 
-                      src={`/${method === 'tigopesa' ? 'yas.png' : 'airtel.jpg'}`} 
+                      src={`/${method === 'tigopesa' ? 'yas.webp' : 'airtel.webp'}`} 
                       alt={method === 'tigopesa' ? 'Tigo Pesa' : 'Airtel Money'} 
                       class={`w-23 h-auto ${method === 'tigopesa' ? '' : 'w-20'} rounded-full`}
                     />
