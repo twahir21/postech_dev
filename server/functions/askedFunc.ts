@@ -5,10 +5,19 @@ import { sanitizeString } from "./security/xss";
 
 export const askedFunc = async ({ shopId, userId }: { shopId: string; userId: string }): Promise<{ success: boolean; message: string; data?: unknown}> => {
     try {
+        const data = await mainDb.select({ name: askedProducts.productName, count: askedProducts.quantityRequested }).from(askedProducts).where(eq(askedProducts.shopId, shopId));
+
+        if (data.length === 0){
+            return {
+                success: false,
+                message: "hakuna chochote, tafadhali ongeza kwanza"
+            }
+        }
 
         return {
             success: true,
-            message: "Data fetched successfully"
+            message: "taarifa zimepatikana",
+            data: data
         };
     } catch (error) {
         return {
