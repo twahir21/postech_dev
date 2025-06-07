@@ -458,4 +458,17 @@ export const debtQuery = t.Object({
             }
         }
     }),
+});
+
+export const askedData = t.Object({
+    name: t.String({
+        minLength: 1,
+        maxLength: 50,
+        error () {
+            return {
+                success: false,
+                message: "Jina haliwezi kuwa chini ya herufi moja au juu ya herufi 50"
+            }
+        }
+    })
 })

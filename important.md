@@ -240,3 +240,5 @@ Dedicated Redis     PostgreSQL (w/ read replicas & optional sharding)
 1. Testing speed of each request and cache data for max speed using pure RAM usage.
 2. in production check storage, ram usage and CPU usage (very important)
 3. Optmize database for max performance
+
+# useResource runs when components mounts (fast)

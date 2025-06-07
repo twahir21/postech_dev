@@ -56,13 +56,13 @@ export const ExpensesComponent = component$(() => {
     modal.message  = delRes.message || (delRes.success ? "umefanikiwa kufuta" : "imeshindwa kufuta");
 
     isDeleting.value = false; // close the popup
-    fetchExpenses(); // refetch again
+    await fetchExpenses(); // refetch again
 
   });
   
 
-  useVisibleTask$(() => {
-    fetchExpenses();
+  useVisibleTask$(async () => {
+    await fetchExpenses();
   });
 
   return (

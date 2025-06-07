@@ -1,5 +1,7 @@
-import { $, component$, useContext, useSignal } from "@builder.io/qwik";
+import { $, component$, useContext, useSignal, useStore } from "@builder.io/qwik";
 import { subscriptionData } from "./context/store/netSales";
+import { CrudService } from "~/routes/api/base/oop";
+import { Toast } from "./ui/Toast";
 
 export const AskedProducts = component$(() => {
 
@@ -11,14 +13,39 @@ export const AskedProducts = component$(() => {
     { id: 3, name: "Unga", times: 3 },
   ]);
   const input = useSignal("");
+  const name = useStore({
+    id: '' as string,
+    name: '' as string
+  });
 
-  const addProduct = $(() => {
+  const modal = useStore({
+    isOpen: false,
+    isSuccess: false,
+    message: ''
+  })
+
+
+  const sendData = $(async () => {
+    const newApi = new CrudService<{ id?: string; name: string}>("asked");
+
+    const apiRes = await newApi.create(name);
+    
+    // fire a toast
+    modal.isOpen = true;
+    modal.isSuccess = apiRes.success;
+    modal.message = apiRes.message || (apiRes.success ? "umefanikiwa kuhifadhi" : "Imefeli kuhifadhi");
+
+  })
+
+  const addProduct = $(async () => {
     if (!input.value.trim()) return;
     products.value = [
       ...products.value,
       { id: Date.now(), name: input.value.trim(), times: 1 },
     ];
-    input.value = "";
+    name.name = input.value.trim();
+    input.value = ""; // clear it
+    await sendData();
   });
 
   const increment = $((id: number) => {
@@ -30,6 +57,7 @@ export const AskedProducts = component$(() => {
   const remove = $((id: number) => {
     products.value = products.value.filter((p) => p.id !== id);
   });
+
 
     if (subscription.value === "Msingi" ) {
     return (
@@ -116,6 +144,18 @@ export const AskedProducts = component$(() => {
             Mbele ➡️
           </button>
         </div>
+
+        {/* Modal Popup */}
+        {modal.isOpen && (
+          <Toast
+            isOpen={modal.isOpen}
+            type={modal.isSuccess}
+            message={modal.message}
+            onClose$={$(() => {
+              modal.isOpen = false;
+            })}
+          />
+        )}
     </div>
     </div>
   );
