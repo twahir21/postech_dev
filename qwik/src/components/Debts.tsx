@@ -1,10 +1,11 @@
-import { $, component$, useResource$, useStore } from '@builder.io/qwik';
+import { $, component$, useContext, useResource$, useStore } from '@builder.io/qwik';
 import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './ui/Toast';
 import type { CustomerDebt, DataItemDebts, RecentPayment } from '~/routes/api/types/debTypes';
 import { formatDateOnly, formatDateTime, formatMoney } from '~/routes/function/helpers';
 import { Popup } from './ui/Popup';
 import { Receipt } from './ui/Receipt';
+import { RefetchContext } from './context/refreshContext';
 
 export const DebtComponent = component$(() => {
   // const dummyDebts = [
@@ -43,11 +44,25 @@ export const DebtComponent = component$(() => {
     }
   });
 
+  const { debtRefetch } = useContext(RefetchContext);
+//   name
+// : 
+// "twahir"
+// paymentDate
+// : 
+// "2025-06-11 05:37:12.699485"
+// totalPaid
+// : 
+// "289999.00"
 
-  useResource$(async () => {
+
+  useResource$(async ({ track }) => {
+    track(() => debtRefetch.value);
     const newApi = new CrudService<DataItemDebts>("get-debts?page=1&pageSize=10");
 
     const debtResults = await newApi.get();
+
+    console.log("debts results: ", debtResults)
 
     if (!debtResults.success) {
       modal.isOpen = true;
@@ -62,8 +77,12 @@ export const DebtComponent = component$(() => {
 
     modal.arrData.DebtData = debtResults.data[0].customerDebts;
     modal.arrData.recentPayments = debtResults.data[0].recentPayments;
+
+    // reset trigger refetch
+    debtRefetch.value = false;
   });
 
+  
   // Combine debts for same customer
 const groupedDebts = Object.values(
   modal.arrData.DebtData.reduce((acc, debt) => {
@@ -129,18 +148,18 @@ const groupedDebts = Object.values(
                   {modal.arrData.recentPayments.length > 0 && (
                     <details class="mt-2 text-sm md:text-base">
                       <summary class="cursor-pointer text-blue-600 hover:underline">📜 Angalia Malipo</summary>
-                      {/* <ul class="ml-4 mt-1 list-disc text-gray-700">
-                        {debt.lastPaymentDate!.map((h, i) => (
+                      <ul class="ml-4 mt-1 list-disc text-gray-700">
+                        {modal.arrData.recentPayments!.map((h, i) => (
                           <li key={i}>
-                            {h.date}: {h.amount.toLocaleString()} TZS
+                            {h.paymentDate}: {h.totalPaid.toLocaleString()} TZS
                           </li>
                         ))}
-                      </ul> */}
+                      </ul>
                     </details>
                   )}
 
                   {/* FIRE THE POPUP FORM  */}
-                  <Popup />
+                  <Popup customerId={debt.customerId} debtId={debt.debtId} />
 
                   <Receipt />
                 </div>

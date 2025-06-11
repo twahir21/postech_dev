@@ -1,8 +1,9 @@
-import { $, component$, useStore } from '@builder.io/qwik';
+import { $, component$, useContext, useStore } from '@builder.io/qwik';
 import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './Toast';
+import { RefetchContext } from '../context/refreshContext';
 
-export const Popup = component$(() => {
+export const Popup = component$(({ customerId, debtId }: { customerId: string; debtId: string }) => {
   const state = useStore({
     showPopup: false,
     amountPaid: '',
@@ -14,14 +15,19 @@ export const Popup = component$(() => {
     message: ''
   });
 
-  const sendData = $(async () => {
-    const newAPi = new CrudService<{ id?: string; amountPaid: number }>("pay-debt");
+  const { debtRefetch } = useContext(RefetchContext);
 
-    const res = await newAPi.create({ amountPaid: Number(state.amountPaid) });
+  const sendData = $(async () => {
+    const newAPi = new CrudService<{ id?: string; amountPaid: number, customerId: string; debtId: string }>("pay-debt");
+
+    const res = await newAPi.create({ amountPaid: Number(state.amountPaid), customerId, debtId });
     
     modal.isOpen = true;
     modal.isSuccess = res.success;
     modal.message = res.message || (res.success ? "Imefanikiwa" : "Imeshindwa kubadili taarifa");
+
+    // trigger refetch
+    debtRefetch.value = true;
   });
 
   return (

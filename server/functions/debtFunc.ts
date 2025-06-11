@@ -1,6 +1,8 @@
 import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { customers, debtPayments, debts } from "../database/schema/shop";
+import { sanitizeNumber } from "./security/xss";
+import Decimal from "decimal.js";
 
 // Define types for better TypeScript safety
 interface DebtStatistics {
@@ -39,6 +41,7 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
 
   // Get paginated customer debts (sorted by highest remaining debt)
   const customerDebts = await mainDb.select({
+    debtId: debts.id,
     customerId: debts.customerId,
     name: customers.name,
     totalDebt: debts.totalAmount,
@@ -104,11 +107,40 @@ async function getTotalDebtersCount(shopId: string) {
   return result.count;
 }
 
-export const payDebt = async ({ shopId, userId, body }: { shopId: string; userId: string; body: { amountPaid: number } }): Promise<{ success: boolean, data?: unknown, message: string }> => {
+export const payDebt = async ({ shopId, userId, body }: { shopId: string; userId: string; body: { amountPaid: number, customerId: string, debtId: string } }): Promise<{ success: boolean, data?: unknown, message: string }> => {
   try {
-    
-  const { amountPaid } = body;
-  console.log(amountPaid);
+    let { amountPaid, customerId, debtId } = body;
+
+    amountPaid = sanitizeNumber(amountPaid);
+
+    await mainDb.insert(debtPayments).values({
+      customerId,
+      amountPaid: amountPaid.toString().trim(),
+      debtId,
+      shopId
+    });
+
+    // get remaining amount
+    const [remainingAmount] = await mainDb.select({
+      remainingAmount: debts.remainingAmount
+    }).from(debts).where(and(
+      eq(debts.id, debtId),
+      eq(debts.shopId, shopId)
+    ));
+
+    console.log(remainingAmount.remainingAmount, typeof remainingAmount.remainingAmount);
+    const newAmount = new Decimal(remainingAmount.remainingAmount)
+        .minus(amountPaid)
+        .toFixed(2); // keeps it as string with 2 decimal places
+
+    // update 
+    await mainDb.update(debts).set({
+      remainingAmount: newAmount.toString(), 
+      lastPaymentDate: new Date(Date.now()),
+    }).where(and(
+      eq(debts.id, debtId),
+      eq(debts.shopId, shopId)
+    ));
 
     return {
       success: true,

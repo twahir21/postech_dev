@@ -496,5 +496,25 @@ export const payDebtData = t.Object({
                 message: "Hesabu haliwezi kuwa chini 0 au juu ya trillioni 100"
             }
         }
+    }),
+    customerId: t.String({
+        minLength: 1,
+        maxLength: 50,
+        error () {
+            return {
+                success: false,
+                message: "ID ya wateja haiwezi kuwa chini ya herufi moja au juu ya herufi 50"
+            }
+        }
+    }),
+    debtId: t.String({
+        minLength: 1,
+        maxLength: 50,
+        error () {
+            return {
+                success: false,
+                message: "ID ya taarifa za deni haiwezi kuwa chini ya herufi moja au juu ya herufi 50"
+            }
+        }
     })
 })

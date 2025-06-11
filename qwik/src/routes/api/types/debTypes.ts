@@ -6,6 +6,7 @@ interface Statistics {
 }
 
 export interface CustomerDebt {
+  debtId: string;
   customerId: string;
   name: string;
   totalDebt: string;          // String representation of a number
@@ -15,11 +16,9 @@ export interface CustomerDebt {
 }
 
 export interface RecentPayment {
-  // Define this if recentPayments have structure
-  // Example:
-  // paymentId: string;
-  // amountPaid: string;
-  // paymentDate: string;
+  name: string;
+  totalPaid: string;
+  paymentDate: string;
 }
 
 interface Pagination {

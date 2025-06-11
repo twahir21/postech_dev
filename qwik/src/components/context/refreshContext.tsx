@@ -10,6 +10,7 @@ export interface RefetchFlags {
   supplierRefetch: Signal<boolean>;
   categoryRefetch: Signal<boolean>;
   refetchAnalytics: Signal<boolean>;
+  debtRefetch: Signal<boolean>;
 
   // Add more flags as needed
 }
