@@ -1,13 +1,11 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 // LOAD CORRECT DB
-
-const pool = new Pool({
-  connectionString: process.env.NODE_ENV === 'development'
+const connectionString = process.env.NODE_ENV === 'development'
                       ? process.env.POSTGRES_URL_LOCAL!
                       : process.env.POSTGRES_URL_LOCAL!
-})
 
-export const mainDb = drizzle({ client: pool })
+const queryClient = postgres(connectionString);
+export const mainDb = drizzle(queryClient);

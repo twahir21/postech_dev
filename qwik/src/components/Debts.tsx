@@ -112,7 +112,7 @@ const groupedDebts = Object.values(
               return (
                 <div
                   key={index}
-                  class="bg-white relative rounded-2xl shadow-md p-5 md:p-8 flex flex-col gap-4 border border-gray-200 hover:shadow-lg transition"
+                  class="bg-white relative rounded-2xl shadow-md p-5 md:p-8 flex flex-col gap-4 border border-gray-200 hover:shadow-lg transition self-start"
                 >
                   <div class="flex justify-between items-center">
                     <h3 class="font-semibold text-lg md:text-xl text-gray-800">{debt.name}</h3>

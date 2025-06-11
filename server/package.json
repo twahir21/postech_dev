@@ -13,7 +13,6 @@
     "builder": "bun install && bun run clean && bun build index.ts --outfile build/server --target bun --minify-whitespace --minify-syntax --sourcemap"
   },
   "devDependencies": {
-    "@types/pg": "^8.15.2",
     "depcheck": "^1.4.7",
     "drizzle-kit": "^0.31.1"
   },
@@ -38,7 +37,7 @@
     "lru-cache": "^11.0.2",
     "nodemailer": "^6.10.0",
     "pdf-lib": "^1.17.1",
-    "pg": "^8.16.0",
+    "postgres": "^3.4.7",
     "qrcode": "^1.5.4",
     "sharp": "^0.33.5",
     "uuid": "^11.1.0",

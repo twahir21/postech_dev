@@ -22,8 +22,9 @@ export const AskedProducts = component$(() => {
     isOpen: false,
     isSuccess: false,
     message: ''
-  })
+  });
 
+  const fetched = useSignal <{id?: string; name: string; count: number }[] | null>(null);
 
   const sendData = $(async () => {
     const newApi = new CrudService<{ id?: string; name: string}>("asked");
@@ -36,6 +37,53 @@ export const AskedProducts = component$(() => {
     modal.message = apiRes.message || (apiRes.success ? "umefanikiwa kuhifadhi" : "Imefeli kuhifadhi");
 
   })
+
+
+  const deleteData = $(async () => {
+    const newApi = new CrudService<{ id?: string; name: string}>("asked");
+
+    const apiRes = await newApi.delete();
+    
+    // fire a toast
+    modal.isOpen = true;
+    modal.isSuccess = apiRes.success;
+    modal.message = apiRes.message || (apiRes.success ? "umefanikiwa kufuta" : "Imefeli kufuta");
+
+  })
+
+  const updateData = $(async () => {
+    const newApi = new CrudService<{ id?: string; name: string}>("asked");
+
+    const apiRes = await newApi.update();
+    
+    // fire a toast
+    if(!apiRes.success) {
+      modal.isOpen = true;
+      modal.isSuccess = false;
+      modal.message = apiRes.message || "Imeshindwa kuongeza tarifa";
+      return
+    }
+  })
+
+  const fetchData = $(async () => {
+    const newApi = new CrudService<{id?: string; data: { id?: string; name: string; count: number }[]}>("asked");
+
+    const apiRes = await newApi.get();
+    
+    // fire a toast
+    if(!apiRes.success) {
+      modal.isOpen = true;
+      modal.isSuccess = false;
+      modal.message = apiRes.message || "Imeshindwa kuongeza tarifa";
+      return
+    }
+
+    fetched.value = apiRes.data[0].data
+
+    console.log("Feched: ", fetched.value)
+    
+  })
+
 
   const addProduct = $(async () => {
     if (!input.value.trim()) return;
@@ -113,7 +161,7 @@ export const AskedProducts = component$(() => {
               </div>
               <div class="flex gap-2">
                 <button
-                  onClick$={() => increment(product.id)}
+                  onClick$={async () => {increment(product.id); await fetchData()}}
                   class="bg-green-500 text-white px-2 py-1 text-sm rounded hover:bg-green-600"
                 >
                   ➕

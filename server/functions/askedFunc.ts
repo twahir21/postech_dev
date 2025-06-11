@@ -17,7 +17,7 @@ export const askedFunc = async ({ shopId, userId }: { shopId: string; userId: st
         return {
             success: true,
             message: "taarifa zimepatikana",
-            data: data
+            data: [{ data }]
         };
     } catch (error) {
         return {
@@ -64,4 +64,41 @@ export const askedFuncPost = async ({ shopId, userId, body }: { shopId: string; 
                 : "Tatizo limetokea wakati wa kutuma data"
         };
     }
+}
+
+export const deleteAsked = async({ userId, shopId, id }: { userId: string; shopId: string; id: string }): Promise<{ success: boolean; message: string }> => {
+    try {
+        await mainDb.delete(askedProducts).where(eq(askedProducts.id, id))
+        return {
+            success: true,
+            message: "Umefanikiwa kufuta taarifa"
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error
+                ? error.message
+                : "Tatizo limetokea wakati wa kutuma data"  
+            }
+    };
+}
+
+export const updateAsked = async({ userId, shopId, id, body }: { userId: string; shopId: string; id: string; body: { count: number } }): Promise<{ success: boolean; message: string }> => {
+    try {
+        await mainDb.update(askedProducts).set({
+            quantityRequested: body.count
+        }).where(eq(askedProducts.id, id))
+
+        return {
+            success: true,
+            message: "Umefanikiwa ku-edit taarifa"
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error
+                ? error.message
+                : "Tatizo limetokea wakati wa kutuma data"  
+            }
+    };
 }

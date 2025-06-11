@@ -472,3 +472,29 @@ export const askedData = t.Object({
         }
     })
 })
+
+export const updatedAskedData = t.Object({
+    count: t.Number({
+        minimum: 0,
+        maximum: 50000,
+        error () {
+            return {
+                success: false,
+                message: "Hesabu haliwezi kuwa chini 0 au juu ya 50,000"
+            }
+        }
+    })
+})
+
+export const payDebtData = t.Object({
+    amountPaid: t.Number({
+        minimum: 0,
+        maximum: 999999999999.99,
+        error () {
+            return {
+                success: false,
+                message: "Hesabu haliwezi kuwa chini 0 au juu ya trillioni 100"
+            }
+        }
+    })
+})

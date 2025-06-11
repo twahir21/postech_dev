@@ -168,7 +168,7 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
         ]);
 
         // Destructure combined results
-        const profitPerProduct = profitData.rows || [];
+        const profitPerProduct = profitData || [];
         const highestProfitProduct = profitPerProduct[0] || null;
 
         const totalProfitFromProducts = profitPerProduct.reduce((sum, item) => {
@@ -191,7 +191,7 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
             FROM expenses e
             WHERE e.shop_id = ${shopId}
         `);
-        const totalExpenses = Number(expenseResult.rows?.[0]?.totalexpenses || 0);
+        const totalExpenses = Number(expenseResult?.[0]?.totalexpenses || 0);
 
         const netProfit = {
             totalExpenses,
@@ -202,11 +202,11 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
 
         const lowestProduct = lowestStockProductResult[0] || null;
         const lowStockProducts = lowStockProductsResult || [];
-        const mostSoldProductByQuantity = mostSoldByQuantityProductResult.rows?.[0]
+        const mostSoldProductByQuantity = mostSoldByQuantityProductResult?.[0]
             ? {
-                ...mostSoldByQuantityProductResult.rows[0],
-                timesSold: Number(mostSoldByQuantityProductResult.rows[0].timessold || 0),
-                unit: mostSoldByQuantityProductResult.rows[0].unit || "kipimo"
+                ...mostSoldByQuantityProductResult[0],
+                timesSold: Number(mostSoldByQuantityProductResult[0].timessold || 0),
+                unit: mostSoldByQuantityProductResult[0].unit || "kipimo"
             }
             : null;
 
@@ -233,7 +233,7 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
         // Initialize map with all days to ensure consistent order and zero values
         weekDaysOrder.forEach(day => dailyDataMap.set(day, { sales: 0, expenses: 0, purchases: 0 }));
 
-        for (const row of weeklySummaryData.rows) {
+        for (const row of weeklySummaryData) {
             const day = row.day as string;
             if (dailyDataMap.has(day)) {
                 dailyDataMap.get(day)!.sales = Number(row.sales || 0);

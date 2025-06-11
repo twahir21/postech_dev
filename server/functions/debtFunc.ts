@@ -103,3 +103,21 @@ async function getTotalDebtersCount(shopId: string) {
   }).from(debts).where(eq(debts.shopId, shopId));
   return result.count;
 }
+
+export const payDebt = async ({ shopId, userId, body }: { shopId: string; userId: string; body: { amountPaid: number } }): Promise<{ success: boolean, data?: unknown, message: string }> => {
+  try {
+    
+  const { amountPaid } = body;
+  console.log(amountPaid);
+
+    return {
+      success: true,
+      message: "Taarifa zimebadilishwa kwa mafanikio"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Seva imeshindwa."
+    };
+  }
+};
