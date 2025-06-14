@@ -142,18 +142,18 @@ export const deleteShop = async ({ shopId, userId, cookie }: {userId: string, sh
         }
   
         //  get the concept of deleting shop
-        await mainDb.delete(products).where(eq(products.shopId, shopId));
-        await mainDb.delete(sales).where(eq(sales.shopId, shopId));
-        await mainDb.delete(debts).where(eq(debts.shopId, shopId));
-        await mainDb.delete(debtPayments).where(eq(debtPayments.shopId, shopId));
-        await mainDb.delete(purchases).where(eq(purchases.shopId, shopId));
-        await mainDb.delete(expenses).where(eq(expenses.shopId, shopId));
-        await mainDb.delete(returns).where(eq(returns.shopId, shopId));
-        await mainDb.delete(askedProducts).where(eq(askedProducts.shopId, shopId));
-        await mainDb.delete(supplierPriceHistory).where(eq(supplierPriceHistory.shopId, shopId));
-        await mainDb.delete(suppliers).where(eq(suppliers.shopId, shopId));
-        await mainDb.delete(customers).where(eq(customers.shopId, shopId));
-        await mainDb.delete(categories).where(eq(categories.shopId, shopId));
+        const tables = [
+          askedProducts, supplierPriceHistory, debtPayments, debts,
+          sales, purchases, returns, expenses, products,
+          suppliers, customers, categories,
+        ];
+
+        await mainDb.transaction(async (tx) => {
+          for (const table of tables) {
+            await tx.delete(table).where(eq(table.shopId, shopId));
+          }
+        });
+
         // await mainDb.delete(shopUsers).where(eq(shopUsers.shopId, shopId));
         // await mainDb.delete(shops).where(eq(shops.id, shopId));
         
@@ -180,16 +180,17 @@ export const deleteShop = async ({ shopId, userId, cookie }: {userId: string, sh
                   ? undefined: ".mypostech.store"  
           });
 
-          cookie.username.set({
-            value: "",
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'development' ? false : true,
-            sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
-            maxAge: 0,
-            path: '/',
-            domain: process.env.NODE_ENV === 'development' 
-                    ? undefined: ".mypostech.store"  
-            });
+        cookie.username.set({
+          value: "",
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'development' ? false : true,
+          sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
+          maxAge: 0,
+          path: '/',
+          domain: process.env.NODE_ENV === 'development' 
+                  ? undefined: ".mypostech.store"  
+        });
+
         return {
           success: true,
           message: "Umefanikiwa kufuta duka"
