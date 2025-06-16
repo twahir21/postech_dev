@@ -17,7 +17,7 @@ const steps: Step [] = [
   {
     emoji: '🗂️',
     title: '2. Tunza QR Code za bidhaa zako',
-    description: `Faili ulilopakuwa, nenda katoe QR Codes stationery (Ni mara moja tu mpaka bidhaa itakapobadilishwa bei) kisha chukua karatasi zenye QR Code hifadhi au ili weka sehemu rahisi kwa ajili ya matumizi kwa muuzaji. Inashauriwa kubandika QR kwenye bidhaa zinazohusika moja tu. Mfano: bandika QR code ya coca kwenye kreti la coca ili ukitaka kuuza coca unatumia ile ile QR Code moja. Kila QR Code ina jina la bidhaa zako.`,
+    description: `Faili ulilopakuwa linabeba QR Code zote, nenda katoe stationery (Ni mara moja tu mpaka bidhaa itakapobadilishwa bei) kisha chukua karatasi zenye QR Code hifadhi au ili weka sehemu rahisi kwa ajili ya matumizi kwa muuzaji. Inashauriwa kubandika QR kwenye bidhaa zinazohusika moja tu. Mfano: bandika QR code ya coca kwenye kreti la coca ili ukitaka kuuza coca unatumia ile ile QR Code moja. Kila QR Code ina jina la bidhaa zako.`,
   },{
     emoji: '📸',
     title: "3. Scan QR Code ukifanya mauzo, manunuzi, matumizi au kukopesha",

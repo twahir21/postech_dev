@@ -49,7 +49,8 @@ export const onGet: RequestHandler = async ({ url, cookie, request, redirect, er
   rateLimitMap.set(ip, record);
 
   // Auth logic
-  const isPrivate = url.pathname.startsWith("/private");
+  const isPrivate = url.pathname.startsWith("/private") ||
+                     url.pathname.startsWith("/scan-qrcode"); // for QR code selling ...
   
   if (isPrivate) {
     const token = cookie.get('auth_token')?.value;

@@ -217,7 +217,7 @@ export default component$(() => {
         </header>
 
         {/* HERO SECTION  */}
-        <section id="hero" class="flex flex-col-reverse md:flex-row items-center min-h-screen px-6 max-w-6xl mx-auto pt-20 gap-12">
+        <section id="hero" class="flex flex-col-reverse md:flex-row items-center min-h-screen px-6 max-w-6xl mx-auto pt-20 pb-12 md:pb-0 gap-12">
           {/* Left side - text */}
           <div class="w-full md:w-3/4">
             <h1 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">

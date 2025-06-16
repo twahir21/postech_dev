@@ -23,6 +23,7 @@ import { expensesPlugin } from "./plugin/expenses";
 import { debtPlugin } from "./plugin/Debts";
 import { trackingVisitors } from "./plugin/app/visitors";
 import { askedPlugin } from "./plugin/askedPrd";
+import { resetPlugin } from "./plugin/reset";
 // import { csrfProtection } from "./plugin/CSRF";
 
 const startTime = Date.now(); // Start time tracking
@@ -80,6 +81,7 @@ new Elysia()
     .use(debtPlugin)
     .use(trackingVisitors)
     .use(askedPlugin)
+    .use(resetPlugin)
 
 .listen(process.env.PORT ?? 3000) // am using Render.
 const endTime = Date.now(); // Start time tracking

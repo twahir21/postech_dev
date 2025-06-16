@@ -517,4 +517,31 @@ export const payDebtData = t.Object({
             }
         }
     })
-})
+});
+
+export const resetEmailData = t.Object({
+    email: t.String({
+        maxLength: 50,
+        minLength: 6,
+        format: "email",
+        error() {
+            return {
+                success: false,
+                message: "barua pepe haiwezi kuwa na herufi chini ya 6 au juu ya 50"
+            }
+        }
+    })
+});
+
+export const resetPasswordData = t.Object({
+    password: t.String({
+        maxLength: 40,
+        minLength: 6,
+        error() {
+            return {
+                success: false,
+                message: "Nenosiri haliwezi kuwa na herufi chini ya 6 au juu ya 40"
+            }
+        }
+    })
+});

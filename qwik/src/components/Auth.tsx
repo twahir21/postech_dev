@@ -1,5 +1,5 @@
 import { $, component$, useStore } from '@builder.io/qwik';
-import { useNavigate } from '@builder.io/qwik-city';
+import { Link, useNavigate } from '@builder.io/qwik-city';
 import { env } from '~/routes/api/base/config';
 import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './ui/Toast';
@@ -270,7 +270,7 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
         )}
 
 
-        {state.isLogin && <a href="#" class="text-gray-900 text-sm block text-right mb-2">Umesahau nenosiri?</a>}
+        {state.isLogin && <Link href="/reset" class="text-gray-900 text-sm block text-right mb-2">Umesahau nenosiri?</Link>}
 
         <script
           dangerouslySetInnerHTML={`

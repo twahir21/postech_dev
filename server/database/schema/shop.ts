@@ -290,3 +290,15 @@ import {
     isRead: boolean("is_read").default(false),
     createdAt: timestamp("created_at").defaultNow(),
 });
+
+
+  // ----------------------------
+  //  Forgot Password
+  // ----------------------------
+  export const passwordResets = pgTable("password_resets", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    email: text("email").notNull(),
+    token: text("token").notNull(),
+    isUsed: boolean("is_used").default(false),
+    expiresAt: timestamp("expires_at").notNull(),
+  })
