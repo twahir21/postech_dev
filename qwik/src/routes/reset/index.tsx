@@ -1,5 +1,7 @@
 // src/components/ForgotPassword.tsx
-import { $, component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal, useStore } from '@builder.io/qwik';
+import { CrudService } from '../api/base/oop';
+import { Toast } from '~/components/ui/Toast';
 
 export default component$(() => {
   const email = useSignal('');
@@ -7,9 +9,21 @@ export default component$(() => {
   const submitted = useSignal(false);
   const loading = useSignal(false);
 
+  const modal = useStore({
+    isOpen: false,
+    isSuccess: false,
+    message: ''
+  });
+
   const validateEmail = $((value: string) => {
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    error.value = isValid ? '' : 'Barua pepe si sahihi';
+    // error.value = isValid ? '' : 'Barua pepe si sahihi'; it also shows error when input is empty
+    error.value = value
+    ? isValid
+        ? ''
+        : 'Barua pepe si sahihi'
+    : ''; // fire error if email is not empty
+
   });
 
   const handleInput = $((e: Event) => {
@@ -18,15 +32,20 @@ export default component$(() => {
     validateEmail(email.value);
   });
 
-  const handleSubmit = $((e: Event) => {
-    e.preventDefault();
+  const handleSubmit = $( async () => {
     if (error.value || !email.value) return;
 
     loading.value = true;
-    console.log('Form is submitted and email is:', email.value);
+    // send info to backend
+    const api = new CrudService<{ id?: string; email: string }>("reset-password");
 
-    
+    const result = await api.create({ email: email.value});
 
+    modal.isOpen = true;
+    modal.message = result.message || (result.success ? "Imefanikiwa kutuma email" : "Imeshindwa kutuma email jaribu tena");
+    modal.isSuccess = result.success;
+
+    if (submitted.value) submitted.value = false;
     submitted.value = true;
     loading.value = false;
   });
@@ -48,35 +67,46 @@ export default component$(() => {
                Tafadhali andika barua pepe yako ili kupata link ya kubadili nenosiri.
             </p>
 
-            <form onSubmit$={handleSubmit} class="space-y-4">
-              <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">
-                  Barua Pepe:
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email.value}
-                  onInput$={handleInput}
-                  class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="juma_abc@gmail.com"
-                  required
-                />
-                {error.value && (
-                  <p class="text-red-500 text-xs mt-1">{error.value}</p>
-                )}
-              </div>
-              <button
-                type="submit"
-                disabled={loading.value || !!error.value}
-                class="w-full bg-gray-700 text-white font-medium py-2 rounded-xl hover:bg-gray-600 transition-all duration-200 disabled:opacity-50"
-              >
-                {loading.value ? 'Inatuma...' : 'Tuma link ya kubadili nenosiri'}
-              </button>
-            </form>
+            {/* FOMU YA KUTUMA  */}
+            <div class="space-y-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">
+                Barua Pepe:
+            </label>
+            <input
+                type="email"
+                id="email"
+                value={email.value}
+                onInput$={handleInput}
+                autoComplete={email.value ? 'email' : 'off'}
+                class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="juma_abc@gmail.com"
+            />
+            {error.value && (
+                <p class="text-red-500 text-xs mt-1">{error.value}</p>
+            )}
+            </div>
+            <button
+            onClick$={handleSubmit}
+            disabled={loading.value || !!error.value}
+            class="w-full bg-gray-700 text-white font-medium py-2 rounded-xl hover:bg-gray-600 transition-all duration-200 disabled:opacity-50"
+            >
+            {loading.value ? 'Inatuma...' : 'Tuma link ya kubadili nenosiri'}
+            </button>
           </>
         )}
       </div>
+
+    {/* Modal Popup */}
+    {modal.isOpen && (
+    <Toast
+        isOpen={modal.isOpen}
+        type={modal.isSuccess}
+        message={modal.message}
+        onClose$={$(() => {
+        modal.isOpen = false;
+        })}
+    />
+    )}
     </div>
   );
 });

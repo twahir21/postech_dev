@@ -325,3 +325,6 @@ For maximum impact, consider starting with [Qwik as PWA](f) and then extend to [
 
 
 convert qwik to TWA for apk conversion.
+
+
+### use Resend instead of nodemailer with 3000 mails/month

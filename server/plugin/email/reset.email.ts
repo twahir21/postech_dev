@@ -19,7 +19,6 @@ export const sendResetEmail = async ({ email, link }: { email: string; link: str
         }
         .container {
           max-width: 600px;
-          margin: auto;
           background: #ffffff;
           padding: 30px;
           border-radius: 12px;

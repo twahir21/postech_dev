@@ -1,0 +1,1 @@
+ALTER TABLE "password_resets" DROP COLUMN "is_used";

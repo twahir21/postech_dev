@@ -299,6 +299,5 @@ import {
     id: uuid("id").defaultRandom().primaryKey(),
     email: text("email").notNull(),
     token: text("token").notNull(),
-    isUsed: boolean("is_used").default(false),
     expiresAt: timestamp("expires_at").notNull(),
   })
