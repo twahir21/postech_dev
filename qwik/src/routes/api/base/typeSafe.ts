@@ -18,6 +18,9 @@ export interface CrudItem {
     company: string;
     contact: string
     createdAt: string;
+    total: number;
+    page: number;
+    limit: number;
   }
 
   export interface categoriesPost {

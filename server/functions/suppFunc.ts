@@ -75,7 +75,7 @@ export const suppGet = async ({
 
   try {
     const page = parseInt(query.page || '1');
-    const limit = parseInt(query.limit || '10');
+    const limit = parseInt(query.limit || '5');
     const search = query.search || '';
     const offset = (page - 1) * limit;
 

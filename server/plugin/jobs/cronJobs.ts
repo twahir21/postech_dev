@@ -1,5 +1,5 @@
 import { mainDb } from "../../database/schema/connections/mainDb";
-import { emailVerifications, expenses, notifications, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, users } from "../../database/schema/shop";
+import { emailVerifications, expenses, notifications, passwordResets, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, users } from "../../database/schema/shop";
 import { and, eq, lt } from "drizzle-orm";
 import nodemailer from "nodemailer";
 import "dotenv/config";
@@ -115,5 +115,17 @@ export async function cleanupOldData() {
         )
       );
     }
+  }
+}
+
+export const cleanResets = async () => {
+  // Get all password resets that have expired
+  const expiredResets = await mainDb.select({ id: passwordResets.id })
+    .from(passwordResets)
+    .where(lt(passwordResets.expiresAt, new Date()));
+
+  // Delete expired password resets
+  for (const reset of expiredResets) {
+    await mainDb.delete(passwordResets).where(eq(passwordResets.id, reset.id));
   }
 }

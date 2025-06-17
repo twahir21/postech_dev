@@ -10,7 +10,7 @@ export const SuppCrudComponent =  component$(() => {
   const total = useSignal(0);
   const search = useSignal('');
   const currentPage = useSignal(1);
-  const perPage = 10;
+  const perPage = 5;
   const isLoading = useSignal(false);
   const selectedSupplier = useSignal<Supplier | null>(null);
   const isEditing = useSignal(false);
@@ -33,6 +33,8 @@ export const SuppCrudComponent =  component$(() => {
     isLoading.value = false;
     return;
     }
+
+    total.value = result.total;
     
     supplier.value = result.data;
     // reset loading
@@ -48,7 +50,6 @@ export const SuppCrudComponent =  component$(() => {
     fetchSuppliers();
     supplierRefetch.value = false;
   });
-
   const totalPages = () => Math.ceil(total.value / perPage);
 
   const editSupplier = $((supplier: Supplier) => {
