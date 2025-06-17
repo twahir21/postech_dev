@@ -9,11 +9,9 @@ import { sendResetEmail } from "./email/reset.email";
 import { hashPassword } from "../functions/security/hash";
 
 export const resetPlugin = new Elysia()
-  .post("/reset-password", async ({ body }): Promise<{ success: boolean; message: string}> => {
+  .post("/reset-password", async ({ body }): Promise<{ success: boolean; message: string }> => {
     try {
-          const { email } = body as { email: string };
-
-          console.log("email: ", email)
+      const { email } = body as { email: string };
 
     // 1. Check if user exists
     const user = await mainDb.select().from(users).where(eq(users.email, email)).then(res => res[0]);

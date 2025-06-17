@@ -63,11 +63,19 @@ const automateTasks = new Elysia()
                 };
 
                 // ✅ Insert into debts table
+                const totalAmount = String (parsedQuantity * parsedPriceSold);
+                const totalSales = String ((parsedQuantity * parsedPriceSold) - parsedDiscount);
+
+
                 const [{ id: debtId }] = await mainDb.insert(debts)
                     .values({
                         customerId,
-                        totalAmount: sql`${parsedQuantity} * ${parsedPriceSold}`,
-                        remainingAmount: sql`${parsedQuantity} * ${parsedPriceSold}`,
+                        productId,
+                        quantity: parsedQuantity,
+                        priceSold: String (parsedPriceSold),
+                        totalAmount,
+                        remainingAmount: totalAmount,
+                        totalSales,
                         shopId
                     })
                     .returning({ id: debts.id });
