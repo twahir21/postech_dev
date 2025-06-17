@@ -96,7 +96,6 @@ class CrudService<T extends CrudItem> {
         body: JSON.stringify(data),
         credentials: 'include'
       });
-
       return await res.json()
       
     } catch (err) {

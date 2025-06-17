@@ -15,7 +15,7 @@ export const CustomersCrudComponent =  component$(() => {
   const total = useSignal(0);
   const search = useSignal('');
   const currentPage = useSignal(1);
-  const perPage = 10;
+  const perPage = 5;
   const isLoading = useSignal(false);
   const selectedCustomer = useSignal<Customer | null>(null);
   const isEditing = useSignal(false);

@@ -64,13 +64,12 @@ export const customerGet = async ({
 }) => {
 
   const page = parseInt(query.page || '1');
-  const limit = parseInt(query.limit || '10');
+  const limit = parseInt(query.limit || '5');
   const search = query.search || '';
   const offset = (page - 1) * limit;
 
   try {
 
-    // 🔥 If not in cache → fetch from DB
     const where = and(
       eq(customers.shopId, shopId),
       search ? ilike(customers.name, `%${search}%`) : undefined
