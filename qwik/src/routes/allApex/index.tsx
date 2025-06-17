@@ -1,10 +1,54 @@
-import { component$, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import ApexCharts from 'apexcharts';
+
+export const ChartCard = component$(({ title, chartId }: { title: string; chartId: string }) => {
+  const filter = useSignal<'week' | 'month' | 'year' | 'custom'>('week');
+  const from = useSignal('');
+  const to = useSignal('');
+
+  return (
+    <div class="bg-gradient-to-br from-green-50 via-blue-50 to-yellow-50 rounded-2xl shadow p-4 border">
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-base font-semibold text-gray-700">{title}</h3>
+          <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+            <select
+              class="border rounded px-2 py-1 text-sm w-full sm:w-auto"
+              value={filter.value}
+              onChange$={(e) => {
+                filter.value = (e.target as HTMLSelectElement).value as typeof filter.value;
+              }}
+            >
+              <option value="week">Wiki</option>
+              <option value="month">Mwezi</option>
+              <option value="year">Mwaka</option>
+              <option value="custom">Muda maalumu</option>
+            </select>
+
+            {filter.value === 'custom' && (
+              <div class="flex flex-col sm:flex-row gap-2 w-full">
+                <input
+                  type="date"
+                  class="border rounded px-2 py-1 text-sm w-full sm:w-auto"
+                  bind:value={from}
+                />
+                <input
+                  type="date"
+                  class="border rounded px-2 py-1 text-sm w-full sm:w-auto"
+                  bind:value={to}
+                />
+              </div>
+            )}
+          </div>
+      </div>
+      <div id={chartId} class="w-full" />
+    </div>
+  );
+});
 
 export default component$(() => {
   useVisibleTask$(() => {
     const barChart = new ApexCharts(document.querySelector("#bar-chart"), {
-      chart: { type: 'bar', height: 250, stacked: false },
+      chart: { type: 'bar', height: 250 },
       series: [
         { name: 'Expenses', data: [200, 300, 250, 400, 350, 280, 300] },
         { name: 'Purchases', data: [500, 600, 550, 620, 580, 610, 590] },
@@ -24,12 +68,6 @@ export default component$(() => {
       ],
       xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
       colors: ['#ef4444', '#f97316', '#3b82f6', '#10b981'],
-      plotOptions: {
-        bar: {
-          columnWidth: '60%',
-          distributed: false
-        }
-      },
       legend: { position: 'top' },
       dataLabels: { enabled: false }
     });
@@ -64,18 +102,11 @@ export default component$(() => {
   });
 
   return (
-    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-100 min-h-screen">
-      <ChartCard title="Line Chart" chartId="line-chart" />
-      <ChartCard title="Bar Chart" chartId="bar-chart" />
-      <ChartCard title="Pie Chart" chartId="pie-chart" />
-      <ChartCard title="Horizontal Bar" chartId="hbar-chart" />
+    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6 min-h-screen bg-gray-200">
+      <ChartCard title="📦 Stoku (Hisa)" chartId="line-chart" />
+      <ChartCard title="💸 Mapato & Matumizi" chartId="bar-chart" />
+      <ChartCard title="💵 Cash vs Madeni" chartId="pie-chart" />
+      <ChartCard title="📊 Madeni" chartId="hbar-chart" />
     </div>
   );
 });
-
-const ChartCard = ({ title, chartId }: { title: string; chartId: string }) => (
-  <div class="bg-white rounded-2xl shadow p-4">
-    <h3 class="text-base font-semibold mb-2 text-gray-700">{title}</h3>
-    <div id={chartId} class="w-full" />
-  </div>
-);
