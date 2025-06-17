@@ -1,4 +1,4 @@
-import { loginCache, shopCheckCache, supplierCache, userCheckCache } from "./caches";
+import { loginCache, shopCheckCache, userCheckCache } from "./caches";
 import type { MemoryCache } from "./memoryCache";
 
 
@@ -58,7 +58,6 @@ class CacheStatsTracker {
 
 // Register all caches here
 const caches = {
-  supplierCache,
   userCheckCache,
   shopCheckCache,
   loginCache

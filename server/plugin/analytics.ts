@@ -15,14 +15,11 @@ const analyticsRoute = new Elysia()
   }))
 
   .get('/analytics', async ({ jwt, cookie }) => {
-    const t0 = Date.now()
-
     const { userId, shopId } = await extractId({ jwt, cookie });
     if (!shopId || !userId) return;
 
     const result = await getAnalytics({ userId, shopId })
 
-    console.log(`analytics get takes ${Date.now() - t0} ms`)
     return result;
   })
 

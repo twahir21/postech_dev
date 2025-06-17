@@ -10,6 +10,7 @@ import { timeRemainingUntil } from './utils/block';
 
 export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId: string }) => {
     try {
+      console.time("Analytics");
         // --- Combined Analytics Query (Profit Per Product, Total Sales, Total Cost) ---
         // This query now fetches profit per product, and also provides the totals needed
         // for netProfit calculations, reducing multiple calls.
@@ -256,6 +257,8 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
         const trialData = result.data?.trialEnd?.toString();
         if (!trialData) return;
         const trialEnd = timeRemainingUntil(trialData);
+
+        console.timeEnd("Analytics");
 
         return {
             success: true,

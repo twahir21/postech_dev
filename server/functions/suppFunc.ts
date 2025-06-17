@@ -5,9 +5,6 @@ import { mainDb } from "../database/schema/connections/mainDb";
 import { suppliers } from "../database/schema/shop";
 import { and, eq, ilike, sql } from "drizzle-orm";
 import { sanitizeString } from "./security/xss";
-import { isCachedSupplierResponse, MemoryCache } from "./utils/memoryCache";
-import { supplierCache } from "./utils/caches";
-import { cacheStatsTracker } from "./utils/Stats";
 
 // post 
 export const suppPost = async ({ body, headers, shopId}: { body : suppTypes, headers: headTypes, shopId: string}) => {
@@ -70,7 +67,7 @@ export const suppGet = async ({
   userId: string;
   query: ProductQuery;
 }) => {
-  console.time("start");
+  console.time("fetchSuppliers");
 
 
   try {
@@ -78,23 +75,6 @@ export const suppGet = async ({
     const limit = parseInt(query.limit || '5');
     const search = query.search || '';
     const offset = (page - 1) * limit;
-
-    const cacheKey = `suppliers:${shopId}:${search}:${page}:${limit}`;
-
-    // ✅ Now using singleton cache
-    const cached = supplierCache.get(cacheKey);
-
-    if (cached && isCachedSupplierResponse(cached)) {
-        cacheStatsTracker.recordHit('supplierCache');
-
-      return {
-        success: true,
-        test: "Is this Cached?", 
-        message: "Umefanikiwa kupata taarifa",
-        ...cached
-      };
-    }
-    cacheStatsTracker.recordMiss('supplierCache');
 
     // Build filter condition
     const where = and(
@@ -127,22 +107,7 @@ export const suppGet = async ({
       };
     }
 
-    console.timeEnd("start");
-
-    // Store in cache
-    supplierCache.set(cacheKey, {
-      data: existingSuppliers,
-      total,
-      page,
-      limit,
-      pages: Math.ceil(total / limit)
-    });
-
-    const stats = supplierCache.getMemoryUsage();
-    let cacheHits = 0, cacheMisses = 0;
-
-    if (cached) cacheHits++;
-    else cacheMisses++;
+    console.timeEnd("fetchSuppliers");
 
     return {
       success: true,
@@ -152,12 +117,8 @@ export const suppGet = async ({
       page,
       limit,
       pages: Math.ceil(total / limit),
-      cacheUsedMB: stats.usedMB.toFixed(2),
-      cacheFreeMB: stats.freeMB.toFixed(2),
-      cacheUsedPercent: stats.usedPercent.toFixed(2) + "%",
-      cacheHits,
-      cacheMisses
     };
+    
   } catch (error) {
     return {
       success: false,
@@ -171,7 +132,7 @@ export const suppGet = async ({
 // update
 export const suppPut = async ({ body, headers, supplierId }: { body : suppTypes, headers: headTypes, supplierId: string}) => {
     try {
-
+      console.time("suppUpdate");
     // now extract
     let { company, contact } = body as suppTypes;
 
@@ -204,6 +165,8 @@ export const suppPut = async ({ body, headers, supplierId }: { body : suppTypes,
             message: "Hakuna taarifa iliyopatikana"
         }
     }
+
+    console.timeEnd("suppUpdate")
 
     return {
         success: true,
