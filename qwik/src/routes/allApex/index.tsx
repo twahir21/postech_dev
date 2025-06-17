@@ -3,18 +3,42 @@ import ApexCharts from 'apexcharts';
 
 export default component$(() => {
   useVisibleTask$(() => {
-    const lineChart = new ApexCharts(document.querySelector("#line-chart"), {
-      chart: { type: 'line', height: 250 },
-      series: [{ name: 'Sales', data: [10, 30, 20, 40, 25, 50, 35] }],
+    const barChart = new ApexCharts(document.querySelector("#bar-chart"), {
+      chart: { type: 'bar', height: 250, stacked: false },
+      series: [
+        { name: 'Expenses', data: [200, 300, 250, 400, 350, 280, 300] },
+        { name: 'Purchases', data: [500, 600, 550, 620, 580, 610, 590] },
+        { name: 'Sales', data: [1000, 1200, 1100, 1300, 1250, 1400, 1350] },
+        {
+          name: 'Net Profit',
+          data: [
+            1000 - 500 - 200,
+            1200 - 600 - 300,
+            1100 - 550 - 250,
+            1300 - 620 - 400,
+            1250 - 580 - 350,
+            1400 - 610 - 280,
+            1350 - 590 - 300
+          ]
+        }
+      ],
       xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
-      stroke: { curve: 'smooth' },
-      colors: ['#3b82f6']
+      colors: ['#ef4444', '#f97316', '#3b82f6', '#10b981'],
+      plotOptions: {
+        bar: {
+          columnWidth: '60%',
+          distributed: false
+        }
+      },
+      legend: { position: 'top' },
+      dataLabels: { enabled: false }
     });
 
-    const barChart = new ApexCharts(document.querySelector("#bar-chart"), {
-      chart: { type: 'bar', height: 250 },
+    const lineChart = new ApexCharts(document.querySelector("#line-chart"), {
+      chart: { type: 'line', height: 250 },
       series: [{ name: 'Income', data: [1000, 1200, 900, 1500, 1800, 1300, 1600] }],
       xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'] },
+      stroke: { curve: 'smooth' },
       colors: ['#10b981']
     });
 

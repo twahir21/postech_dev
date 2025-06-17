@@ -328,3 +328,4 @@ convert qwik to TWA for apk conversion.
 
 
 ### use Resend instead of nodemailer with 3000 mails/month
+### use routeLoader for fast loading of page and SEO friendly since is SSR
