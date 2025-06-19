@@ -164,6 +164,7 @@ export default component$(() => {
           <div class="flex gap-5">
             <div class="relative">
               <button
+                title="Calculator"
                 class="p-2 text-white rounded"
                 onClick$={() => (store.showCalculator = true)}
               >
@@ -206,13 +207,13 @@ export default component$(() => {
                 </div>
               )}
             </div>
-            
+
             {/* 🧠 Embed Speech component inline here */}
             <div class="relative">
               <Speech />
             </div> 
 
-            <button title="notification">
+            <button title="ujumbe">
               <div style="position: relative; display: inline-block;">
                 🔔
               {store.notification > 0 && (
@@ -232,7 +233,7 @@ export default component$(() => {
               </div>
             </button>
 
-            <button title="Logout" onClick$={logout}> 👋 </button>
+            <button title="Funga" onClick$={logout}> 👋 </button>
 
           </div>
         </header>

@@ -1,5 +1,6 @@
 import { $, component$, useSignal } from '@builder.io/qwik';
 import { SendIcon, RepeatIcon } from "lucide-qwik";
+import { CrudService } from '~/routes/api/base/oop';
 
 export const Speech = component$(() => {
   const isListening = useSignal(false);
@@ -30,7 +31,6 @@ export const Speech = component$(() => {
       const result = event.results[0][0].transcript;
       transcript.value = result;
       showPopup.value = true;
-      console.log('Transcribed:', result);
     };
 
     recognition.onerror = (e: any) => {
@@ -45,9 +45,14 @@ export const Speech = component$(() => {
     recognition.start();
   });
 
-  const handleSend = $(() => {
+  const handleSend = $( async () => {
     console.log('Send:', transcript.value);
     alert(`Sending: ${transcript.value}`);
+    const api = new CrudService<{ id?: string; text: string }>("speech");
+
+    const result = await api.create({ text: transcript.value });
+
+    console.log(result)
     showPopup.value = false;
   });
 
@@ -62,7 +67,7 @@ export const Speech = component$(() => {
         class="text-2xl"
         onClick$={startRecognition}
         disabled={isListening.value}
-        title="Start Listening"
+        title="Ongea..."
       >
         {isListening.value ? '🎙️...' : '🎙️'}
       </button>

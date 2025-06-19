@@ -223,7 +223,7 @@ const handleButtonClick = $((btn: string) => {
       ) : Object.keys(state.rawParams).length === 0 ? (
         <p class="text-red-500">❌ Hakuna query parameters zilizopatikana!</p>
       ) : (
-        <div class="bg-white rounded-xl shadow-lg p-4 border border-gray-200 space-y-4">
+        <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-900 space-y-4">
           {/* Display product details */}
           <div class="grid sm:grid-cols-2 gap-4">
             {Object.entries(state.rawParams).map(([key, value]) => {
@@ -244,55 +244,55 @@ const handleButtonClick = $((btn: string) => {
               );
             })}
 
-{/* Calculator Button & Modal */}
-<div class="text-left mb-4">
-  <button
-    class="p-2 text-white rounded-full"
-    onClick$={() => (state.showCalculator = true)}
-  >
-    📱
-  </button>
-
-  {state.showCalculator && (
-    <div class="absolute inset-0 flex justify-evenly items-center bg-opacity-50 z-50">
-      <div class="bg-white p-6 rounded-lg shadow-lg w-80 relative border-2 border-b-blue-900">
-        <button
-          class="absolute top-2 right-2 text-gray-600 hover:text-red-600"
-          onClick$={() => (state.showCalculator = false)}
-        >
-          ✖
-        </button>
-
-        <input
-          type="text"
-          class="w-full p-2 text-right text-xl border rounded mb-4"
-          value={state.input}
-          disabled
-        />
-
-        <div class="grid grid-cols-4 gap-2">
-          {["7", "8", "9", "/", "4", "5", "6", "*", "1", "2", "3", "-", "0", "C", "=", "+"].map(
-            (btn) => (
+            {/* Calculator Button & Modal */}
+            <div class="text-left mb-4">
               <button
-                key={btn}
-                class={`p-4 rounded text-xl ${
-                  btn === "C"
-                    ? "bg-red-500 text-white"
-                    : btn === "="
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-200"
-                }`}
-                onClick$={() => handleButtonClick(btn)}
+                class="p-2 text-white rounded-full"
+                onClick$={() => (state.showCalculator = true)}
               >
-                {btn}
+                📱
               </button>
-            )
-          )}
-        </div>
-      </div>
-    </div>
-  )}
-</div>
+
+              {state.showCalculator && (
+                <div class="absolute inset-0 flex justify-evenly items-center bg-opacity-50 z-50">
+                  <div class="bg-white p-6 rounded-lg shadow-lg w-80 relative border-2 border-b-blue-900">
+                    <button
+                      class="absolute top-2 right-2 text-gray-600 hover:text-red-600"
+                      onClick$={() => (state.showCalculator = false)}
+                    >
+                      ✖
+                    </button>
+
+                    <input
+                      type="text"
+                      class="w-full p-2 text-right text-xl border rounded mb-4"
+                      value={state.input}
+                      disabled
+                    />
+
+                    <div class="grid grid-cols-4 gap-2">
+                      {["7", "8", "9", "/", "4", "5", "6", "*", "1", "2", "3", "-", "0", "C", "=", "+"].map(
+                        (btn) => (
+                          <button
+                            key={btn}
+                            class={`p-4 rounded text-xl ${
+                              btn === "C"
+                                ? "bg-red-500 text-white"
+                                : btn === "="
+                                ? "bg-gray-900 text-white"
+                                : "bg-gray-200"
+                            }`}
+                            onClick$={() => handleButtonClick(btn)}
+                          >
+                            {btn}
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
           </div>
 
