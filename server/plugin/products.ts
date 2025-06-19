@@ -1,7 +1,7 @@
 import jwt from "@elysiajs/jwt";
 import Elysia from "elysia";
 import { extractId } from "../functions/security/jwtToken";
-import { prodDel, prodGet, prodPost, prodUpdate, QrPost } from "../functions/prodFunc";
+import { prodDel, prodGet, prodPost, prodSearch, prodUpdate, QrPost } from "../functions/prodFunc";
 import type { productTypes, QrData } from "../types/types";
 import { prodData, prodUpdateValidation, QrPostData } from "../functions/security/validators/data";
 import { blockUsage } from "../functions/utils/block";
@@ -20,6 +20,14 @@ export const prodPlugin = new Elysia()
 
 
         return await prodGet({ userId, shopId, headers, query, set: { status: 200 } });
+    })
+    .get("/productSearch", async ({ jwt, cookie, headers, query }) => {
+        const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
+        const search = query.search as string || '';
+
+        return await prodSearch({ userId, shopId, query: search });
     })
     .post("/products", async ({ jwt, cookie, body, headers }) => {
         const { userId, shopId} = await extractId({ jwt, cookie});

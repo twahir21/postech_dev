@@ -229,6 +229,34 @@ export const prodDel = async ({userId, shopId, productId, headers}: {userId: str
     }
 }
 
+export const prodSearch = async ({ shopId, userId, query }: {shopId: string, userId: string, query: string }): Promise<{ success: boolean; data?: { name: string }[]; message: string}> => {
+  try {
+
+    console.log("Search:", query);
+    const rows = await mainDb
+      .select({ name: products.name })
+      .from(products)
+      .where(
+        eq(products.shopId, shopId) &&
+        ilike(products.name, `%${query}%`)
+      )
+      .limit(10);
+      
+    return {
+      success: true,
+      data: rows,
+      message: "Umefanikiwa kupata bidhaa."
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error
+                ? error.message
+                : "Hitilafu kwenye seva"
+    }
+  }
+}
+
 
 export const prodUpdate = async ({userId, shopId, productId, body, headers}: {userId: string, shopId: string, productId: string, body: productTypes, headers: headTypes}) => {
     try{

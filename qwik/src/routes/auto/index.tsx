@@ -7,39 +7,78 @@ export default component$(() => {
   const showSuggestions = useSignal(false);
   const result = useSignal('');
 
-  const fetchSuggestions = $(async (query: string) => {
-    const api = new CrudService(`products?search=${encodeURIComponent(query)}`);
-    const result =  await api.get();
-    if (!result.success) {
-      suggestions.value = [];
-      return;
-    }
-    const data = result.data;
-    suggestions.value = data.map((p: any) => p.name);
-    showSuggestions.value = true;
-  });
+const fetchSuggestions = $(async (query: string, type: 'product' | 'customer') => {
+  const api = new CrudService(
+    type === 'product'
+      ? `productSearch?search=${encodeURIComponent(query)}`
+      : `customerSearch?search=${encodeURIComponent(query)}`
+  );
+  const result = await api.get();
 
-  const handleKeyUp = $(async () => {
-    const parts = inputText.value.trim().split(' ');
-    const last = parts.at(-2) || ''; // assume product is second last word
-    if (last.length >= 2) {
-      await fetchSuggestions(last);
+  if (!result.success) {
+    suggestions.value = [];
+    return;
+  }
+
+  const data = result.data;
+  suggestions.value = data.map((item: any) => item.name);
+  showSuggestions.value = true;
+});
+
+
+const handleKeyUp = $(async () => {
+  const words = inputText.value.trim().split(/\s+/); // Split on spaces
+  const prefix = words[0];
+  const totalWords = words.length;
+
+  if (prefix === 'nimemkopesha') {
+    if (totalWords === 2 && words[1].length >= 2) {
+      // Typing customer name
+      await fetchSuggestions(words[1], 'customer');
+    } else if (totalWords === 3 && words[2].length >= 2) {
+      // Typing product name
+      await fetchSuggestions(words[2], 'product');
     } else {
       showSuggestions.value = false;
     }
-  });
-
-  const selectSuggestion = $((name: string) => {
-    const words = inputText.value.trim().split(' ');
-    // replace second-last word with the suggestion
-    if (words.length >= 2) {
-      words[words.length - 2] = name;
+  } else {
+    if (totalWords === 2 && words[1].length >= 2) {
+      await fetchSuggestions(words[1], 'product');
     } else {
-      words.push(name);
+      showSuggestions.value = false;
     }
-    inputText.value = words.join(' ');
-    showSuggestions.value = false;
-  });
+  }
+});
+
+
+
+
+const selectSuggestion = $((name: string) => {
+  const words = inputText.value.trim().split(/\s+/);
+  const prefix = words[0];
+  const totalWords = words.length;
+
+  let targetIndex = 1; // Default to product position
+
+  if (prefix === 'nimemkopesha') {
+    // If only 2 words typed → assume customer name
+    // If 3 words typed → assume product name
+    targetIndex = totalWords === 2 ? 1 : 2;
+  }
+
+  if (words.length > targetIndex) {
+    words[targetIndex] = name;
+  } else {
+    while (words.length <= targetIndex) words.push('');
+    words[targetIndex] = name;
+  }
+
+  inputText.value = words.join(' ');
+  showSuggestions.value = false;
+});
+
+
+
 
   const handleSubmit = $(async () => {
     const res = await fetch('/api/voice-command', {

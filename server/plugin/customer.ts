@@ -2,7 +2,7 @@ import jwt from "@elysiajs/jwt";
 import Elysia from "elysia";
 import { extractId } from "../functions/security/jwtToken";
 import type { CustomerTypes } from "../types/types";
-import { CustomerDel, customerFetch, customerGet, customerPost, customerUpdate } from "../functions/customerFunc";
+import { CustomerDel, customerFetch, customerGet, customerPost, customerSearch, customerUpdate } from "../functions/customerFunc";
 import { customerData } from "../functions/security/validators/data";
 import { blockUsage } from "../functions/utils/block";
 import { checkServiceAccess } from "../functions/utils/packages";
@@ -21,6 +21,15 @@ export const CustomersPlugin = new Elysia()
 
         
         return await customerGet({ userId, shopId, headers, query});
+    })
+    .get("/customerSearch", async ({ jwt, cookie, headers, query }) => {
+        const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
+        const search = query.search as string || '';
+
+        
+        return await customerSearch({ userId, shopId, query: search });
     })
     .get("/getCustomers", async ({ jwt, cookie, headers }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });

@@ -239,3 +239,31 @@ export const customerUpdate = async ({userId, shopId, customerId, body, headers}
         }
     }
 }
+
+
+export const customerSearch = async ({ shopId, userId, query }: {shopId: string, userId: string, query: string }): Promise<{ success: boolean; data?: { name: string }[]; message: string}> => {
+  try {
+
+    const rows = await mainDb
+      .select({ name: customers.name })
+      .from(customers)
+      .where(
+        eq(customers.shopId, shopId) &&
+        ilike(customers.name, `%${query}%`)
+      )
+      .limit(10);
+      
+    return {
+      success: true,
+      data: rows,
+      message: "Umefanikiwa kupata wateja"
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error
+                ? error.message
+                : "Hitilafu kwenye seva"
+    }
+  }
+}
