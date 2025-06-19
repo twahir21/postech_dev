@@ -50,7 +50,7 @@ export default component$(() => {
     if (window.innerWidth < 768) store.isSidebarOpen = false; // Close on mobile
   });
 
-  const fetchUsername = useVisibleTask$(async () => {
+  const fetchUsername = $(async () => {
     const getNameApi = new CrudService<{ id?: string; username: string}>("me");
     const getName = await getNameApi.get();
     if (!getName.success) return
@@ -62,7 +62,7 @@ export default component$(() => {
       let username = usernameData.value.username;
       if (!username) {
         username = "Mgeni"
-        fetchUsername;
+        fetchUsername(); // actual call 
       }
 
       // Utility function to capitalize the first letter of each word

@@ -21,7 +21,7 @@ export const fetchSuppliers = async () => {
                           ? env.backendURL_DEV
                           : env.backendURL;
 
-      const res = await fetch(`${backendURL}/suppliers`, {
+      const res = await fetch(`${backendURL}/suppliersAll`, {
         method: "GET",
         credentials: "include",
       });

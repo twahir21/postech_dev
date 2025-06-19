@@ -1,5 +1,5 @@
 import Elysia from "elysia";
-import { suppDel, suppGet, suppPost, suppPut } from "../functions/suppFunc";
+import { suppDel, suppGet, suppGetAll, suppPost, suppPut } from "../functions/suppFunc";
 import jwt from "@elysiajs/jwt";
 import { extractId } from "../functions/security/jwtToken";
 import type { suppTypes } from "../types/types";
@@ -22,6 +22,14 @@ const suppPlugin = new Elysia()
 
             return suppGet ({ headers, shopId, userId, query });
         })
+
+    .get("/suppliersAll", async ({ jwt, cookie }) => {
+        const { userId, shopId } = await extractId({ jwt, cookie });
+        if (!shopId || !userId) return;
+
+
+        return suppGetAll ({ shopId, userId });
+    })
 
     .post("/suppliers", async ({ jwt, cookie, headers, body}) => {
         const { userId, shopId } = await extractId({ jwt, cookie });

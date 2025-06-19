@@ -1,79 +1,113 @@
-import { component$, useContext, useResource$, useSignal } from "@builder.io/qwik";
-import { DebtComponentGraph } from "./Debt";
-import { CashDebt } from "./CashDebt";
-import { Salexp } from "./Salexp";
-import { StockComponent } from "./Stock";
-import { CrudService } from "~/routes/api/base/oop";
-import type { GraphData } from "~/routes/api/types/graphTypes";
-import { stockGraph } from "../context/store/netSales";
+import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import ApexCharts from 'apexcharts';
 
-export const MainGraph =  component$(() => {
-  const selected = useSignal<'debts' | 'cash' | 'expenses' | 'stock' | null>(null);
-  const { stock } = useContext(stockGraph);
-  useResource$(async () => {
-    const graphAPI = new CrudService<GraphData>("graph");
-    const result = await graphAPI.get();
+export const ChartCard = component$(({ title, chartId }: { title: string; chartId: string }) => {
+  const filter = useSignal<'week' | 'month' | 'year' | 'custom'>('week');
+  const from = useSignal('');
+  const to = useSignal('');
 
-    if (!result.success) return;
-    // Update stock data with the fetched graph data
-    stock.value = result.data[0].stockTrend.map((item) => ({
-      day: item.day,
-      totalStock: item.totalStock
-    }));
+  return (
+    <div class="bg-gradient-to-br from-green-50 via-blue-50 to-yellow-50 rounded-2xl shadow p-4 border">
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-base font-semibold text-gray-700">{title}</h3>
+          <div class="flex flex-col gap-2 items-start">
+            <select
+              class="border rounded px-2 py-1 text-sm w-40"
+              value={filter.value}
+              onChange$={(e) => {
+                filter.value = (e.target as HTMLSelectElement).value as typeof filter.value;
+              }}
+            >
+              <option value="week">Wiki</option>
+              <option value="month">Mwezi</option>
+              <option value="year">Mwaka</option>
+              <option value="custom">Muda maalumu</option>
+            </select>
 
+            {filter.value === 'custom' && (
+              <div class="flex flex-col gap-2">
+                <input
+                  type="date"
+                  class="border rounded px-2 py-1 text-sm w-40"
+                  bind:value={from}
+                />
+                <input
+                  type="date"
+                  class="border rounded px-2 py-1 text-sm w-40"
+                  bind:value={to}
+                />
+              </div>
+            )}
+          </div>
+
+      </div>
+      <div id={chartId} class="w-full" />
+    </div>
+  );
+});
+
+export const MainGraph = component$(() => {
+  useVisibleTask$(() => {
+    const barChart = new ApexCharts(document.querySelector("#bar-chart"), {
+      chart: { type: 'bar', height: 250 },
+      series: [
+        { name: 'Matumizi', data: [200, 300, 250, 400, 350, 280, 300] },
+        { name: 'Manunuzi', data: [500, 600, 550, 620, 580, 610, 590] },
+        { name: 'Mauzo', data: [1000, 1200, 1100, 1300, 1250, 1400, 1350] },
+        {
+          name: 'Faida',
+          data: [
+            1000 - 500 - 200,
+            1200 - 600 - 300,
+            1100 - 550 - 250,
+            1300 - 620 - 400,
+            1250 - 580 - 350,
+            1400 - 610 - 280,
+            1350 - 590 - 300
+          ]
+        }
+      ],
+      xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+      colors: ['#ef4444', '#f97316', '#3b82f6', '#10b981'],
+      legend: { position: 'top' },
+      dataLabels: { enabled: false }
+    });
+
+    const lineChart = new ApexCharts(document.querySelector("#line-chart"), {
+      chart: { type: 'line', height: 250 },
+      series: [{ name: 'Income', data: [1000, 1200, 900, 1500, 1800, 1300, 1600] }],
+      xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'] },
+      stroke: { curve: 'smooth' },
+      colors: ['#10b981']
+    });
+
+    const pieChart = new ApexCharts(document.querySelector("#pie-chart"), {
+      chart: { type: 'pie', height: 250 },
+      series: [40, 30, 20, 10],
+      labels: ['Product A', 'Product B', 'Product C', 'Product D'],
+      colors: ['#f87171', '#60a5fa', '#34d399', '#fbbf24']
+    });
+
+    const hBarChart = new ApexCharts(document.querySelector("#hbar-chart"), {
+      chart: { type: 'bar', height: 250 },
+      plotOptions: { bar: { horizontal: true } },
+      series: [{ name: 'Votes', data: [44, 55, 41, 64, 22] }],
+      xaxis: { categories: ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5'] },
+      colors: ['#6366f1']
+    });
+
+    lineChart.render();
+    barChart.render();
+    pieChart.render();
+    hBarChart.render();
   });
 
   return (
-    <div class="p-4 space-y-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <button
-          class="border rounded-xl p-4 bg-white shadow hover:bg-blue-50 transition text-left"
-          onClick$={() => (selected.value = 'debts')}
-        >
-          <h3 class="text-lg font-semibold">📊 Madeni</h3>
-          <p class="text-sm text-gray-600">Angalia madeni yote ya wateja</p>
-        </button>
-        <button
-          class="border rounded-xl p-4 bg-white shadow hover:bg-green-50 transition text-left"
-          onClick$={() => (selected.value = 'cash')}
-        >
-          <h3 class="text-lg font-semibold">💵 Cash vs Madeni</h3>
-          <p class="text-sm text-gray-600">Mapato yote kwa asilimia</p>
-        </button>
-        <button
-          class="border rounded-xl p-4 bg-white shadow hover:bg-red-50 transition text-left"
-          onClick$={() => (selected.value = 'expenses')}
-        >
-          <h3 class="text-lg font-semibold">💸 Matumizi</h3>
-          <p class="text-sm text-gray-600">Tazama matumizi ya biashara</p>
-        </button>
-        <button
-          class="border rounded-xl p-4 bg-white shadow hover:bg-yellow-50 transition text-left"
-          onClick$={() => (selected.value = 'stock')}
-        >
-          <h3 class="text-lg font-semibold">📦 Stoku (Hisa)</h3>
-          <p class="text-sm text-gray-600">Hisa zilizopo kwa sasa</p>
-        </button>
-      </div>
-
-      {/* Display selected component */}
-      {selected.value && (
-        <div class="border rounded-xl p-4 shadow mt-4 bg-gradient-to-br from-green-50 via-blue-50 to-yellow-50">
-          <h2 class="text-lg font-bold mb-2">
-            {selected.value === 'debts' && '📊 Madeni'}
-            {selected.value === 'cash' && '💵 Cash vs Madeni'}
-            {selected.value === 'expenses' && '💸 Matumizi'}
-            {selected.value === 'stock' && '📦 Stoku (Hisa)'}
-          </h2>
-          <div class="text-sm text-gray-700 ">
-            {/* Render actual components based on selection */}
-            {selected.value === 'debts' && <DebtComponentGraph />}
-            {selected.value === 'cash' && <CashDebt />}
-            {selected.value === 'expenses' && <Salexp />}
-            {selected.value === 'stock' && <StockComponent />}          
-            </div>
-        </div>
-      )}
+    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6 min-h-screen">
+      <ChartCard title="📦 Stoku (Hisa)" chartId="line-chart" />
+      <ChartCard title="💸 Mapato & Matumizi" chartId="bar-chart" />
+      <ChartCard title="💵 Cash vs Madeni" chartId="pie-chart" />
+      <ChartCard title="📊 Madeni" chartId="hbar-chart" />
     </div>
   );
 });

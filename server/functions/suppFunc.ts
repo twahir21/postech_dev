@@ -129,6 +129,52 @@ export const suppGet = async ({
   }
 };
 
+export const suppGetAll = async ({
+  shopId,
+  userId,
+}: {
+  shopId: string;
+  userId: string;
+}) => {
+  console.time("fetchSuppliers");
+
+
+  try {
+    console.time("fetchAllSupp")
+    // Fetch suppliers
+    const existingSuppliers = await mainDb
+      .select()
+      .from(suppliers)
+      .where(eq(suppliers.shopId, shopId))
+      .orderBy(suppliers.createdAt)
+
+    if (existingSuppliers.length === 0) {
+      return {
+        success: false,
+        message: "Hakuna kilichopatikana kwenye hifadhi",
+        data: [],
+      };
+    }
+
+    console.timeEnd("fetchAllSupp");
+
+    return {
+      success: true,
+      message: "umefanikiwa kupata taarifa",
+      data: existingSuppliers,
+    };
+    
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error
+        ? error.message
+        : "Hitilafu kwenye seva"
+    };
+  }
+};
+
+
 // update
 export const suppPut = async ({ body, headers, supplierId }: { body : suppTypes, headers: headTypes, supplierId: string}) => {
     try {

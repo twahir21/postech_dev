@@ -45,7 +45,7 @@ export const ChartCard = component$(({ title, chartId }: { title: string; chartI
   );
 });
 
-export default component$(() => {
+export const Graphs = component$(() => {
   useVisibleTask$(() => {
     const barChart = new ApexCharts(document.querySelector("#bar-chart"), {
       chart: { type: 'bar', height: 250 },
