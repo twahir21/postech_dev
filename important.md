@@ -331,3 +331,5 @@ convert qwik to TWA for apk conversion.
 ### use routeLoader for fast loading of page and SEO friendly since is SSR
 
 ##### use console.time and console.timeEnd to track route speed (time_taken)
+
+## it start to pick numbers when sound api is > 10

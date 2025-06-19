@@ -14,6 +14,7 @@ import { MainGraph } from "~/components/reports/MainGraph";
 import { CrudService } from "../api/base/oop";
 import { useAuthLoader } from "../layout";
 import { AskedProducts } from "~/components/Asked";
+import { Speech } from "~/components/Speech";
 
 
 export default component$(() => {
@@ -205,6 +206,12 @@ export default component$(() => {
                 </div>
               )}
             </div>
+            
+            {/* 🧠 Embed Speech component inline here */}
+            <div class="relative">
+              <Speech />
+            </div> 
+
             <button title="notification">
               <div style="position: relative; display: inline-block;">
                 🔔
