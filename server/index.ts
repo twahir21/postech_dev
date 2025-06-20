@@ -1,6 +1,5 @@
 import Elysia from "elysia";
 import homePlugin from "./plugin/home";
-import qrCodePlugin from "./plugin/qrCode";
 import regPlugin from "./plugin/registration";
 import { cors } from "@elysiajs/cors";
 
@@ -9,7 +8,6 @@ import suppPlugin from "./plugin/supplier";
 // import { rateLimitMiddleware } from "./functions/security/rateLimiting";
 import { loginPlugin } from "./plugin/login";
 import { prodPlugin } from "./plugin/products";
-import automateTasks from "./plugin/autoSales";
 import { mailPlugin } from "./plugin/email/smtp";
 import cookie from "@elysiajs/cookie";
 import { CustomersPlugin } from "./plugin/customer";
@@ -68,8 +66,6 @@ new Elysia()
     .use(categoriesPlugin)
     .use(suppPlugin)
     .use(prodPlugin)
-    .use(qrCodePlugin)
-    .use(automateTasks)
     .use(mailPlugin)
     .use(CustomersPlugin)
     .use(analyticsRoute)

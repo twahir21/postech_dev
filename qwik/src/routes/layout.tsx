@@ -49,8 +49,7 @@ export const onGet: RequestHandler = async ({ url, cookie, request, redirect, er
   rateLimitMap.set(ip, record);
 
   // Auth logic
-  const isPrivate = url.pathname.startsWith("/private") ||
-                     url.pathname.startsWith("/scan-qrcode"); // for QR code selling ...
+  const isPrivate = url.pathname.startsWith("/private");
   
   if (isPrivate) {
     const token = cookie.get('auth_token')?.value;
@@ -74,7 +73,6 @@ export default component$(() => {
   const saleRefetch = useSignal(false);
   const productRefetch = useSignal(false);
   const customerRefetch = useSignal(false);
-  const qrCodeRefetch =  useSignal(false);
   const supplierRefetch = useSignal(false);
   const categoryRefetch = useSignal(false);
   const refetchAnalytics = useSignal(false);
@@ -86,7 +84,6 @@ export default component$(() => {
     productRefetch,
     customerRefetch,
     debtRefetch,
-    qrCodeRefetch,
     supplierRefetch,
     categoryRefetch,
     refetchAnalytics

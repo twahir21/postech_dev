@@ -1,12 +1,19 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal, useStore } from '@builder.io/qwik';
 import { SendIcon, RepeatIcon } from "lucide-qwik";
 import { CrudService } from '~/routes/api/base/oop';
+import { Toast } from './ui/Toast';
 
 export const Speech = component$(() => {
   const isListening = useSignal(false);
   const transcript = useSignal('');
   const error = useSignal('');
   const showPopup = useSignal(false);
+
+  const modal = useStore({
+    isOpen: false,
+    isSuccess: false,
+    message: ''
+  })
 
   const startRecognition = $(() => {
     const SpeechRecognition =
@@ -45,14 +52,28 @@ export const Speech = component$(() => {
     recognition.start();
   });
 
+
   const handleSend = $( async () => {
-    console.log('Send:', transcript.value);
-    alert(`Sending: ${transcript.value}`);
+
+    const allowedActions = ['nimeuza', 'nimenunua', 'nimetumia', 'nimemkopesha'];
+
+    let text = transcript.value.trim();
+    const firstWord = text.split(' ')[0].toLowerCase();
+
+    if (!allowedActions.includes(firstWord)) {
+      text = `nimeuza ${text}`;
+    }
     const api = new CrudService<{ id?: string; text: string }>("speech");
 
-    const result = await api.create({ text: transcript.value });
+    const result = await api.create({ text });
 
-    console.log(result)
+    console.log("Backend Result: ", result);
+
+    modal.isOpen = true;
+    modal.isSuccess = result.success;
+    modal.message = result.message || (result.success ? 'Umefanikiwa' : 'Hitilafu imetokea, jaribu baadae');
+
+
     showPopup.value = false;
   });
 
@@ -83,6 +104,17 @@ export const Speech = component$(() => {
             <button class="text-red-500" onClick$={() => showPopup.value = false} title="Funga">❌</button>
           </div>
         </div>
+      )}
+
+      {modal.isOpen && (
+        <Toast
+          isOpen={modal.isOpen}
+          type={modal.isSuccess}
+          message={modal.message}
+          onClose$={$(() => {
+            modal.isOpen = false;
+        })}
+        />
       )}
     </div>
   );

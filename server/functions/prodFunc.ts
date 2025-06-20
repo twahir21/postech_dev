@@ -153,7 +153,6 @@ export const prodGet = async ({
           unit: products.unit,
           createdAt: products.createdAt,
           updatedAt: products.updatedAt,
-          isQRCode: products.isQRCode,
           priceBought: latestOnly.priceBought, // ✅ Deduplicated result
         })
         .from(products)
@@ -303,9 +302,7 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
             unit,
             status: sanitizedStock <= 0 ? 'finished' : 'available', // auto-update status
             priceSold: formatFloatToFixed(priceSold),
-            updatedAt: new Date(),
-            isQRCode: false
-            
+            updatedAt: new Date()            
         }).where(eq(products.id, productId));
 
         // purchases
@@ -320,10 +317,6 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
             price: formatFloatToFixed(priceBought)
         }).where(eq(supplierPriceHistory.productId, productId));
 
-        // set isQrCode to false
-        await mainDb.update(products).set({
-            isQRCode: false
-        }).where(eq(products.id, productId));
 
         const updatedProduct = await mainDb
         .select({
@@ -334,7 +327,6 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
             unit: products.unit,
             status: products.status,
             priceSold: products.priceSold,
-            isQRCode: products.isQRCode,
             updatedAt: products.updatedAt,
             priceBought: purchases.priceBought, // 👈 include from purchases
         })

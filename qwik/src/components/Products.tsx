@@ -1,6 +1,5 @@
 import { component$, useStore, useResource$, $, useContext } from '@builder.io/qwik';
 import { SupplierComponent } from './Supplier';
-import { QrPdf } from './QRPdf';
 import { fetchCategories, fetchSuppliers, globalStore } from '~/routes/function/helpers';
 import { RefetchContext } from './context/refreshContext';
 import { CrudService } from '~/routes/api/base/oop';
@@ -65,7 +64,6 @@ export const ProductComponent = component$(() => {
  const { 
          supplierRefetch, 
          categoryRefetch, 
-         qrCodeRefetch     
   } = useContext(RefetchContext);
 
   // Fetch categories from backend with error handling
@@ -178,8 +176,6 @@ export const ProductComponent = component$(() => {
       }
       const newCrudPrd = new CrudService<prdPayload>("products");
       const resData = await newCrudPrd.create(productPayload);
-
-      qrCodeRefetch.value = true;
   
       // Check response
       if (!resData.success) { 
@@ -303,7 +299,11 @@ export const ProductComponent = component$(() => {
         </button>
       </div>
         
-      <QrPdf />
+      <h1 class="text-xl font-bold text-gray-700 mt-6 mb-2 border-b-2 pb-2">
+        Hatua ya 3:
+      </h1>
+
+      <p>Anza kutumia mic au text kufanya mauzo, manunuzi, matumizi au kukopesha </p>
       
         {/* Modal Popup */}
         {store.modal.isOpen && (

@@ -505,14 +505,7 @@ export const head: DocumentHead = {
                           "text": "myPosTech ni mfumo wa kisasa wa mauzo na stoo unaotumia QR codes kusaidia wafanyabiashara."
                         }
                       },
-                      {
-                        "@type": "Question",
-                        "name": "Je, ninatumia nini kuscan qrcode?",
-                        "acceptedAnswer": {
-                          "@type": "Answer",
-                          "text": "Tumia app yoyote kwenye simu yako isiyokuwa na matangazo, lakini napendekeza Google Lens"
-                        }
-                      },
+
                       {
                         "@type": "Question",
                         "name": "myPosTech inasaidia lugha gani?",

@@ -1,4 +1,4 @@
-import { component$, useStore, $, useTask$, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useStore, $, useTask$, useVisibleTask$, useSignal } from "@builder.io/qwik";
 import { useNavigate } from "@builder.io/qwik-city";
 import { HomeComponent } from "~/components/Home";
 import { ProductComponent } from "~/components/Products";
@@ -25,6 +25,15 @@ export default component$(() => {
     showCalculator: false,
     username: "",
     notification: 0
+  });
+
+  const showTooltip = useSignal(false);
+  const showMic = useSignal(false); // only render <Speech /> after tooltip closed
+
+
+  const closeTooltip = $(() => {
+    showTooltip.value = false;
+    showMic.value = true;
   });
 
   const toggleSidebar = $(() => {
@@ -99,6 +108,15 @@ export default component$(() => {
     
     store.notification = result.data[0].count;
 
+  });
+
+  // Show once when component is mounted
+  useVisibleTask$(() => {
+    const seenTip = localStorage.getItem('seenVoiceTip');
+    if (!seenTip) {
+      showTooltip.value = true;
+      localStorage.setItem('seenVoiceTip', 'true');
+    }
   });
 
 
@@ -207,11 +225,47 @@ export default component$(() => {
                 </div>
               )}
             </div>
+            
+            {/* tooltip  */}
+            <div class="relative">
+              <button
+                class="pt-2"
+                onClick$={() => (showTooltip.value = !showTooltip.value)}
+                title="Maelezo"
+              >
+                ℹ️
+              </button>
+
+              {showTooltip.value && (
+                <div class="absolute z-50 top-8 right-1 w-72 bg-white text-gray-700 p-4 rounded shadow border text-sm">
+                  <h3 class="font-bold mb-2">🗣️ Jinsi ya kutumia sauti</h3>
+                    <ul class="list-disc pl-4 space-y-1">
+                      <li>Anza na mojawapo ya maneno: <strong>nimeuza</strong>, <strong>nimenunua</strong>, <strong>nimetumia</strong>, au <strong>nimemkopesha</strong></li>
+                      <li>Endelea na <strong>jina la bidhaa</strong> — mfano: “sukari”, “maziwa”</li>
+                      <li>Kisha taja <strong>kiasi</strong> — mfano: “tatu”, “moja”, “robo”, “kumi na mbili”</li>
+                      <li>Kwa mkopo: taja <strong>jina la mteja</strong> baada ya neno la kwanza — mfano: “Nimemkopesha Ali...”</li>
+                      <li>Kwa hiari: unaweza ongeza <strong>punguzo</strong> — mfano: “punguzo 200”</li>
+                      <li>Kwa haraka: unaweza kusema <strong>sukari nusu</strong> - itakuwa inamaanisha nimeuza sukari nusu </li>
+                      <li><strong>Mifano:</strong> Nimeuza chumvi 4. Nimemkopesha Ali sukari robo. Nimeuza daftari 7 punguzo 200. Nimenunua mchele kilo mia</li>
+                    </ul>
+
+                  <div class="text-right mt-2">
+                    <button
+                      class="text-red-500 text-sm"
+                      onClick$={closeTooltip}
+                    >
+                      Funga
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
 
             {/* 🧠 Embed Speech component inline here */}
             <div class="relative">
               <Speech />
-            </div> 
+            </div>
 
             <button title="ujumbe">
               <div style="position: relative; display: inline-block;">

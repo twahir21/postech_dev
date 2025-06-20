@@ -109,7 +109,6 @@ import {
     unit: text("unit"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
-    isQRCode: boolean("is_qr_code").default(false), // Tracks if QR code is generated
   }, (table) => ({
     uniqueProductShop: uniqueIndex("unique_product_shop").on(table.name, table.shopId),
   }));
