@@ -27,28 +27,35 @@ const fetchSuggestions = $(async (query: string, type: 'product' | 'customer') =
 
 
 const handleKeyUp = $(async () => {
-  const words = inputText.value.trim().split(/\s+/); // Split on spaces
+  const words = inputText.value.trim().split(/\s+/);
+  const endsWithSpace = inputText.value.endsWith(' ');
+
+  // Autocomplete logic (same as before)
   const prefix = words[0];
   const totalWords = words.length;
 
   if (prefix === 'nimemkopesha') {
     if (totalWords === 2 && words[1].length >= 2) {
-      // Typing customer name
       await fetchSuggestions(words[1], 'customer');
     } else if (totalWords === 3 && words[2].length >= 2) {
-      // Typing product name
       await fetchSuggestions(words[2], 'product');
-    } else {
-      showSuggestions.value = false;
     }
   } else {
     if (totalWords === 2 && words[1].length >= 2) {
       await fetchSuggestions(words[1], 'product');
-    } else {
-      showSuggestions.value = false;
     }
   }
+
+  // ✅ Auto-add "punguzo 0" after quantity
+  if (
+    endsWithSpace &&
+    !inputText.value.includes('punguzo') &&
+    totalWords >= 3 // minimum expected: verb + product + quantity
+  ) {
+    inputText.value = `${inputText.value.trim()} punguzo 0`;
+  }
 });
+
 
 
 
