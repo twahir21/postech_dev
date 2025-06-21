@@ -1,0 +1,1 @@
+https://account.apiwap.com/login use it and send text to all people with codes

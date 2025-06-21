@@ -242,9 +242,10 @@ export default component$(() => {
                     <ul class="list-disc pl-4 space-y-1">
                       <li>Anza na mojawapo ya maneno: <strong>nimeuza</strong>, <strong>nimenunua</strong>, <strong>nimetumia</strong>, au <strong>nimemkopesha</strong></li>
                       <li>Endelea na <strong>jina la bidhaa</strong> — mfano: “sukari”, “maziwa”</li>
+                      <li>Sio lazima: Kisha taja <strong>Kategoria</strong> — mfano: “lita”, “kilo”, “katoni”, "pisi"</li>
                       <li>Kisha taja <strong>kiasi</strong> — mfano: “tatu”, “moja”, “robo”, “kumi na mbili”</li>
                       <li>Kwa mkopo: taja <strong>jina la mteja</strong> baada ya neno la kwanza — mfano: “Nimemkopesha Ali...”</li>
-                      <li>Kwa hiari: unaweza ongeza <strong>punguzo</strong> — mfano: “punguzo 200”</li>
+                      <li>Kwa hiari: unaweza ongeza <strong>punguzo</strong> — mfano: “punguzo 200”<strong> Angalizo!: </strong>Kama punguzo ni juu ya 10,000 andika kwa tarakimu.</li>
                       <li>Kwa haraka: unaweza kusema <strong>sukari nusu</strong> - itakuwa inamaanisha nimeuza sukari nusu </li>
                       <li><strong>Mifano:</strong> Nimeuza chumvi 4. Nimemkopesha Ali sukari robo. Nimeuza daftari 7 punguzo 200. Nimenunua mchele kilo mia</li>
                     </ul>

@@ -1,23 +1,17 @@
-import { NLP, validateTransactionText } from "./utils/NLP";
+import { detectSwahiliTransaction } from "./utils/NLP";
 
 export const handleSpeech = async (shopId: string, userId: string, text: string) : Promise<{ success: boolean; message: string }> => {
     try {
-        console.log(text);
 
         // we must validate the speech/text given
-        // ? format is [action] [optional: customer] [product] [quantity] [optional: punguzo <number>]
-        const result = validateTransactionText(text);
+        // ? format is [action] [optional: customer] [product] [optional: unit] [quantity] [optional: punguzo <number>]
 
-        if (!result.valid) {
-            return {
-            success: false,
-            message: result.errors.join('; ')
-            };
-        }
+         const result = detectSwahiliTransaction(text);
 
-        // ! swahili texts convertion to numbers are supported up to 9999 as stocks
+
+        console.log("Result: ", result);
+        // ! swahili texts convertion to numbers are supported above 10,000 as stocks
         // const { action, customer, product, quantity, discount } = result.parsed;
-
 
 
 

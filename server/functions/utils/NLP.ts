@@ -1,170 +1,240 @@
-export const NLP = (text: string): { product: string; quantity: number } => {
-    const quantityWords: Record<string, number> = {
-      robo: 0.25,
-      nusu: 0.5,
-      "robo tatu": 0.75,
-      "nusu na robo": 0.75,
-      moja: 1,
-      mbili: 2,
-      tatu: 3,
-      nne: 4,
-      tano: 5,
-      sita: 6,
-      saba: 7,
-      nane: 8,
-      tisa: 9,
-      kumi: 10,
-    };
+// swahili-nlp.ts
 
-    let normalized = text.toLowerCase().trim();
+const verbMap: Record<string, string> = {
+  nimeuza: 'nimeuza', niliuza: 'nimeuza', nauza: 'nimeuza',
+  nimenunua: 'nimenunua', niliagiza: 'nimenunua',
+  nimetumia: 'nimetumia', nilitumia: 'nimetumia',
+  nimemkopesha: 'nimemkopesha', nilikopesha: 'nimemkopesha', ninamkopesha: 'nimemkopesha'
+};
 
-    // Combine compound phrases first
-    normalized = normalized.replace(/nusu\s+na\s+robo/g, "nusu_robo");
-    normalized = normalized.replace(/robo\s+tatu/g, "robo_tatu");
+const similarity = (a: string, b: string) => {
+  let matches = 0;
+  const len = Math.max(a.length, b.length);
+  for (let i = 0; i < len; i++) {
+    if (a[i] === b[i]) matches++;
+  }
+  return matches / len;
+};
 
-    const words = normalized.split(/\s+/);
+export function detectSwahiliTransaction(text: string) {
+  const normalized = text.toLowerCase().trim();
+  const words = normalized.split(/\s+/);
 
-    let quantity = 0;
-    const foundQuantities: number[] = [];
-
-    for (const word of words) {
-      const clean = word.replace(/[^\w.]/g, "");
-
-      if (!isNaN(Number(clean))) {
-        foundQuantities.push(Number(clean));
-        continue;
-      }
-
-      const key = clean.replace(/_/g, " ");
-      if (quantityWords[key] !== undefined) {
-        foundQuantities.push(quantityWords[key]);
+  // 1. Detect Action
+  let action = '';
+  for (const word of words) {
+    for (const key in verbMap) {
+      if (similarity(word, key) > 0.7) {
+        action = verbMap[key];
+        break;
       }
     }
-
-    // Sum up quantities, default to 1
-    quantity = foundQuantities.length > 0
-      ? foundQuantities.reduce((a, b) => a + b, 0)
-      : 1;
-
-    // Remove quantity-related words to extract product name
-    const quantityKeys = Object.keys(quantityWords).map(k => k.replace(/\s+/g, "_"));
-    const productWords = words.filter((w) => {
-      const wNorm = w.replace(/\s+/g, "_").replace(/[^\w]/g, "");
-      return (
-        !quantityKeys.includes(wNorm) &&
-        isNaN(Number(wNorm))
-      );
-    });
-
-    const product = productWords.join(" ").trim();
-
-    console.log("🛒 Product:", product || "unknown", "| Qty:", quantity);
-
-    return { product, quantity };
-}
-
-export const validateTransactionText = (text: string) => {
-  const validActions = ['nimeuza', 'nimenunua', 'nimetumia', 'nimemkopesha'];
-  const quantityMap = ['moja', 'mbili', 'tatu', 'nne', 'tano', 'sita', 'saba', 'nane', 'tisa', 'kumi', 'robo', 'nusu', 'robo tatu', 'nusu na robo'];
-  const words = text.trim().toLowerCase().split(/\s+/);
-
-  const errors: string[] = [];
-
-  if (words.length < 3) {
-    errors.push('Bonyeza kitufe cha ℹ️ kujua utaratibu. Sentensi sio sahihi');
-    return { valid: false, errors };
+    if (action) break;
   }
 
-  const action = words[0];
-  if (!validActions.includes(action)) {
-    errors.push(`Hatua "${action}" si sahihi. Jaribu: ${validActions.join(', ')}`);
-  }
+  if (!action) throw new Error("Hatua (action) haijatambulika. Tafadhali ongea tena kwa utaratibu.");
 
-  let customer = '';
-  let product = '';
-  let quantity = '';
-  let discount = 0;
+  // 2. Detect Punguzo
+  const punguzoMatch = normalized.match(/punguzo\s+([a-z0-9\s]+)/);
+  let punguzo: number = 0;
 
-  if (action === 'nimemkopesha') {
-    if (words.length < 4) {
-      errors.push('Unapomkopesha, lazima uweke jina la mteja, bidhaa, na kiasi.');
-    } else {
-      customer = words[1];
-      product = words[2];
-      quantity = words[3];
+  if (punguzoMatch) {
+    const parsed = swahiliToNumber(punguzoMatch[1].trim());
+    if (typeof parsed !== 'number' || isNaN(parsed)) {
+      throw new Error("Kama punguzo ni juu ya 10,000 andika tarakimu, usitumie mic.");
     }
-  } else {
-    product = words[1];
-    quantity = words[2];
+    punguzo = parsed;
   }
 
-  // Validate quantity
-  const isNumericQty = !isNaN(Number(quantity));
-  const swahiliParsedQty = parseSwahiliNumber(quantity);
+  // 3. Detect Unit + Quantity
+  let unit = '';
+  let quantity: string | null = null;
+  let foundIndex = -1;
 
-  if (!quantityMap.includes(quantity) && !isNumericQty && swahiliParsedQty == null) {
-    errors.push(`Kiasi "${quantity}" si sahihi. Tumia neno kama "moja", "kumi na mbili" au namba. Iwe chini ya 9,999`);
-  }
-
-
-  // Optional punguzo
-  const punguzoIndex = words.findIndex((w) => w === 'punguzo');
-  if (punguzoIndex !== -1) {
-    const nextWord = words[punguzoIndex + 1];
-    if (!nextWord || isNaN(Number(nextWord))) {
-      errors.push(`Punguzo lipo lakini halina thamani sahihi (mfano: punguzo 200).`);
-    } else {
-      discount = Number(nextWord);
+  for (let i = 0; i < words.length - 1; i++) {
+    const parsed = swahiliToNumber(words[i + 1]);
+    if (parsed !== null && !isNaN(parsed)) {
+      unit = words[i];
+      quantity = parsed.toString();
+      foundIndex = i;
+      break;
     }
   }
+
+  if (quantity === null) {
+    for (let i = 0; i < words.length; i++) {
+      const parsed = swahiliToNumber(words[i]);
+      if (parsed !== null && !isNaN(parsed)) {
+        quantity = parsed.toString();
+        foundIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (!quantity || isNaN(Number(quantity))) {
+    throw new Error("Kiasi cha bidhaa hakijatambulika vizuri. Tafadhali ongea tena.");
+  }
+
+  // 4. Extract Product
+  const afterAction = words.slice(1);
+  const ignoreWords = ['punguzo', ...Object.keys(verbMap)];
+  const filtered = afterAction.filter(w => !ignoreWords.includes(w));
+  let product = filtered.join(' ');
+
+  if (foundIndex > 0) {
+    product = afterAction.slice(0, foundIndex).join(' ').trim();
+  }
+
+  if (!product || product.length < 2) {
+    throw new Error("Bidhaa haijatambulika. Tafadhali ongea tena kwa utaratibu.");
+  }
+
+  // ✅ Output
+  console.log('🛠 Action:', action);
+  console.log('🛒 Product:', product);
+  console.log('📏 Unit:', unit || 'Haijatajwa');
+  console.log('🔢 Quantity:', quantity);
+  console.log('💸 Punguzo:', punguzo);
 
   return {
-    valid: errors.length === 0,
-    errors,
-    parsed: {
-      action,
-      customer,
-      product,
-      quantity,
-      discount
-    }
+    action,
+    product,
+    unit,
+    quantity: Number(quantity),
+    punguzo
   };
+}
+
+
+type NumberMap = Record<string, number>;
+
+const BASE: NumberMap = {
+  sifuri: 0,
+  moja: 1,
+  mbili: 2,
+  tatu: 3,
+  nne: 4,
+  tano: 5,
+  sita: 6,
+  saba: 7,
+  nane: 8,
+  tisa: 9,
+  kumi: 10,
+  ishirini: 20,
+  thelathini: 30,
+  arobaini: 40,
+  hamsini: 50,
+  sitini: 60,
+  sabini: 70,
+  thembani: 80,
+  tisini: 90
 };
 
-
-const baseNumbers: Record<string, number> = {
-  moja: 1, mbili: 2, tatu: 3, nne: 4, tano: 5,
-  sita: 6, saba: 7, nane: 8, tisa: 9, kumi: 10,
-  ishirini: 20, thelathini: 30, arobaini: 40,
-  hamsini: 50, sitini: 60, sabini: 70,
-  themanini: 80, tisini: 90
-};
-
-const multipliers: Record<string, number> = {
+const MULTIPLIERS: NumberMap = {
   mia: 100,
   elfu: 1000,
 };
 
-export function parseSwahiliNumber(input: string): number | null {
-  const words = input.toLowerCase().split(/\s+na\s+|\s+/); // supports both "na" and spaces
-  let total = 0;
-  let temp = 0;
-  let lastMultiplier = 1;
+const FRACTIONS: NumberMap = {
+  'nusu': 0.5,
+  'robo': 0.25,
+  'robo tatu': 0.75,
+  'nusu na robo': 0.75
+};
 
-  for (let word of words) {
-    if (multipliers[word]) {
-      // Commit current temp before multiplier
-      if (temp === 0) temp = 1; // e.g., "mia" = "mia moja"
-      total += temp * multipliers[word];
-      temp = 0;
-      lastMultiplier = multipliers[word];
-    } else if (baseNumbers[word] != null) {
-      temp += baseNumbers[word];
-    } else {
-      return null; // invalid word
-    }
+function swahiliToNumber(text: string): number | null {
+  const phrase = text.toLowerCase().replace(/_/g, ' ').trim();
+
+  // Direct match for known compound fractions
+  if (FRACTIONS[phrase]) {
+    return FRACTIONS[phrase];
   }
 
-  total += temp; // commit any remaining units
-  return total || null;
+  const words = phrase.split(/\s+/);
+  let total = 0;
+  let currentValue = 0;
+  let i = 0;
+
+  while (i < words.length) {
+    const word = words[i];
+
+    // Skip "na"
+    if (word === 'na') {
+      i++;
+      continue;
+    }
+
+    // Match fractions
+    if (word in FRACTIONS) {
+      total += FRACTIONS[word];
+      i++;
+      continue;
+    }
+
+    // Match pure numbers
+    if (!isNaN(parseFloat(word))) {
+      total += parseFloat(word);
+      i++;
+      continue;
+    }
+
+    // Match base numbers
+    if (word in BASE) {
+      currentValue += BASE[word];
+      i++;
+      continue;
+    }
+
+    // Match multipliers
+    if (word in MULTIPLIERS) {
+      const multiplier = MULTIPLIERS[word];
+      
+      // Special handling for "elfu" followed by numbers
+      if (word === 'elfu' && currentValue > 0) {
+        total += currentValue * multiplier;
+        currentValue = 0;
+        
+        // Check if there's more to add after "elfu"
+        if (i + 1 < words.length && words[i + 1] === 'na') {
+          i += 2; // Skip "na"
+          continue;
+        }
+      } else {
+        // Normal multiplier handling
+        if (currentValue > 0) {
+          total += currentValue * multiplier;
+          currentValue = 0;
+        } else {
+          // Handle cases like "mia mbili" (100 * 2)
+          const nextWord = words[i + 1];
+          if (nextWord && nextWord in BASE) {
+            total += BASE[nextWord] * multiplier;
+            i++; // Skip next word
+          } else {
+            // Default to 1 if no number specified
+            total += 1 * multiplier;
+          }
+        }
+      }
+      i++;
+      continue;
+    }
+
+    // Unknown word
+    console.warn(`Unknown word: ${word}`);
+    return null;
+  }
+
+  // Add any remaining current value
+  total += currentValue;
+
+    // Enforce limit
+  if (total > 10000) {
+    console.warn(`Value exceeds 10,000: ${total}`);
+    return null; // or throw new Error("Value too large");
+  }
+
+  return total;
 }
+
