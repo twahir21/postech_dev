@@ -41,11 +41,12 @@ export const HomeComponent = component$(() => {
   const { subscription } = useContext(subscriptionData);
 
   // refetch when changes occur in data
-  const { productRefetch } = useContext(RefetchContext);
+  const { productRefetch, refetchAnalytics } = useContext(RefetchContext);
   
 useVisibleTask$(async ({ track }) => {
   // values to track;
   track(() => productRefetch.value); // track the refetch signal
+  track(() => refetchAnalytics.value);
 
     const analyticsApi = new CrudService<AnalyticsTypes>("analytics");
     const analyticsData = await analyticsApi.get();

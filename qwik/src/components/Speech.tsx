@@ -1,7 +1,8 @@
-import { $, component$, useSignal, useStore } from '@builder.io/qwik';
+import { $, component$, useContext, useSignal, useStore } from '@builder.io/qwik';
 import { SendIcon, RepeatIcon } from "lucide-qwik";
 import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './ui/Toast';
+import { RefetchContext } from './context/refreshContext';
 
 export const Speech = component$(() => {
   const isListening = useSignal(false);
@@ -13,7 +14,9 @@ export const Speech = component$(() => {
     isOpen: false,
     isSuccess: false,
     message: ''
-  })
+  });
+
+  const { refetchAnalytics } = useContext(RefetchContext);
 
   const startRecognition = $(() => {
     const SpeechRecognition =
@@ -118,6 +121,7 @@ export const Speech = component$(() => {
           type={modal.isSuccess}
           message={modal.message}
           onClose$={$(() => {
+            refetchAnalytics.value = true;
             modal.isOpen = false;
         })}
         />

@@ -38,6 +38,7 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
         .where(like(products.name, `%${product.split(' ')[0]}%`)) // match "mchele" in "mchele kilo"
         .then(res => res[0]);
 
+        // 1. Check if product exists
         if (!productDetails.id) {
             return { success: false, message: `Bidhaa '${product}' haijapatikana.` };
         }
@@ -48,10 +49,10 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
             case 'nimeuza': {
                 // Check stock
                 if (productDetails.stock < quantity) {
-                return {
-                    success: false,
-                    message: "Bidhaa haina stock ya kutosha",
-                };
+                    return {
+                        success: false,
+                        message: "Bidhaa haina stock ya kutosha",
+                    };
                 }
 
                 // Deduct stock
@@ -92,12 +93,33 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
                 .set({ stock: sql`${products.stock} - ${quantity}` })
                 .where(eq(products.id, productDetails.id));
 
+                // Mark as finished
+                if (productDetails.stock - quantity <= 0) {
+                await mainDb.update(products)
+                    .set({ status: "finished" })
+                    .where(eq(products.id, productDetails.id));
+                }
+
                 // fetch customer id using its name
-                const customerId = await mainDb
+                let customerId: string | null = null;
+
+                if (customer) {
+                customerId = await mainDb
                     .select({ id: customers.id })
-                    .from(debts)
-                    .where(eq(customers.name, customer!))
+                    .from(customers)
+                    .where(eq(customers.name, customer))
                     .then(res => res[0]?.id || null);
+                }
+
+                // check if customer found
+                if (customerId === null) {
+                    return {
+                        success: false,
+                        message: "Mteja hayupo! msajili kwanza"
+                    }
+                }
+
+                console.log("customerId:", customerId, typeof customerId);
 
                 // Save debt
                 await mainDb.insert(debts).values({
@@ -117,12 +139,12 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
             case 'nimenunua': {
                 const priceBought = await mainDb.select({ priceBought: purchases.priceBought })
                                         .from(purchases)
-                                        .where(eq(products.id, productDetails.id))
+                                        .where(eq(purchases.productId, productDetails.id))
                                         .then(res => res[0]?.priceBought || "0");
 
-                // Add Stock
+                // Add Stock and update status 
                 await mainDb.update(products)
-                .set({ stock: sql`${products.stock} + ${quantity}` })
+                .set({ stock: sql`${products.stock} + ${quantity}`, status: "available" })
                 .where(eq(products.id, productDetails.id));
 
                 // insert purchases

@@ -68,8 +68,8 @@ export function detectSwahiliTransaction(text: string) {
   let productStart = actionIndex + 1;
 
   if (action === 'nimemkopesha') {
-    if (words.length < 4) {
-      throw new Error("Sentensi ya mkopo lazima iwe na angalau maneno 4: hatua, mteja, bidhaa na kiasi.");
+    if (words.length < 3) {
+      throw new Error("Sentensi ya mkopo lazima iwe na angalau maneno 4: hatua, mteja na bidhaa.");
     }
     customer = words[actionIndex + 1];
     if (!customer || customer === 'punguzo') {
