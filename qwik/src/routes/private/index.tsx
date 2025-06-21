@@ -190,7 +190,7 @@ export default component$(() => {
               </button>
 
               {store.showCalculator && (
-                <div class="fixed inset-0 flex justify-end items-center bg-opacity-50">
+                <div class="fixed inset-0 z-50 flex justify-end items-center bg-opacity-50">
                   <div class="bg-white p-6 rounded-lg shadow-lg w-80 relative border-2 border-b-blue-900">
                     <button
                       class="absolute top-2 right-2 text-gray-600 hover:text-red-600 pb-2"
@@ -237,7 +237,7 @@ export default component$(() => {
               </button>
 
               {showTooltip.value && (
-                <div class="absolute z-50 top-8 right-1 w-72 bg-white text-gray-700 p-4 rounded shadow border text-sm">
+                <div class="fixed z-50 top-8 right-2 w-72 bg-white text-gray-700 p-4 rounded shadow border text-sm">
                   <h3 class="font-bold mb-2">🗣️ Jinsi ya kutumia sauti</h3>
                     <ul class="list-disc pl-4 space-y-1">
                       <li>Anza na mojawapo ya maneno: <strong>nimeuza</strong>, <strong>nimenunua</strong>, <strong>nimetumia</strong>, au <strong>nimemkopesha</strong></li>
@@ -245,7 +245,7 @@ export default component$(() => {
                       <li>Sio lazima: Kisha taja <strong>Kategoria</strong> — mfano: “lita”, “kilo”, “katoni”, "pisi"</li>
                       <li>Kisha taja <strong>kiasi</strong> — mfano: “tatu”, “moja”, “robo”, “kumi na mbili”</li>
                       <li>Kwa mkopo: taja <strong>jina la mteja</strong> baada ya neno la kwanza — mfano: “Nimemkopesha Ali...”</li>
-                      <li>Kwa hiari: unaweza ongeza <strong>punguzo</strong> — mfano: “punguzo 200”<strong> Angalizo!: </strong>Kama punguzo ni juu ya 10,000 andika kwa tarakimu.</li>
+                      <li>Kwa hiari: unaweza ongeza <strong>punguzo</strong> — mfano: “punguzo 200”<strong> Angalizo: </strong>Kama punguzo ni juu ya 10,000 andika kwa tarakimu.</li>
                       <li>Kwa haraka: unaweza kusema <strong>sukari nusu</strong> - itakuwa inamaanisha nimeuza sukari nusu </li>
                       <li><strong>Mifano:</strong> Nimeuza chumvi 4. Nimemkopesha Ali sukari robo. Nimeuza daftari 7 punguzo 200. Nimenunua mchele kilo mia</li>
                     </ul>

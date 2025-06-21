@@ -1,10 +1,10 @@
 // swahili-nlp.ts
 
 const verbMap: Record<string, string> = {
-  nimeuza: 'nimeuza', niliuza: 'nimeuza', nauza: 'nimeuza',
-  nimenunua: 'nimenunua', niliagiza: 'nimenunua',
+  nimeuza: 'nimeuza', niliuza: 'nimeuza', nauza: 'nimeuza', nimemuuzia: "nimeuza",
+  nimenunua: 'nimenunua', niliagiza: 'nimenunua', nimemnunulia: "nimenunua",
   nimetumia: 'nimetumia', nilitumia: 'nimetumia',
-  nimemkopesha: 'nimemkopesha', nilikopesha: 'nimemkopesha', ninamkopesha: 'nimemkopesha'
+  nimekopesha: 'nimemkopesha', nilikopesha: 'nimemkopesha', ninamkopesha: 'nimemkopesha'
 };
 
 const similarity = (a: string, b: string) => {
@@ -22,10 +22,13 @@ export function detectSwahiliTransaction(text: string) {
 
   // 1. Detect Action
   let action = '';
-  for (const word of words) {
+  let actionIndex = -1;
+
+  for (let i = 0; i < words.length; i++) {
     for (const key in verbMap) {
-      if (similarity(word, key) > 0.7) {
+      if (similarity(words[i], key) > 0.7) {
         action = verbMap[key];
+        actionIndex = i;
         break;
       }
     }
@@ -35,73 +38,65 @@ export function detectSwahiliTransaction(text: string) {
   if (!action) throw new Error("Hatua (action) haijatambulika. Tafadhali ongea tena kwa utaratibu.");
 
   // 2. Detect Punguzo
-  const punguzoMatch = normalized.match(/punguzo\s+([a-z0-9\s]+)/);
-  let punguzo: number = 0;
+  let punguzo = 0;
+  const punguzoIndex = words.findIndex(w => w === 'punguzo');
 
-  if (punguzoMatch) {
-    const parsed = swahiliToNumber(punguzoMatch[1].trim());
-    if (typeof parsed !== 'number' || isNaN(parsed)) {
-      throw new Error("Kama punguzo ni juu ya 10,000 andika tarakimu, usitumie mic.");
+  if (punguzoIndex !== -1 && punguzoIndex + 1 < words.length) {
+    const parsed = swahiliToNumber(words.slice(punguzoIndex + 1).join(' '));
+    if (typeof parsed !== 'number' || isNaN(parsed) || parsed > 10000) {
+      throw new Error("Punguzo haijatambulika au kama ni zaidi ya 10,000 andika kwa tarakimu.");
     }
     punguzo = parsed;
   }
 
-  // 3. Detect Unit + Quantity
-  let unit = '';
-  let quantity: string | null = null;
-  let foundIndex = -1;
+  // 3. Determine position of quantity (right before 'punguzo' or at end)
+  let quantity: number = 1;
+  let quantityIndex = -1;
 
-  for (let i = 0; i < words.length - 1; i++) {
-    const parsed = swahiliToNumber(words[i + 1]);
-    if (parsed !== null && !isNaN(parsed)) {
-      unit = words[i];
-      quantity = parsed.toString();
-      foundIndex = i;
+  for (let i = words.length - 1; i >= 0; i--) {
+    if (i === punguzoIndex || words[i] === 'punguzo') continue;
+    const parsed = swahiliToNumber(words[i]);
+    if (typeof parsed === 'number' && !isNaN(parsed)) {
+      quantity = parsed;
+      quantityIndex = i;
       break;
     }
   }
 
-  if (quantity === null) {
-    for (let i = 0; i < words.length; i++) {
-      const parsed = swahiliToNumber(words[i]);
-      if (parsed !== null && !isNaN(parsed)) {
-        quantity = parsed.toString();
-        foundIndex = i;
-        break;
-      }
+  // 4. Extract customer (only if action is 'nimemkopesha')
+  let customer: string | null = null;
+  let productStart = actionIndex + 1;
+
+  if (action === 'nimemkopesha') {
+    if (words.length < 4) {
+      throw new Error("Sentensi ya mkopo lazima iwe na angalau maneno 4: hatua, mteja, bidhaa na kiasi.");
     }
+    customer = words[actionIndex + 1];
+    if (!customer || customer === 'punguzo') {
+      throw new Error("Mteja hajatajwa vizuri. Tafadhali sema jina la mteja mara baada ya 'nimemkopesha'.");
+    }
+    productStart++; // Product starts after customer
   }
 
-  if (!quantity || isNaN(Number(quantity))) {
-    throw new Error("Kiasi cha bidhaa hakijatambulika vizuri. Tafadhali ongea tena.");
-  }
+  // 5. Build product from remaining words between productStart -> quantityIndex/punguzoIndex
+  const productEnd = quantityIndex !== -1
+    ? quantityIndex
+    : punguzoIndex !== -1
+    ? punguzoIndex
+    : words.length;
 
-  // 4. Extract Product
-  const afterAction = words.slice(1);
-  const ignoreWords = ['punguzo', ...Object.keys(verbMap)];
-  const filtered = afterAction.filter(w => !ignoreWords.includes(w));
-  let product = filtered.join(' ');
-
-  if (foundIndex > 0) {
-    product = afterAction.slice(0, foundIndex).join(' ').trim();
-  }
+  const productWords = words.slice(productStart, productEnd);
+  const product = productWords.join(' ').trim();
 
   if (!product || product.length < 2) {
-    throw new Error("Bidhaa haijatambulika. Tafadhali ongea tena kwa utaratibu.");
+    throw new Error("Bidhaa haijatambulika vizuri. Tafadhali ongea tena kwa utaratibu.");
   }
-
-  // ✅ Output
-  console.log('🛠 Action:', action);
-  console.log('🛒 Product:', product);
-  console.log('📏 Unit:', unit || 'Haijatajwa');
-  console.log('🔢 Quantity:', quantity);
-  console.log('💸 Punguzo:', punguzo);
 
   return {
     action,
+    customer,
     product,
-    unit,
-    quantity: Number(quantity),
+    quantity,
     punguzo
   };
 }

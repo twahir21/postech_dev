@@ -67,8 +67,6 @@ export const Speech = component$(() => {
 
     const result = await api.create({ text });
 
-    console.log("Backend Result: ", result);
-
     modal.isOpen = true;
     modal.isSuccess = result.success;
     modal.message = result.message || (result.success ? 'Umefanikiwa' : 'Hitilafu imetokea, jaribu baadae');
@@ -97,7 +95,15 @@ export const Speech = component$(() => {
 
       {showPopup.value && (
         <div class="fixed top-16 right-0 w-full max-w-sm bg-yellow-50 border p-4 rounded-2xl shadow-md z-10">
-          <div class="text-xl mb-2">🗣️ <span class="font-mono">{transcript.value}</span></div>
+          <div class="mb-2">
+            <label class="text-gray-500">🗣️ Hariri kabla ya kutuma:</label>
+            <textarea
+              class="w-full mt-1 border rounded p-2 text-xl bg-white"
+              bind:value={transcript}
+              rows={2}
+            />
+          </div>
+
           <div class="flex justify-between mt-4">
             <button class="text-2xl" onClick$={handleRepeat} title="Rudia"> <RepeatIcon /> </button>
             <button class="text-2xl" onClick$={handleSend} title="Tuma"> <SendIcon /> </button>
