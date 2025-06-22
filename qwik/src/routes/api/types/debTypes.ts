@@ -16,6 +16,7 @@ export interface CustomerDebt {
 }
 
 export interface RecentPayment {
+  customerId: string;
   name: string;
   totalPaid: string;
   paymentDate: string;
@@ -32,5 +33,7 @@ export interface DataItemDebts {
   statistics: Statistics;
   customerDebts: CustomerDebt[];
   recentPayments: RecentPayment[];
+  madeniYaliyolipwa: number;
+  madeniYaliyokusanywa: number;
   pagination: Pagination;
 }

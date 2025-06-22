@@ -2,9 +2,9 @@
 
 const verbMap: Record<string, string> = {
   nimeuza: 'nimeuza', niliuza: 'nimeuza', nauza: 'nimeuza', nimemuuzia: "nimeuza",
-  nimenunua: 'nimenunua', niliagiza: 'nimenunua', nimemnunulia: "nimenunua",
+  nimenunua: 'nimenunua', niliagiza: 'nimenunua', nimemnunulia: "nimenunua", nimeongeza: "nimenunua",
   nimetumia: 'nimetumia', nilitumia: 'nimetumia',
-  nimekopesha: 'nimemkopesha', nilikopesha: 'nimemkopesha', ninamkopesha: 'nimemkopesha'
+  nimekopesha: 'nimemkopesha', nilikopesha: 'nimemkopesha', ninamkopesha: 'nimemkopesha', namkopesha: 'nimemkopesha'
 };
 
 const similarity = (a: string, b: string) => {
@@ -16,7 +16,7 @@ const similarity = (a: string, b: string) => {
   return matches / len;
 };
 
-export function detectSwahiliTransaction(text: string) {
+export function detectSwahiliTransaction(text: string): { action: string; product: string; customer: string | null; quantity: number; punguzo: number } {
   const normalized = text.toLowerCase().trim();
   const words = normalized.split(/\s+/);
 
@@ -37,6 +37,7 @@ export function detectSwahiliTransaction(text: string) {
 
   if (!action) throw new Error("Hatua (action) haijatambulika. Tafadhali ongea tena kwa utaratibu.");
 
+  if (action === 'nimetumia') return { action, product: '', customer: '', quantity: 0, punguzo: 0 };
   // 2. Detect Punguzo
   let punguzo = 0;
   const punguzoIndex = words.findIndex(w => w === 'punguzo');
@@ -88,9 +89,9 @@ export function detectSwahiliTransaction(text: string) {
   const productWords = words.slice(productStart, productEnd);
   const product = productWords.join(' ').trim();
 
-  if (!product || product.length < 2) {
-    throw new Error("Bidhaa haijatambulika vizuri. Tafadhali ongea tena kwa utaratibu.");
-  }
+  // if (!product || product.length < 2) {
+  //   throw new Error("Bidhaa haijatambulika vizuri. Tafadhali ongea tena kwa utaratibu.");
+  // }
 
   return {
     action,
@@ -101,6 +102,101 @@ export function detectSwahiliTransaction(text: string) {
   };
 }
 
+
+type ParsedTransaction = {
+  action: string;
+  product: string;
+  quantity: number;
+  money: number;
+  activity: string;
+};
+
+
+/**
+ * Parses sentences starting with "nimetumia", extracting:
+ * - action
+ * - product or money
+ * - quantity (default 1)
+ * - activity (default "nyumbani")
+ */
+export function parseNimetumiaSentence(sentence: string): ParsedTransaction {
+  const normalized = sentence.toLowerCase().trim();
+  const words = normalized.split(/\s+/);
+
+  // Ensure action is "nimetumia" (or similar variant)
+  const actionMatch = words[0]?.match(/nime(tumia|letumia|litumia)/);
+  if (!actionMatch) {
+    throw new Error('Sentensi lazima ianze na "nimetumia", "niletumia", n.k.');
+  }
+
+  const action = 'nimetumia';
+
+  let activity = 'nyumbani';
+  let product = 'nothing';
+  let money: number = 0;
+  let quantity: number = 1;
+
+  // Find index of "kwa ajili ya"
+  const activityIndex = words.findIndex((w, i) => w === 'kwa' && words[i + 1] === 'ajili' && words[i + 2] === 'ya');
+
+  if (activityIndex !== -1 && words[activityIndex + 3]) {
+    activity = words.slice(activityIndex + 3).join(' ');
+  }
+
+  // Extract all words between action and activity
+  const potentialProductOrMoneyWords = activityIndex !== -1
+    ? words.slice(1, activityIndex) // words after "nimetumia", before "kwa ajili ya"
+    : words.slice(1); // rest of sentence if no activity
+
+  const phrase = potentialProductOrMoneyWords.join(' ').trim();
+
+  // NEW: Check if phrase is already a simple numeric value
+  const directNum = parseFloat(phrase);
+  if (!isNaN(directNum)) {
+    // It's a straight number → treat as money
+    money = directNum;
+    product = 'nothing';
+  } else {
+    // Try full Swahili number parsing
+    const fullParse = swahiliToNumber(phrase);
+    if (fullParse !== null && !isNaN(fullParse)) {
+      // It's money in Swahili format
+      money = fullParse;
+      product = '';
+    } else {
+      // It's likely a product name + optional quantity
+      let lastNumericIndex = -1;
+
+      for (let i = potentialProductOrMoneyWords.length - 1; i >= 0; i--) {
+        const part = potentialProductOrMoneyWords.slice(i).join(' ');
+        const parsed = swahiliToNumber(part);
+
+        if (parsed !== null && !isNaN(parsed)) {
+          lastNumericIndex = i;
+          quantity = parsed;
+          break;
+        }
+      }
+
+      if (lastNumericIndex > -1) {
+        // Product is everything before numeric phrase
+        product = potentialProductOrMoneyWords.slice(0, lastNumericIndex).join(' ') || 'hakijajulikani';
+      } else {
+        // No quantity found, assume product only, quantity = 1
+        product = potentialProductOrMoneyWords.join(' ');
+      }
+    }
+  }
+
+
+  return {
+    action,
+    product: product.trim() || 'haijajulikana',
+    quantity: quantity || 1,
+    activity,
+    money
+  };
+}
 
 type NumberMap = Record<string, number>;
 

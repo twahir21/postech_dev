@@ -154,7 +154,7 @@ export default component$(() => {
             { name: "Ripoti", emoji: "📉" },
             { name: "Bidhaa", emoji: "📦" },
             { name: "Wateja", emoji: "👥" },
-            { name: "Zinazoulizwa", emoji: "⭐" },
+            // { name: "Zinazoulizwa", emoji: "⭐" },
             { name: "Wasambazaji", emoji: "🔗" },
             { name: "Mipangilio", emoji: "⚙️" },
           ].map(({ name, emoji }) => (

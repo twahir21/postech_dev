@@ -16,7 +16,7 @@ export const ExpensesComponent = component$(() => {
   const page = useSignal(1);
   const isDeleting = useSignal(false);
   const selectedExp = useSignal('');
-  const perPage = 6;
+  const perPage = 5;
   const state = useStore({
     items: [] as { description: string; amount: number; date: string; id:string }[],
     totalPages: 1,
@@ -59,9 +59,9 @@ export const ExpensesComponent = component$(() => {
     await fetchExpenses(); // refetch again
 
   });
-  
 
-  useVisibleTask$(async () => {
+  useVisibleTask$(async ({ track }) => {
+    track(() => page.value);
     await fetchExpenses();
   });
 

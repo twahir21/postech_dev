@@ -60,21 +60,35 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
     .offset((page - 1) * pageSize);
 
   // Get recent payment history for the dashboard
-const paymentHistory = await mainDb.select({
-  customerId: customers.id,
-  name: customers.name,
-  totalPaid: sql<number>`SUM(${debtPayments.amountPaid})`,
-  paymentDate: sql<Date>`MAX(${debtPayments.paymentDate})`,
-})
-  .from(debtPayments)
-  .innerJoin(customers, eq(debtPayments.customerId, customers.id)) 
-  .where(and(
-    eq(debtPayments.shopId, shopId),
-    eq(customers.shopId, shopId)
-  ))
-  .groupBy(customers.id, customers.name)
-  .orderBy(desc(sql`MAX(${debtPayments.paymentDate})`))
-  .limit(5);
+    const paymentHistory = await mainDb.select({
+      customerId: customers.id,
+      name: customers.name,
+      totalPaid: sql<number>`SUM(${debtPayments.amountPaid})`,
+      paymentDate: sql<Date>`MAX(${debtPayments.paymentDate})`,
+    })
+      .from(debtPayments)
+      .innerJoin(customers, eq(debtPayments.customerId, customers.id)) 
+      .where(and(
+        eq(debtPayments.shopId, shopId),
+        eq(customers.shopId, shopId)
+      ))
+      .groupBy(customers.id, customers.name)
+      .orderBy(desc(sql`MAX(${debtPayments.paymentDate})`))
+      .limit(5);
+
+      // Madeni yaliyolipwa (fully paid debts)
+    const fullyPaidDebtsCount = await mainDb.select({
+      count: sql<number>`COUNT(*)`
+    }).from(debts).where(and(
+      eq(debts.shopId, shopId),
+      eq(debts.remainingAmount, "0.00")
+    ));
+
+  // Malipo yaliyokusanywa (total amount paid)
+  const [totalCollected] = await mainDb.select({
+    total: sql<number>`SUM(${debtPayments.amountPaid})`
+  }).from(debtPayments).where(eq(debtPayments.shopId, shopId));
+
 
 
   return {
@@ -83,6 +97,8 @@ const paymentHistory = await mainDb.select({
         statistics: stats as DebtStatistics,
         customerDebts: customerDebts as CustomerDebt[],
         recentPayments: paymentHistory as DebtPaymentHistory[],
+        madeniYaliyolipwa: fullyPaidDebtsCount[0].count,
+        malipoYaliyokusanywa: totalCollected.total || 0,
         pagination: {
         currentPage: page,
         pageSize,
@@ -113,6 +129,22 @@ export const payDebt = async ({ shopId, userId, body }: { shopId: string; userId
 
     amountPaid = sanitizeNumber(amountPaid);
 
+    // validate
+    const debtValue = await mainDb.select({
+      amount: debts.remainingAmount
+    }).from(debts).where(and(
+      eq(debts.id, debtId),
+      eq(debts.shopId, shopId),
+      eq(debts.customerId, customerId)
+    )).then(res => res[0]);
+
+    if (amountPaid > Number(debtValue.amount)) {
+      return {
+        success: false,
+        message: "Kiasi cha kulipia hakiwezi kuzidi deni. Ingiza taarifa vizuri"
+      };
+    }
+
     await mainDb.insert(debtPayments).values({
       customerId,
       amountPaid: amountPaid.toString().trim(),
@@ -128,7 +160,6 @@ export const payDebt = async ({ shopId, userId, body }: { shopId: string; userId
       eq(debts.shopId, shopId)
     ));
 
-    console.log(remainingAmount.remainingAmount, typeof remainingAmount.remainingAmount);
     const newAmount = new Decimal(remainingAmount.remainingAmount)
         .minus(amountPaid)
         .toFixed(2); // keeps it as string with 2 decimal places

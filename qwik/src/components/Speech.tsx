@@ -58,7 +58,12 @@ export const Speech = component$(() => {
 
   const handleSend = $( async () => {
 
-    const allowedActions = ['nimeuza', 'nimenunua', 'nimetumia', 'nimemkopesha'];
+    const allowedActions = [
+      'nimeuza', 'niliuza', 'nilimuuzia','nauza', 'nimemuuzia',
+      'nimenunua', 'nimeongeza', 'niliagiza', 'nimemnunulia',
+      'nimetumia', 'nilitumia', 
+      'nimemkopesha', 'namkopesha', 'nilimkopesha'
+    ];
 
     let text = transcript.value.trim();
     const firstWord = text.split(' ')[0].toLowerCase();

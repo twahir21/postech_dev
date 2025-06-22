@@ -3,7 +3,7 @@ import { mainDb } from "../database/schema/connections/mainDb";
 import { customers, debts, expenses, products, purchases, sales } from "../database/schema/shop";
 import { sanitizeString } from "./security/xss";
 import { isPotentialXSS } from "./utils/isXSS";
-import { detectSwahiliTransaction } from "./utils/NLP";
+import { detectSwahiliTransaction, parseNimetumiaSentence } from "./utils/NLP";
 import { formatFloatToFixed } from "./security/money";
 
 export const handleSpeech = async (shopId: string, userId: string, text: string) : Promise<{ success: boolean; message: string }> => {
@@ -17,14 +17,8 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
 
         // ? format is [action] [optional: customer] [product] [optional: unit] [quantity] [optional: punguzo <number>]
         // ! swahili texts convertion to numbers are supported above 10,000 as stocks
-        const { action, product, customer,quantity, punguzo } = detectSwahiliTransaction(sanitizeString(text));
-        console.log(
-            "action:", action,
-            "product:", product,
-            "customer:", customer,
-            "quantity:", quantity,
-            "punguzo:", punguzo
-        );
+        const { action, product, customer, quantity, punguzo } = detectSwahiliTransaction(sanitizeString(text));
+
 
         // fetch product Id first using product name nearest match
         const productDetails = await mainDb
@@ -39,7 +33,7 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
         .then(res => res[0]);
 
         // 1. Check if product exists
-        if (!productDetails.id) {
+        if (!productDetails) {
             return { success: false, message: `Bidhaa '${product}' haijapatikana.` };
         }
 
@@ -80,6 +74,62 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
                 });
 
                 return { success: true, message: "Mauzo yamehifadhiwa kikamilifu" };
+            }
+
+            case 'nimetumia': {
+                let { 
+                    action, activity, product, quantity, money 
+                } = parseNimetumiaSentence(sanitizeString(text))
+
+                if (product != 'nothing'){
+                    const productUse = await mainDb
+                    .select({ 
+                        id: products.id,
+                        priceSold: products.priceSold,
+                        stock: products.stock,
+                        supplierId: products.supplierId
+                    })
+                    .from(products)
+                    .where(like(products.name, `%${product.split(' ')[0]}%`)) // match "mchele" in "mchele kilo"
+                    .then(res => res[0]);
+
+                    // 1. Check if product exists
+                    if (!productUse) {
+                        return { success: false, message: `Bidhaa '${product}' haijapatikana.` };
+                    }
+                
+                    // Check stock
+                    if (productUse.stock < quantity) {
+                    return { success: false, message: "Bidhaa haina stock ya kutosha" };
+                    }
+
+                    // Deduct stock
+                    await mainDb.update(products)
+                        .set({ stock: sql`${products.stock} - ${quantity}` })
+                        .where(eq(products.id, productDetails.id));
+
+                    // Mark as finished
+                    if (productUse.stock - quantity <= 0) {
+                        await mainDb.update(products)
+                            .set({ status: "finished" })
+                            .where(eq(products.id, productDetails.id));
+                    }
+                    if(money === 0) money = Number(productUse.priceSold ) * quantity;
+                
+                }
+
+                // insert into expenses
+                await mainDb.insert(expenses).values({
+                    description: activity,
+                    amount: formatFloatToFixed(money),
+                    shopId
+                });
+
+                return {
+                    success: true,
+                    message: "Matumizi yamehifadhiwa kikamilifu"
+                }
+
             }
 
             case 'nimemkopesha': {

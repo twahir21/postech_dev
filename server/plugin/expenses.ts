@@ -11,11 +11,12 @@ export const expensesPlugin = new Elysia()
         name: 'jwt',
         secret: JWT_SECRET,
     }))
-    .get("/expenses", async({ cookie, jwt }) => {
+    .get("/expenses", async({ cookie, jwt, query }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
         if (!shopId || !userId) return;
 
-        return await expFunc({ shopId, userId })     
+
+        return await expFunc({ shopId, userId, query });     
     })
     .delete("/expenses/:id", async({ cookie, jwt, params }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });

@@ -333,3 +333,15 @@ convert qwik to TWA for apk conversion.
 ##### use console.time and console.timeEnd to track route speed (time_taken)
 
 ## it start to pick numbers when sound api is > 10
+
+🧠 Example:
+
+const result1 = 0 || 10;     // ➜ 10 😬
+const result2 = 0 ?? 10;     // ➜ 0 ✅
+
+const result3 = "" || "text"; // ➜ "text" 😬
+const result4 = "" ?? "text"; // ➜ "" ✅
+✅ When to use what:
+Use ?? when you want to preserve valid falsy values like 0 or "".
+
+Use || when you're okay with any falsy value being replaced.

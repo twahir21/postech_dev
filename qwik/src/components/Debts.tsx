@@ -8,29 +8,6 @@ import { Receipt } from './ui/Receipt';
 import { RefetchContext } from './context/refreshContext';
 
 export const DebtComponent = component$(() => {
-  // const dummyDebts = [
-  //   {
-  //     id: 1,
-  //     customer: 'Juma Kipanga',
-  //     total: 50000,
-  //     paid: 20000,
-  //     dueDate: '2025-04-30',
-  //     lastPayment: '2025-04-14',
-  //     history: [
-  //       { date: '2025-04-10', amount: 30000 },
-  //       { date: '2025-04-14', amount: 20000 },
-  //     ],
-  //   },
-  //   {
-  //     id: 2,
-  //     customer: 'Mwanaidi J.',
-  //     total: 75000,
-  //     paid: 0,
-  //     dueDate: '2025-05-02',
-  //     lastPayment: null,
-  //     history: [],
-  //   },
-  // ];
 
   const modal = useStore({
     isOpen: false,
@@ -41,7 +18,9 @@ export const DebtComponent = component$(() => {
     arrData: {
       DebtData: [] as CustomerDebt[],
       recentPayments: [] as RecentPayment[]
-    }
+    },
+    madeniYaliyokusanywa: 0 as number,
+    madeniYaliyolipwa: 0 as number
   });
 
   const { debtRefetch } = useContext(RefetchContext);
@@ -78,6 +57,9 @@ export const DebtComponent = component$(() => {
     modal.arrData.DebtData = debtResults.data[0].customerDebts;
     modal.arrData.recentPayments = debtResults.data[0].recentPayments;
 
+    modal.madeniYaliyokusanywa = debtResults.data[0].madeniYaliyokusanywa;
+    modal.madeniYaliyolipwa = debtResults.data[0].madeniYaliyolipwa;
+
     // reset trigger refetch
     debtRefetch.value = false;
   });
@@ -108,6 +90,15 @@ const groupedDebts = Object.values(
   }, {} as Record<string, CustomerDebt>)
 );
 
+const paymentMap = modal.arrData.recentPayments.reduce((acc, payment) => {
+  if (!acc[payment.customerId]) {
+    acc[payment.customerId] = [];
+  }
+  acc[payment.customerId].push(payment);
+  return acc;
+}, {} as Record<string, RecentPayment[]>);
+
+
 
   return (
     <>
@@ -118,8 +109,8 @@ const groupedDebts = Object.values(
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm md:text-base">
             <div class="bg-teal-100 p-3 rounded-xl">💰 Jumla ya Madeni: <strong>{modal.allDebts}/= TZS</strong></div>
             <div class="bg-yellow-100 p-3 rounded-xl">👥 Wateja Wenye Madeni: <strong>{modal.allDebters}</strong></div>
-            <div class="bg-green-100 p-3 rounded-xl">✅ Madeni Yaliyolipwa: <strong>1</strong></div>
-            <div class="bg-blue-100 p-3 rounded-xl">📈 Malipo Yaliyokusanywa: <strong>6,000 TZS</strong></div>
+            <div class="bg-green-100 p-3 rounded-xl">✅ Madeni Yaliyolipwa: <strong>{modal.madeniYaliyolipwa}</strong></div>
+            <div class="bg-blue-100 p-3 rounded-xl">📈 Malipo Yaliyokusanywa: <strong>{formatMoney(modal.madeniYaliyolipwa)} TZS</strong></div>
         </div>
         </div>
 
@@ -128,6 +119,8 @@ const groupedDebts = Object.values(
           <h2 class="text-2xl md:text-2xl font-bold mb-4  text-teal-700">📒 Madeni ya Wateja</h2>
           <div class="grid gap-y-6 gap-x-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
             {groupedDebts.length > 0 ? groupedDebts.map((debt, index) => {
+              const customerPayments = paymentMap[debt.customerId] ?? [];
+
               return (
                 <div
                   key={index}
@@ -142,21 +135,23 @@ const groupedDebts = Object.values(
                     <p>💰 Jumla ya Deni: <span class="font-semibold text-red-600">{formatMoney(Number(debt.totalDebt))}/= </span></p>
                     <p>✅ Alicholipa: {formatMoney(Number(debt.totalDebt) - Number(debt.remainingAmount))}/=</p>
                     <p>🕒 Bado: <span class="font-semibold text-orange-600">{formatMoney(Number(debt.remainingAmount))}/=</span></p>
-                    <p>📅 Malipo ya Mwisho: {formatDateTime(debt.lastPaymentDate ?? "hakuna") || '—'}</p>
+                    <p>📅 Malipo ya Mwisho: {formatDateTime((debt.lastPaymentDate) ?? "hakuna") || '—'}</p>
                   </div>
 
-                  {modal.arrData.recentPayments.length > 0 && (
+                  {customerPayments.length > 0 && (
                     <details class="mt-2 text-sm md:text-base">
                       <summary class="cursor-pointer text-blue-600 hover:underline">📜 Angalia Malipo</summary>
                       <ul class="ml-4 mt-1 list-disc text-gray-700">
-                        {modal.arrData.recentPayments!.map((h, i) => (
+                        {customerPayments.map((h, i) => (
                           <li key={i}>
-                            {h.paymentDate}: {h.totalPaid.toLocaleString()} TZS
+                            Tarehe: {formatDateTime(h.paymentDate)}<br />
+                            Kiasi: {formatMoney(Number(h.totalPaid))} TZS
                           </li>
                         ))}
                       </ul>
                     </details>
                   )}
+
 
                   {/* FIRE THE POPUP FORM  */}
                   <Popup customerId={debt.customerId} debtId={debt.debtId} />

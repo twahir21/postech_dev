@@ -31,7 +31,7 @@ export const Popup = component$(({ customerId, debtId }: { customerId: string; d
   });
 
   return (
-    <div class="h-auto w-auto flex items-center justify-center">
+    <div class="h-auto w-auto flex items-center">
       {/* Trigger Button */}
       <button
         onClick$={() => (state.showPopup = true)}

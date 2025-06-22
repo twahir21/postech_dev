@@ -303,7 +303,9 @@ export const ProductComponent = component$(() => {
         Hatua ya 3:
       </h1>
 
-      <p>Anza kutumia mic au text kufanya mauzo, manunuzi, matumizi au kukopesha </p>
+      <p class="max-w-2xl mx-auto bg-green-200 border-2 border-dashed border-gray-400 text-gray-800 p-5 mt-4 rounded-lg text-base italic">
+        Anza kutumia mic au text kufanya mauzo, manunuzi, matumizi au kukopesha
+      </p>
       
         {/* Modal Popup */}
         {store.modal.isOpen && (

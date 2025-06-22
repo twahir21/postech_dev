@@ -18,34 +18,43 @@ interface ExpensesItems {
   }[];
 }
 
-export const expFunc = async ({ shopId, userId, page = 1, limit = 5 }: { shopId: string; userId: string; page?: number; limit?: number }): Promise<ExpensesItems> => {
+export const expFunc = async ({
+  shopId,
+  userId,
+  query
+}: {
+  shopId: string;
+  userId: string;
+  query: { page?: number; limit?: number };
+}): Promise<ExpensesItems> => {
   try {
-    // 1. Get total amount
-    const totalAmountResult = await mainDb
-      .select({
-        totalAmount: sql<number>`SUM(${expenses.amount})`.as('total'),
-      })
+    const page = query.page || 1;
+    const limit = query.limit || 5;
+
+    // 1. Calculate total amount spent
+    const [amountRow] = await mainDb
+      .select({ totalAmount: sql<number>`SUM(${expenses.amount})`.as("total") })
       .from(expenses)
       .where(eq(expenses.shopId, shopId));
 
-    const totalAmount = Number(totalAmountResult[0]?.totalAmount ?? 0);
+    const totalAmount = Number(amountRow?.totalAmount ?? 0);
 
-    // 2. Get total count for pagination
-    const [{ count }] = await mainDb
+    // 2. Get total item count for pagination
+    const [countRow] = await mainDb
       .select({ count: sql<number>`COUNT(*)` })
       .from(expenses)
       .where(eq(expenses.shopId, shopId));
 
-    const totalItems = count ?? 0;
-    const totalPages = Math.ceil(totalItems / limit);
+    const totalItems = countRow?.count ?? 0;
+    const totalPages = Math.max(1, Math.ceil(totalItems / limit));
 
-    // 3. Get paginated expense items
-    const expenseItems = await mainDb
+    // 3. Fetch paginated expense entries
+    const items = await mainDb
       .select({
+        id: expenses.id,
         description: expenses.description,
         amount: expenses.amount,
         date: expenses.date,
-        id: expenses.id
       })
       .from(expenses)
       .where(eq(expenses.shopId, shopId))
@@ -55,21 +64,20 @@ export const expFunc = async ({ shopId, userId, page = 1, limit = 5 }: { shopId:
 
     return {
       success: true,
-      message: 'Umefanikiwa kupata taarifa',
+      message: "Umefanikiwa kupata taarifa",
       data: [{
         totalAmount,
         currentPage: page,
         totalPages,
         itemsPerPage: limit,
-        items: expenseItems,
+        items,
       }],
     };
+
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error
-        ? error.message
-        : 'Hitilafu imetokea kwenye seva',
+      message: error instanceof Error ? error.message : "Hitilafu imetokea kwenye seva",
     };
   }
 };
