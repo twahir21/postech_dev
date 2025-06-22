@@ -20,28 +20,17 @@ export const DebtComponent = component$(() => {
       recentPayments: [] as RecentPayment[]
     },
     madeniYaliyokusanywa: 0 as number,
-    madeniYaliyolipwa: 0 as number
+    madeniYaliyolipwa: 0 as number,
+    totalCollected: 0 as number
   });
 
   const { debtRefetch } = useContext(RefetchContext);
-//   name
-// : 
-// "twahir"
-// paymentDate
-// : 
-// "2025-06-11 05:37:12.699485"
-// totalPaid
-// : 
-// "289999.00"
-
 
   useResource$(async ({ track }) => {
     track(() => debtRefetch.value);
     const newApi = new CrudService<DataItemDebts>("get-debts?page=1&pageSize=10");
 
     const debtResults = await newApi.get();
-
-    console.log("debts results: ", debtResults)
 
     if (!debtResults.success) {
       modal.isOpen = true;
@@ -59,6 +48,8 @@ export const DebtComponent = component$(() => {
 
     modal.madeniYaliyokusanywa = debtResults.data[0].madeniYaliyokusanywa;
     modal.madeniYaliyolipwa = debtResults.data[0].madeniYaliyolipwa;
+
+    modal.totalCollected = debtResults.data[0].totalCollected;
 
     // reset trigger refetch
     debtRefetch.value = false;
@@ -99,7 +90,6 @@ const paymentMap = modal.arrData.recentPayments.reduce((acc, payment) => {
 }, {} as Record<string, RecentPayment[]>);
 
 
-
   return (
     <>
       <div class="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
@@ -110,7 +100,7 @@ const paymentMap = modal.arrData.recentPayments.reduce((acc, payment) => {
             <div class="bg-teal-100 p-3 rounded-xl">💰 Jumla ya Madeni: <strong>{modal.allDebts}/= TZS</strong></div>
             <div class="bg-yellow-100 p-3 rounded-xl">👥 Wateja Wenye Madeni: <strong>{modal.allDebters}</strong></div>
             <div class="bg-green-100 p-3 rounded-xl">✅ Madeni Yaliyolipwa: <strong>{modal.madeniYaliyolipwa}</strong></div>
-            <div class="bg-blue-100 p-3 rounded-xl">📈 Malipo Yaliyokusanywa: <strong>{formatMoney(modal.madeniYaliyolipwa)} TZS</strong></div>
+            <div class="bg-blue-100 p-3 rounded-xl">📈 Malipo Yaliyokusanywa: <strong>{formatMoney(modal.totalCollected)} TZS</strong></div>
         </div>
         </div>
 

@@ -90,7 +90,6 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
   }).from(debtPayments).where(eq(debtPayments.shopId, shopId));
 
 
-
   return {
     success: true,
     data: [{
@@ -99,6 +98,7 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
         recentPayments: paymentHistory as DebtPaymentHistory[],
         madeniYaliyolipwa: fullyPaidDebtsCount[0].count,
         malipoYaliyokusanywa: totalCollected.total || 0,
+        totalCollected: Number(totalCollected.total) || 0,
         pagination: {
         currentPage: page,
         pageSize,

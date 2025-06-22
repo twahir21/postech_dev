@@ -35,5 +35,6 @@ export interface DataItemDebts {
   recentPayments: RecentPayment[];
   madeniYaliyolipwa: number;
   madeniYaliyokusanywa: number;
+  totalCollected: number;
   pagination: Pagination;
 }
