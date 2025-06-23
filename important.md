@@ -345,3 +345,5 @@ const result4 = "" ?? "text"; // ➜ "" ✅
 Use ?? when you want to preserve valid falsy values like 0 or "".
 
 Use || when you're okay with any falsy value being replaced.
+
+# for max speed server should be 100ms - 300ms as maximum 

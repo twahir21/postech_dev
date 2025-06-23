@@ -2,7 +2,7 @@ import { mainDb } from "../database/schema/connections/mainDb";
 import type { CustomerTypes, headTypes, ProductQuery } from "../types/types";
 import { sanitizeString } from "./security/xss";
 import { customers } from "../database/schema/shop";
-import { and, eq, ilike, sql } from "drizzle-orm";
+import { and, eq, ilike, or, sql } from "drizzle-orm";
 
 export const customerPost = async ({ body, userId, shopId, headers}: {
     body: CustomerTypes;
@@ -10,7 +10,9 @@ export const customerPost = async ({ body, userId, shopId, headers}: {
     shopId: string;
     headers: headTypes;
 }) => {
-
+  try {
+    
+    console.time("customerPost");
     // Extract the validated data
     let {name, contact} = body as CustomerTypes;
 
@@ -20,15 +22,23 @@ export const customerPost = async ({ body, userId, shopId, headers}: {
 
     // check if the customer already exists
     const existingCustomer = await mainDb
-        .select()
+        .select({ name: customers.name, contact: customers.contact })
         .from(customers)
-        .where(eq(customers.name, name));
+        .where(
+          and(
+            eq(customers.shopId, shopId),
+            or(
+              eq(customers.name, name),
+              eq(customers.contact, contact)
+            )
+          )
+        );
 
     
     if (existingCustomer.length > 0) {
         return {
             success: false,
-            message: "Mteja huyu tayari yupo",
+            message: "Mteja huyu tayari yupo au namba za simu zimesajiliwa",
         }
     }
 
@@ -42,12 +52,20 @@ export const customerPost = async ({ body, userId, shopId, headers}: {
         })
         .returning();
     const data = insertCustomers[0];
-
+      console.timeEnd("customerPost");
     return {
         success: true,
         message: "Umefanikiwa kuingiza mteja",
         data: data
     };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error
+        ? error.message
+        : "Hitilafu imetokea kwenye seva",
+    }
+  }
 }
 
 
@@ -79,7 +97,7 @@ export const customerGet = async ({
     const total = await mainDb
       .select({ count: sql<number>`count(*)` })
       .from(customers)
-      .where(where || undefined)
+      .where(where)
       .then((rows) => Number(rows[0].count));
 
     // Fetch customers
@@ -90,6 +108,7 @@ export const customerGet = async ({
       .orderBy(customers.createdAt)
       .limit(limit)
       .offset(offset);
+
 
     if (existingCustomer.length === 0) {
       return {
