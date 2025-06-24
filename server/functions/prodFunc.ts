@@ -14,12 +14,12 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
         let  {name, priceBought, priceSold, stock, minStock, unit} = body as productTypes;
 
         // sanitize or remove xss scripts if available
-        name = sanitizeString(name);
+        name = sanitizeString(name).trim();
         priceBought = sanitizeNumber(priceBought);
         priceSold = sanitizeNumber(priceSold);
         stock = sanitizeNumber(stock);
         minStock = sanitizeNumber(minStock);
-        unit = sanitizeString(unit);
+        unit = sanitizeString(unit).trim();
 
         // check if user has reached limit of products
         const prdResult = await prodCheck({ shopId });

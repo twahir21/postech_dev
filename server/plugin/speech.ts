@@ -15,7 +15,9 @@ export const speechPlugin = new Elysia()
 
         if (!shopId || !userId) return;
 
-        const { text } = body as { text: string };
+        let { text } = body as { text: string };
+
+        text = text.trim();
 
         return await handleSpeech(
             shopId, userId, text

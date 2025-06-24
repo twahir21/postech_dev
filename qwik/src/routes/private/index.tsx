@@ -15,6 +15,7 @@ import { CrudService } from "../api/base/oop";
 import { useAuthLoader } from "../layout";
 import { AskedProducts } from "~/components/Asked";
 import { Speech } from "~/components/Speech";
+import { Typing } from "~/components/Typing";
 
 
 export default component$(() => {
@@ -29,6 +30,11 @@ export default component$(() => {
 
   const showTooltip = useSignal(false);
   const showMic = useSignal(false); // only render <Speech /> after tooltip closed
+  const active = useSignal<'extra' | 'warning' | null>(null);
+
+  const toggle = $((section: 'extra' | 'warning') => {
+    active.value = active.value === section ? null : section;
+  });
 
 
   const closeTooltip = $(() => {
@@ -119,7 +125,6 @@ export default component$(() => {
       localStorage.setItem('seenVoiceTip', 'true');
     }
   });
-
 
   return (
     <div class="flex min-h-screen m-0">
@@ -226,6 +231,10 @@ export default component$(() => {
                 </div>
               )}
             </div>
+
+              <div class="relative">
+                <Typing />
+              </div>
             
             {/* tooltip  */}
             <div class="relative">
@@ -238,18 +247,57 @@ export default component$(() => {
               </button>
 
               {showTooltip.value && (
-                <div class="fixed z-50 top-8 right-2 w-72 bg-white text-gray-700 p-4 rounded shadow border text-sm">
+                <div class="fixed z-50 top-8 right-2 w-80 bg-white text-gray-700 p-4 rounded shadow border text-sm">
                   <h3 class="font-bold mb-2">🗣️ Jinsi ya kutumia sauti</h3>
-                    <ul class="list-disc pl-4 space-y-1">
-                      <li>Anza na mojawapo ya maneno: <strong>nimeuza</strong>, <strong>nimenunua</strong>, <strong>nimetumia</strong>, au <strong>nimemkopesha</strong></li>
-                      <li>Endelea na <strong>jina la bidhaa</strong> — mfano: “sukari”, “maziwa”</li>
-                      <li>Sio lazima: Kisha taja <strong>Kategoria</strong> — mfano: “lita”, “kilo”, “katoni”, "pisi"</li>
-                      <li>Kisha taja <strong>kiasi</strong> — mfano: “tatu”, “moja”, “robo”, “kumi na mbili”</li>
-                      <li>Kwa mkopo: taja <strong>jina la mteja</strong> baada ya neno la kwanza — mfano: “Nimemkopesha Ali...”</li>
-                      <li>Kwa hiari: unaweza ongeza <strong>punguzo</strong> — mfano: “punguzo 200”<strong> Angalizo: </strong>Kama punguzo ni juu ya 10,000 andika kwa tarakimu.</li>
-                      <li>Kwa haraka: unaweza kusema <strong>sukari nusu</strong> - itakuwa inamaanisha nimeuza sukari nusu </li>
-                      <li><strong>Mifano:</strong> Nimeuza chumvi 4. Nimemkopesha Ali sukari robo. Nimeuza daftari 7 punguzo 200. Nimenunua mchele kilo mia</li>
+                    <ul class="pl-4 space-y-2">
+                      <li>🧠 <strong>Fomula:</strong> <code>[kitendo] → [mteja] → bidhaa → [kipimo] → [kiasi] → [punguzo]</code>. Neno ndani ya [] sio lazima.</li>
+
+                      <li>🟢 <strong>Kitendo:</strong> Tumia mojawapo ya maneno: <strong>nimeuza</strong>, <strong>nimenunua</strong>, <strong>nimetumia</strong>, au <strong>nimemkopesha</strong>. Ukiacha kitendo maana yake ni nimeuza.</li>
+
+                      <li>👤 <strong>Kwa Mikopo:</strong> Taja jina kamili la mteja moja kwa moja baada ya kitendo.<br /> Mfano: <code>Nimemkopesha mama juma sukari</code></li>
+
+                      <li>📦 <strong>Taja Bidhaa:</strong> Mfano: <code>sukari</code>, <code>maziwa</code>, <code>mchele</code></li>
+
+                      <li>
+                        {/* Extra info Accordion  */}
+                        <details open={active.value === 'extra'} onToggle$={() => toggle('extra')}>
+                          <summary class="cursor-pointer text-blue-600 hover:underline">
+                            {active.value === 'extra' ? '👇 Funga maelezo ya ziada' : '👉 Tafadhali bofya hapa kuendelea ...'}
+                          </summary>
+                          <div class="mt-2 space-y-2">
+                            <li>⚖️ <strong>(Hiari) Taja Kipimo Kabla ya Kiasi:</strong> Mfano: <code>kilo</code>, <code>lita</code>, <code>katoni</code>, <code>pisi</code>.</li>
+
+                            <li>🔢 <strong>(Hiari) Taja Kiasi:</strong> Mfano: <code>moja</code>, <code>kumi</code>, <code>robo</code>, <code>nusu</code>, <code>nusu na robo au robo tatu</code>. Ukiacha ina maana ni 1</li>
+
+                            <li>💸 <strong>(Hiari) Taja Punguzo:</strong> Mfano: <code>punguzo mia</code>, <code>punguzo 200</code><br />
+                             ⚠️ <strong>Angalizo:</strong> Kama punguzo ni zaidi ya 10,000 tumia tarakimu, mfano <code>punguzo 12000</code></li>
+
+                          </div>
+                        </details>
+                      </li>
+
+                      <li>
+                        {/* Warning accordion  */}
+                        <details open={active.value === 'warning'} onToggle$={() => toggle('warning')}>
+                          <summary class="cursor-pointer text-blue-600 hover:underline">
+                            {active.value === 'warning' ? '👇 Funga maelezo ya tahadhari' : '📘 Bonyeza kuona maelezo muhimu sana ya kuzingatia...'}
+                          </summary>
+                          <div class="mt-2 space-y-2">
+                            <li>⛔ <strong>Onyo Kuhusu Kiasi:</strong> Usiseme <code>maziwa nusu lita</code>. Badala yake sema <code>maziwa nusu</code> au <code>maziwa lita tatu</code> kwa usahihi wa mfumo</li>
+
+                            <li>📝 <strong>Mifano ya Sentensi:</strong>
+                              <ul class="list-disc pl-6 space-y-1">
+                                <li>Nimeuza chumvi tatu</li>
+                                <li>Nimenunua maziwa lita mbili</li>
+                                <li>Nimemkopesha mama juma sukari kilo tatu punguzo 300</li>
+                                <li>Nimetumia 2000 kwa ajili ya nauli</li>
+                              </ul>
+                            </li>
+                          </div>
+                        </details>
+                      </li>
                     </ul>
+
 
                   <div class="text-right mt-2">
                     <button

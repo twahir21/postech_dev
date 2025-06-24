@@ -98,7 +98,7 @@ export const categPut = async ({ body, headers, categoryId, shopId }: { body : c
     let { generalName } = body as categoriesTypes;
 
     // prevent xss
-    generalName = xss(generalName)
+    generalName = xss(generalName).trim();
 
 
     // Validate ID length before querying (optional)

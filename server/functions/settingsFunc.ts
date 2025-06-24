@@ -45,8 +45,8 @@ export const shopSettingsPut = async ({ shopId, userId, headers, body }: {userId
     
           let { email, shopName } = body as shopTypes;
     
-          email = sanitizeString(email);
-          shopName = sanitizeString(shopName);
+          email = sanitizeString(email).trim();
+          shopName = sanitizeString(shopName).trim();
     
     
           // give the logic of saving to database
@@ -81,8 +81,8 @@ export const updatePassword = async ({ shopId, userId, headers, body }: {userId:
     let { currentPassword, newPassword } = body as pswdType;
 
     // sanitize
-    currentPassword = sanitizeString(currentPassword);
-    newPassword = sanitizeString(newPassword);
+    currentPassword = sanitizeString(currentPassword).trim();
+    newPassword = sanitizeString(newPassword).trim();
 
     const res = await mainDb.select({ pswd: users.password }).from(users).where(eq(users.id, userId));
 

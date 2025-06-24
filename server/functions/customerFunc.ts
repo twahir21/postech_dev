@@ -218,8 +218,8 @@ export const customerUpdate = async ({userId, shopId, customerId, body, headers}
 
 
         // sanitize or remove xss scripts if available
-        name = sanitizeString(name);
-        contact = sanitizeString(contact);
+        name = sanitizeString(name).trim();
+        contact = sanitizeString(contact).trim();
 
         // check if product exists
         const customer = await mainDb

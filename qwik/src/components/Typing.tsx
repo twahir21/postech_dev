@@ -1,11 +1,24 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
-import { CrudService } from '../api/base/oop';
+import { $, component$, useContext, useSignal, useStore } from '@builder.io/qwik';
+import { SendIcon } from 'lucide-qwik';
+import { CrudService } from '~/routes/api/base/oop';
+import { Toast } from './ui/Toast';
+import { RefetchContext } from './context/refreshContext';
 
-export default component$(() => {
+export const Typing = component$(() => {
   const inputText = useSignal('');
   const suggestions = useSignal<string[]>([]);
   const showSuggestions = useSignal(false);
-  const result = useSignal('');
+  const showPopup = useSignal(false);
+
+
+  const modal = useStore({
+    isOpen: false,
+    isSuccess: false,
+    message: ''
+  });
+
+  const { refetchAnalytics } = useContext(RefetchContext);
+  
 
 const fetchSuggestions = $(async (query: string, type: 'product' | 'customer') => {
   const api = new CrudService(
@@ -88,19 +101,50 @@ const selectSuggestion = $((name: string) => {
 
 
   const handleSubmit = $(async () => {
-    const res = await fetch('/api/voice-command', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: inputText.value })
-    });
-    const data = await res.json();
-    result.value = data.message;
+    const allowedActions = [
+      'nimeuza', 'niliuza', 'nilimuuzia','nauza', 'nimemuuzia',
+      'nimenunua', 'nimeongeza', 'niliagiza', 'nimemnunulia',
+      'nimetumia', 'nilitumia', 
+      'nimemkopesha', 'namkopesha', 'nilimkopesha'
+    ];
+
+    let text = inputText.value.trim();
+
+    const firstWord = text.split(' ')[0].toLowerCase();
+
+    if (!allowedActions.includes(firstWord)) {
+      text = `nimeuza ${text}`;
+    }
+    const api = new CrudService<{ id?: string; text: string }>("speech");
+
+    const result = await api.create({ text });
+
+    modal.isOpen = true;
+    modal.isSuccess = result.success;
+    modal.message = result.message || (result.success ? 'Umefanikiwa' : 'Hitilafu imetokea, jaribu baadae');
+
+
+    showPopup.value = false;
+  });
+
+  // popup
+  const togglePopup = $(() => {
+    showPopup.value = !showPopup.value;
   });
 
   return (
-    <div class="space-y-4 p-4 bg-gray-100 rounded shadow">
+    <>
+      <button
+        onClick$={togglePopup}
+        class="text-xl pt-0.5 mt-1.5"
+        title="Andika..."
+      >
+        ✍️
+      </button>
+
+      {showPopup.value && <div class="fixed top-16 right-0 w-full max-w-sm bg-[#EEEFE0] border p-4 rounded-xl shadow-md z-50">
       {/* Action Buttons (same as before) */}
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2 pb-3">
         {['nimeuza', 'nimenunua', 'nimetumia', 'nimemkopesha'].map((prefix, index) => {
           const colors = ['bg-green-500', 'bg-blue-500', 'bg-yellow-500', 'bg-red-500'];
           return (
@@ -123,10 +167,10 @@ const selectSuggestion = $((name: string) => {
       {/* Textarea + Autocomplete Dropdown */}
       <div class="relative">
         <textarea
-          placeholder="andika kama: nimemkopesha ali maziwa mbili"
+          placeholder="Mfano: nimemkopesha ali maziwa lita kumi na sita"
           bind:value={inputText}
-          rows={2}
-          class="w-full p-2 rounded border border-gray-300"
+          rows={3}
+          class="w-full p-2 rounded border text-lg bg-white"
           onKeyUp$={handleKeyUp}
         />
 
@@ -145,16 +189,24 @@ const selectSuggestion = $((name: string) => {
         )}
       </div>
 
-      <button
-        onClick$={handleSubmit}
-        class="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Tuma
-      </button>
+      <div class="flex justify-between items-center mt-3">
+        <button onClick$={togglePopup}>❌</button>
+        <button onClick$={handleSubmit}><SendIcon /></button>
+      </div>
 
-      {result.value && (
-        <div class="mt-2 text-green-700 font-bold">{result.value}</div>
+    </div>}
+
+      {modal.isOpen && (
+        <Toast
+          isOpen={modal.isOpen}
+          type={modal.isSuccess}
+          message={modal.message}
+          onClose$={$(() => {
+            refetchAnalytics.value = true;
+            modal.isOpen = false;
+        })}
+        />
       )}
-    </div>
+    </>
   );
 });

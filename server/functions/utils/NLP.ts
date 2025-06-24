@@ -1,4 +1,84 @@
+import { eq, ilike } from "drizzle-orm";
+import { mainDb } from "../../database/schema/connections/mainDb";
+import { customers, products } from "../../database/schema/shop";
+
 // swahili-nlp.ts
+const fetchProducts = async (
+  shopId: string
+): Promise<{ success: boolean; message: string; name: string [] }> => {
+  try {
+    // 1. Fuzzy search for product names (case-insensitive, partial match)
+    const result = await mainDb
+      .select({
+        name: products.name,
+      })
+      .from(products)
+      .where(eq(products.shopId, shopId))
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        name: [],
+        message: `hakuna bidhaa kwenye mfumo.`,
+      };
+    }
+
+    // 2. Return the closest match
+    return {
+      success: true,
+      message: "Bidhaa imepatikana.",
+      name: result.map((item) => item.name),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      name: [],
+      message:
+        error instanceof Error
+          ? error.message
+          : "Hitilafu imetokea wakati wa kutafuta bidhaa",
+    };
+  }
+};
+
+const fetchCustomers = async (
+  shopId: string
+): Promise<{ success: boolean; message: string; name: string[] }> => {
+  try {
+    // 1. Fuzzy search for product names (case-insensitive, partial match)
+    const result = await mainDb
+      .select({
+        name: customers.name,
+      })
+      .from(customers)
+      .where(eq(customers.shopId, shopId));
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        name: [],
+        message: `hakuna mteja kwenye mfumo.`,
+      };
+    }
+
+    // 2. Return the closest match
+    return {
+      success: true,
+      message: "Mteja amepatikana.",
+      name: result.map((item) => item.name),
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      name: [],
+      message:
+        error instanceof Error
+          ? error.message
+          : "Hitilafu imetokea wakati wa kutafuta mteja",
+    };
+  }
+};
 
 const verbMap: Record<string, string> = {
   nimeuza: 'nimeuza', niliuza: 'nimeuza', nauza: 'nimeuza', nimemuuzia: "nimeuza",
@@ -16,82 +96,66 @@ const similarity = (a: string, b: string) => {
   return matches / len;
 };
 
-export function detectSwahiliTransaction(text: string): { action: string; product: string; customer: string | null; quantity: number; punguzo: number } {
+export async function detectSwahiliTransaction(text: string, shopId: string): Promise<ParsedTransaction> {
   const normalized = text.toLowerCase().trim();
   const words = normalized.split(/\s+/);
 
-  // 1. Detect Action
-  let action = '';
-  let actionIndex = -1;
+  // Step 1: Detect action
+  const actionKey = Object.keys(verbMap).find(key => similarity(words[0], key) > 0.7);
+  if (!actionKey) throw new Error("Hatua haijatambulika.");
+  const action = verbMap[actionKey];
 
-  for (let i = 0; i < words.length; i++) {
-    for (const key in verbMap) {
-      if (similarity(words[i], key) > 0.7) {
-        action = verbMap[key];
-        actionIndex = i;
-        break;
-      }
-    }
-    if (action) break;
-  }
+  // Step 2: Remove action from text
+  const restOfText = normalized.replace(actionKey, '').trim();
 
-  if (!action) throw new Error("Hatua (action) haijatambulika. Tafadhali ongea tena kwa utaratibu.");
+  // Step 3: Load all customers and products
+  const customers = (await fetchCustomers(shopId)).name; // string[]
+  const products = (await fetchProducts(shopId)).name;   // string[]
 
-  if (action === 'nimetumia') return { action, product: '', customer: '', quantity: 0, punguzo: 0 };
-  // 2. Detect Punguzo
-  let punguzo = 0;
-  const punguzoIndex = words.findIndex(w => w === 'punguzo');
 
-  if (punguzoIndex !== -1 && punguzoIndex + 1 < words.length) {
-    const parsed = swahiliToNumber(words.slice(punguzoIndex + 1).join(' '));
-    if (typeof parsed !== 'number' || isNaN(parsed) || parsed > 10000) {
-      throw new Error("Punguzo haijatambulika au kama ni zaidi ya 10,000 andika kwa tarakimu.");
-    }
-    punguzo = parsed;
-  }
-
-  // 3. Determine position of quantity (right before 'punguzo' or at end)
-  let quantity: number = 1;
-  let quantityIndex = -1;
-
-  for (let i = words.length - 1; i >= 0; i--) {
-    if (i === punguzoIndex || words[i] === 'punguzo') continue;
-    const parsed = swahiliToNumber(words[i]);
-    if (typeof parsed === 'number' && !isNaN(parsed)) {
-      quantity = parsed;
-      quantityIndex = i;
+  // Step 4: Match customer name (longest match)
+  let customer: string | null = null;
+  for (const c of customers.sort((a, b) => b.length - a.length)) {
+    if (restOfText.includes(c)) {
+      customer = c;
       break;
     }
   }
 
-  // 4. Extract customer (only if action is 'nimemkopesha')
-  let customer: string | null = null;
-  let productStart = actionIndex + 1;
+  let afterCustomerText = customer ? restOfText.replace(customer, '').trim() : restOfText;
 
-  if (action === 'nimemkopesha') {
-    if (words.length < 3) {
-      throw new Error("Sentensi ya mkopo lazima iwe na angalau maneno 4: hatua, mteja na bidhaa.");
+
+  // Step 5: Match product name (longest match)
+  let product: string | null = null;
+  for (const p of products.sort((a, b) => b.length - a.length)) {
+    if (afterCustomerText.includes(p)) {
+      product = p;
+      break;
     }
-    customer = words[actionIndex + 1];
-    if (!customer || customer === 'punguzo') {
-      throw new Error("Mteja hajatajwa vizuri. Tafadhali sema jina la mteja mara baada ya 'nimemkopesha'.");
+  }
+  if (!product) throw new Error("Bidhaa haijatambulika.");
+
+  const afterProductText = afterCustomerText.replace(product, '').trim();
+  const tokens = afterProductText.split(/\s+/);
+
+  // Step 6: Extract quantity (before punguzo)
+  const punguzoIndex = tokens.findIndex(w => w === 'punguzo');
+  const quantityWords = punguzoIndex !== -1 ? tokens.slice(0, punguzoIndex) : tokens;
+  let quantity = 1;
+  for (const word of quantityWords.reverse()) {
+    const num = swahiliToNumber(word) || 0;
+    if (!isNaN(num)) {
+      quantity = num;
+      break;
     }
-    productStart++; // Product starts after customer
   }
 
-  // 5. Build product from remaining words between productStart -> quantityIndex/punguzoIndex
-  const productEnd = quantityIndex !== -1
-    ? quantityIndex
-    : punguzoIndex !== -1
-    ? punguzoIndex
-    : words.length;
-
-  const productWords = words.slice(productStart, productEnd);
-  const product = productWords.join(' ').trim();
-
-  // if (!product || product.length < 2) {
-  //   throw new Error("Bidhaa haijatambulika vizuri. Tafadhali ongea tena kwa utaratibu.");
-  // }
+  // Step 7: Extract punguzo (after punguzo)
+  let punguzo = 0;
+  if (punguzoIndex !== -1 && punguzoIndex + 1 < tokens.length) {
+    const word = tokens[punguzoIndex + 1];
+    punguzo = swahiliToNumber(word) || 0;
+  }
 
   return {
     action,
@@ -103,7 +167,24 @@ export function detectSwahiliTransaction(text: string): { action: string; produc
 }
 
 
-type ParsedTransaction = {
+// Helper: Find the last numeric word before punguzo
+function findLastNumberIndex(words: string[], punguzoIndex: number) {
+  for (let i = (punguzoIndex !== -1 ? punguzoIndex : words.length) - 1; i >= 0; i--) {
+    const num = swahiliToNumber(words[i]) || 0;
+    if (!isNaN(num)) return i;
+  }
+  return -1;
+}
+
+interface ParsedTransaction {
+  action: string;
+  customer: string | null;
+  product: string;
+  quantity: number;
+  punguzo: number;
+}
+
+type ParsedNimetumia = {
   action: string;
   product: string;
   quantity: number;
@@ -119,7 +200,7 @@ type ParsedTransaction = {
  * - quantity (default 1)
  * - activity (default "nyumbani")
  */
-export function parseNimetumiaSentence(sentence: string): ParsedTransaction {
+export function parseNimetumiaSentence(sentence: string): ParsedNimetumia {
   const normalized = sentence.toLowerCase().trim();
   const words = normalized.split(/\s+/);
 

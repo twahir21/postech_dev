@@ -8,6 +8,7 @@ import { formatFloatToFixed } from "./security/money";
 
 export const handleSpeech = async (shopId: string, userId: string, text: string) : Promise<{ success: boolean; message: string }> => {
     try {
+        console.time("CoreService");
         if (isPotentialXSS(text)) {
             return {
                 success: false,
@@ -17,8 +18,16 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
 
         // ? format is [action] [optional: customer] [product] [optional: unit] [quantity] [optional: punguzo <number>]
         // ! swahili texts convertion to numbers are supported above 10,000 as stocks
-        const { action, product, customer, quantity, punguzo } = detectSwahiliTransaction(sanitizeString(text));
-
+        
+        let { action, customer, product, quantity, punguzo } = await detectSwahiliTransaction(sanitizeString(text), shopId);
+        if (quantity === 0) quantity = 1; // default quantity to 1
+        console.log(
+            "action: ", action,
+            "customer: ", customer,
+            "product: ", product,
+            "quantity: ", quantity,
+            "punguzo: ", punguzo 
+        )
 
         // fetch product Id first using product name nearest match
         const productDetails = await mainDb
@@ -124,7 +133,7 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
                     amount: formatFloatToFixed(money),
                     shopId
                 });
-
+            
                 return {
                     success: true,
                     message: "Matumizi yamehifadhiwa kikamilifu"
@@ -168,8 +177,6 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
                         message: "Mteja hayupo! msajili kwanza"
                     }
                 }
-
-                console.log("customerId:", customerId, typeof customerId);
 
                 // Save debt
                 await mainDb.insert(debts).values({
@@ -224,5 +231,8 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
                     ? error.message 
                     : "Hitilafu imetokea kwenye seva"
             }
-        }
+    }
+    finally{
+        console.timeEnd("CoreService")
+    }
 };
