@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
-import { customers, debtPayments, debts } from "../database/schema/shop";
+import { customers, debtPayments, debts, products } from "../database/schema/shop";
 import { sanitizeNumber } from "./security/xss";
 import Decimal from "decimal.js";
 
@@ -89,6 +89,19 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
     total: sql<number>`SUM(${debtPayments.amountPaid})`
   }).from(debtPayments).where(eq(debtPayments.shopId, shopId));
 
+  // receipt data
+  const debtReceipts = await mainDb
+    .select({
+      customerId: debts.customerId,
+      product: products.name,
+      quantity: debts.quantity,
+      priceSold: debts.priceSold,
+      total: debts.totalSales,
+    })
+    .from(debts)
+    .innerJoin(products, eq(debts.productId, products.id))
+    .where(eq(debts.shopId, shopId));
+
 
   return {
     success: true,
@@ -103,7 +116,8 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
         currentPage: page,
         pageSize,
         totalCount: await getTotalDebtersCount(shopId)
-        }
+        },
+        debtReceipts
     }],
     message: "Madeni ya wateja yamepatikana kwa mafanikio."
   };

@@ -59,6 +59,8 @@ export const DebtComponent = component$(() => {
 
     modal.totalCollected = debtResults.data[0].totalCollected;
 
+    console.log(debtResults.data[0].debtReceipts)
+
     // calculate total pages
     totalPages.value = Math.ceil(
       Number(debtResults.data[0].pagination.totalCount) / pageSize

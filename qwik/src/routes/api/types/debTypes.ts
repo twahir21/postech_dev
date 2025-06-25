@@ -9,9 +9,9 @@ export interface CustomerDebt {
   debtId: string;
   customerId: string;
   name: string;
-  totalDebt: string;          // String representation of a number
-  remainingAmount: string;    // String representation of a number
-  lastPaymentDate: null | string; // ISO date string or null
+  totalDebt: string;          
+  remainingAmount: string;    
+  lastPaymentDate: null | string; 
   createdAt: null | string;
 }
 
@@ -21,6 +21,14 @@ export interface RecentPayment {
   totalPaid: string;
   paymentDate: string;
 }
+
+interface debtReceipts {
+  customerId: string;
+  product: string;
+  quantity: number;
+  priceSold: string;
+  total: string;
+}[]
 
 interface Pagination {
   currentPage: number;
@@ -37,4 +45,5 @@ export interface DataItemDebts {
   madeniYaliyokusanywa: number;
   totalCollected: number;
   pagination: Pagination;
+  debtReceipts: debtReceipts;
 }
