@@ -183,8 +183,11 @@ export default component$(() => {
       <div class="w-full flex-1 flex flex-col m-0">
         {/* Top Navbar */}
         <header class="bg-white shadow-md p-4 flex justify-between items-center">
+        {/* Left side: sidebar toggle  */}
+        <div>
           <button class="md:hidden" onClick$={toggleSidebar}>☰</button>
-          <h1>Dashboard</h1>
+        </div>  
+        {/* Right side   */}
           <div class="flex gap-5">
             <div class="relative">
               <button
