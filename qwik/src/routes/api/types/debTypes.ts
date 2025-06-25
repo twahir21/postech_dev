@@ -25,7 +25,7 @@ export interface RecentPayment {
 interface Pagination {
   currentPage: number;
   pageSize: number;
-  totalCount: string; // Could also be number depending on backend
+  totalCount: number; 
 }
 
 export interface DataItemDebts {

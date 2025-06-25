@@ -1,4 +1,4 @@
-import { $, component$, useContext, useResource$, useStore } from '@builder.io/qwik';
+import { $, component$, useContext, useResource$, useSignal, useStore } from '@builder.io/qwik';
 import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './ui/Toast';
 import type { CustomerDebt, DataItemDebts, RecentPayment } from '~/routes/api/types/debTypes';
@@ -24,11 +24,14 @@ export const DebtComponent = component$(() => {
     totalCollected: 0 as number
   });
 
+  const currentPage = useSignal(1);
+  const pageSize = 5;
+  const totalPages = useSignal(1);
+
   const { debtRefetch } = useContext(RefetchContext);
 
-  useResource$(async ({ track }) => {
-    track(() => debtRefetch.value);
-    const newApi = new CrudService<DataItemDebts>("get-debts?page=1&pageSize=10");
+  const fetchDebts = $(async () => {
+        const newApi = new CrudService<DataItemDebts>(`get-debts?page=${currentPage.value}&pageSize=${pageSize}`);
 
     const debtResults = await newApi.get();
 
@@ -50,6 +53,17 @@ export const DebtComponent = component$(() => {
     modal.madeniYaliyolipwa = debtResults.data[0].madeniYaliyolipwa;
 
     modal.totalCollected = debtResults.data[0].totalCollected;
+
+    // calculate total pages
+    totalPages.value = Math.ceil(
+      Number(debtResults.data[0].pagination.totalCount) / pageSize
+    );
+  });
+
+  useResource$(async ({ track }) => {
+    track(() => debtRefetch.value);
+
+    fetchDebts();
 
     // reset trigger refetch
     debtRefetch.value = false;
@@ -155,6 +169,35 @@ const paymentMap = modal.arrData.recentPayments.reduce((acc, payment) => {
                 </div>
               )}
           </div>
+        </div>
+
+        {/* Pagination */}
+        <div class="flex justify-center mt-6 space-x-4">
+          <button
+            onClick$={() => {
+              if (currentPage.value > 1) {
+                currentPage.value--;
+                fetchDebts();
+              }
+            }}
+            class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+            disabled={currentPage.value === 1}
+          >
+            ⬅️ Nyuma
+          </button>
+          <span class="px-4 py-2">{`Ukurasa ${currentPage.value} ya ${totalPages.value}`}</span>
+          <button
+            onClick$={() => {
+              if (currentPage.value < totalPages.value) {
+                currentPage.value++;
+                fetchDebts();
+              }
+            }}
+            class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+            disabled={currentPage.value === totalPages.value}
+          >
+            Mbele ➡️
+          </button>
         </div>
 
         {/* Modal Popup */}
