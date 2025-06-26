@@ -2,9 +2,7 @@ import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import ApexCharts from 'apexcharts';
 
 export const ChartCard = component$(({ title, chartId }: { title: string; chartId: string }) => {
-  const filter = useSignal<'week' | 'month' | 'year' | 'custom'>('week');
-  const from = useSignal('');
-  const to = useSignal('');
+  const filter = useSignal<'week' | 'month' | 'year' >('week');
 
   return (
     <div class="bg-gradient-to-br from-green-50 via-blue-50 to-yellow-50 rounded-2xl shadow p-4 border">
@@ -18,26 +16,11 @@ export const ChartCard = component$(({ title, chartId }: { title: string; chartI
                 filter.value = (e.target as HTMLSelectElement).value as typeof filter.value;
               }}
             >
-              <option value="week">Wiki</option>
-              <option value="month">Mwezi</option>
-              <option value="year">Mwaka</option>
-              <option value="custom">Muda maalumu</option>
+              <option value="week">Wiki iliyopita</option>
+              <option value="month">Mwezi uliopita</option>
+              <option value="year">Miezi 6 iliyopita</option>
             </select>
 
-            {filter.value === 'custom' && (
-              <div class="flex flex-col gap-2">
-                <input
-                  type="date"
-                  class="border rounded px-2 py-1 text-sm w-40"
-                  bind:value={from}
-                />
-                <input
-                  type="date"
-                  class="border rounded px-2 py-1 text-sm w-40"
-                  bind:value={to}
-                />
-              </div>
-            )}
           </div>
 
       </div>
@@ -48,6 +31,10 @@ export const ChartCard = component$(({ title, chartId }: { title: string; chartI
 
 export const MainGraph = component$(() => {
   useVisibleTask$(() => {
+
+    // ----------------------------------------------
+    // BAR CHART
+    // ----------------------------------------------
     const barChart = new ApexCharts(document.querySelector("#bar-chart"), {
       chart: { type: 'bar', height: 250 },
       series: [
@@ -73,6 +60,9 @@ export const MainGraph = component$(() => {
       dataLabels: { enabled: false }
     });
 
+    // ----------------------------------------------
+    // LINE CHART
+    // ----------------------------------------------
     const lineChart = new ApexCharts(document.querySelector("#line-chart"), {
       chart: { type: 'line', height: 250 },
       series: [{ name: 'Income', data: [1000, 1200, 900, 1500, 1800, 1300, 1600] }],
@@ -81,6 +71,9 @@ export const MainGraph = component$(() => {
       colors: ['#10b981']
     });
 
+    // ----------------------------------------------
+    // PIE CHART
+    // ----------------------------------------------
     const pieChart = new ApexCharts(document.querySelector("#pie-chart"), {
       chart: { type: 'pie', height: 250 },
       series: [40, 30, 20, 10],
@@ -88,6 +81,20 @@ export const MainGraph = component$(() => {
       colors: ['#f87171', '#60a5fa', '#34d399', '#fbbf24']
     });
 
+    // ----------------------------------------------
+    // PIE CHART 2, CASH VS MADENI
+    // ----------------------------------------------
+    const pieChart2 = new ApexCharts(document.querySelector("#pie-chart-2"), {
+      chart: { type: 'pie', height: 250 },
+      series: [670000, 320000], // cash, madeni
+      labels: ['Cash', 'Madeni'],
+      colors: ['#98CD00', '#FF9587'] // Green for Cash, Red for Madeni
+    });
+
+
+    // ----------------------------------------------
+    // HORIZONTAL BAR CHART
+    // ----------------------------------------------
     const hBarChart = new ApexCharts(document.querySelector("#hbar-chart"), {
       chart: { type: 'bar', height: 250 },
       plotOptions: { bar: { horizontal: true } },
@@ -96,18 +103,37 @@ export const MainGraph = component$(() => {
       colors: ['#6366f1']
     });
 
+    // ----------------------------------------------
+    // HORIZONTAL BAR CHART - 2, MOST LEAST PROFIT PRODUCTS
+    // ----------------------------------------------
+    const hBarChart2 = new ApexCharts(document.querySelector("#hbar-chart-2"), {
+      chart: { type: 'bar', height: 250 },
+      plotOptions: { bar: { horizontal: true, borderRadius: 6, barHeight: '60%'} },
+      series: [{ name: 'Sales', data: [820, 740, 650, 480, 390] }],
+      xaxis: { categories: ['Sukari', 'Mafuta', 'Mchele', 'Unga', 'Sabuni'], 
+        labels: { style: { fontSize: '14px', colors: '#374151' } }},
+      colors: ['#0B1D51'], // sky blue
+    });
+
+
     lineChart.render();
     barChart.render();
     pieChart.render();
     hBarChart.render();
+    pieChart2.render();
+    hBarChart2.render();
   });
 
   return (
-    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6 min-h-screen">
-      <ChartCard title="📦 Stoku (Hisa)" chartId="line-chart" />
-      <ChartCard title="💸 Mapato & Matumizi" chartId="bar-chart" />
-      <ChartCard title="💵 Cash vs Madeni" chartId="pie-chart" />
-      <ChartCard title="📊 Madeni" chartId="hbar-chart" />
-    </div>
+    <>
+      <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6 min-h-screen">
+        <ChartCard title="🏆 Bidhaa 5 Zenye Faida Kubwa" chartId="pie-chart" />
+        <ChartCard title="📦 Stoku (Hisa)" chartId="line-chart" />
+        <ChartCard title="📊 Madeni" chartId="hbar-chart" />
+        <ChartCard title="💸 Mapato & Matumizi" chartId="bar-chart" />
+        <ChartCard title="💵 Cash vs Madeni" chartId="pie-chart-2" />
+        <ChartCard title="📉  Bidhaa 5 zenye faida ndogo" chartId="hbar-chart-2" />
+      </div>
+    </>
   );
 });

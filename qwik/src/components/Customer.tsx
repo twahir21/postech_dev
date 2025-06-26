@@ -3,6 +3,7 @@ import { CustomersCrudComponent } from "./CustComp";
 import { RefetchContext } from "./context/refreshContext";
 import { CrudService } from "~/routes/api/base/oop";
 import { Toast } from "./ui/Toast";
+import { subscriptionData } from "./context/store/netSales";
 
 export const CustomerComponent =  component$(() => {
   const customer = useStore({
@@ -28,6 +29,7 @@ export const CustomerComponent =  component$(() => {
   });
 
   const { customerRefetch } = useContext(RefetchContext);
+  const { subscription } = useContext(subscriptionData)
 
   const handleSubmit = $(async () => {
     const name = customer.name.trim().toLowerCase();
@@ -52,6 +54,18 @@ export const CustomerComponent =  component$(() => {
     modal.isSuccess = true;
 
   });
+
+  if (subscription.value === 'Msingi'){
+  return (
+    <>
+      <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+        <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+        <h3 class="text-sm font-medium">Usajili wa wateja</h3>
+        <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
+      </div>
+    </>
+  )
+}
 
   return (
 <>

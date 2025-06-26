@@ -6,6 +6,7 @@ import { formatDateOnly, formatDateTime, formatMoney } from '~/routes/function/h
 import { Popup } from './ui/Popup';
 import { Receipt } from './ui/Receipt';
 import { RefetchContext } from './context/refreshContext';
+import { subscriptionData } from './context/store/netSales';
 
 export const DebtComponent = component$(() => {
 
@@ -31,8 +32,9 @@ export const DebtComponent = component$(() => {
   // search
   const search = useSignal('');
 
-
+  // global datas
   const { debtRefetch } = useContext(RefetchContext);
+  const { subscription } = useContext(subscriptionData)
 
   const fetchDebts = $(async () => {
     const newApi = new CrudService<DataItemDebts>(`get-debts?page=${currentPage.value}&pageSize=${pageSize}`);
@@ -110,6 +112,17 @@ const paymentMap = modal.arrData.recentPayments.reduce((acc, payment) => {
   return acc;
 }, {} as Record<string, RecentPayment[]>);
 
+if (subscription.value === 'Msingi'){
+  return (
+    <>
+      <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+        <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+        <h3 class="text-sm font-medium">Mchanganuo wa madeni</h3>
+        <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
+      </div>
+    </>
+  )
+}
 
   return (
     <>

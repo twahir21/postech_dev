@@ -116,7 +116,9 @@ useVisibleTask$(async ({ track }) => {
   return (
     <>
       <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {/* Total Profit */}
+      {/* --------------------------------
+                   FAIDA 
+      -------------------------------- */}
       <div class="bg-blue-200 text-blue-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="profit" class="pr-1.5">💵</span> 
@@ -125,7 +127,9 @@ useVisibleTask$(async ({ track }) => {
         <p class="text-xl font-bold">{analyticsStore.profit}/=</p>
       </div>
 
-      {/* Total Sales */}
+      {/* --------------------------------
+                   MAUZO YA  JUMLA
+      -------------------------------- */}      
       <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="sales" class="pr-1.5">📈</span> 
@@ -135,7 +139,9 @@ useVisibleTask$(async ({ track }) => {
       </div>
 
 
-      {/* Total Purchases */}
+      {/* --------------------------------
+                   JUMLA YA MANUNUZI
+      -------------------------------- */}      
       <div class="bg-pink-200 text-pink-800 p-4 rounded-2xl shadow text-center">
           <h3 class="text-sm flex items-center justify-center">
             <span role="img" aria-label="return" class="pr-1.5">🛒</span> 
@@ -144,7 +150,9 @@ useVisibleTask$(async ({ track }) => {
           <p class="text-1xl font-semibold">{analyticsStore.purchases}/=</p>
       </div>
 
-      {/* Total Expenses */}
+      {/* --------------------------------
+                   MATUMIZI YA JUMLA 
+      -------------------------------- */}      
       <div class="bg-red-200 text-red-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="expenses" class="pr-1.5">💸</span> 
@@ -153,7 +161,9 @@ useVisibleTask$(async ({ track }) => {
         <p class="text-xl font-semibold">{analyticsStore.expenses}/=</p>
       </div>
 
-      {/* Most Profitable Product */}
+      {/* ------------------------------------------
+                   BIDHAA YENYE FAIDA KUBWA
+      ------------------------------------------ */}      
       <div class="bg-yellow-200 text-yellow-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="product" class="pr-1.5">🛒</span> 
@@ -170,7 +180,9 @@ useVisibleTask$(async ({ track }) => {
         </div>
       </div>
 
-      {/* Most Sold Product */}
+      {/* -------------------------------------
+                   BIDHAA INAYOUZWA SANA
+      ----------------------------------------- */}      
       <div class="bg-purple-200 text-purple-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center font-medium">
           <span role="img" aria-label="sold" class="pr-1.5">🔥</span>
@@ -190,7 +202,9 @@ useVisibleTask$(async ({ track }) => {
       </div>
 
 
-      {/* Most Debt User */}
+      {/* --------------------------------
+                  GRAPH DISPLAY 
+      -------------------------------- */}      
       { isGraphReady.value && (analyticsStore.subscription === "Msingi" ? (
         <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
           <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
@@ -208,7 +222,9 @@ useVisibleTask$(async ({ track }) => {
         </div>
       ))}
 
-      {/* Long Debt User */}
+      {/* ----------------------------------------------
+                   ANAYEDAIWA DENI LA MUDA MREFU
+      ------------------------------------------------- */}      
       { isGraphReady.value &&  (analyticsStore.subscription === "Msingi" ? (
         <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
           <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
@@ -225,7 +241,9 @@ useVisibleTask$(async ({ track }) => {
         </div>
       ))}
 
-      {/* Low Stock */}
+      {/* -------------------------------------
+                   HISA YA CHINI ZAIDI
+      ---------------------------------------- */}      
       <div class="bg-orange-200 text-orange-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="low-stock" class="pr-1.5">⚠️</span> 
@@ -236,7 +254,9 @@ useVisibleTask$(async ({ track }) => {
         </p>
       </div>
 
-      {/* SaaS Countdown */}
+      {/* --------------------------------
+                   SAAS COUNTDOWN
+      -------------------------------- */}      
       <div class="bg-indigo-200 text-indigo-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="countdown" class="pr-1.5">⏰</span> 
@@ -245,7 +265,9 @@ useVisibleTask$(async ({ track }) => {
         <p class="text-lg font-semibold">{analyticsStore.remainingDays}</p>
       </div>
 
-      {/* Product registered */}
+      {/* --------------------------------
+                   BIDHAA ULIZOSAJILI
+      -------------------------------- */}      
       <div class="bg-indigo-200 text-indigo-800 p-4 rounded-2xl shadow text-center">
         <h3 class="text-sm flex items-center justify-center">
           <span role="img" aria-label="countdown" class="pr-1.5">📦</span> 
@@ -254,8 +276,10 @@ useVisibleTask$(async ({ track }) => {
         <p class="text-sm font-semibold">{analyticsStore.productMessage}</p>
       </div>
 
-        {/* Top Asked Products */}
-        { isGraphReady.value && (analyticsStore.subscription === "Msingi" ? (
+      {/* --------------------------------
+                   KILICHOULIZIWA SANA
+      -------------------------------- */}        
+      { isGraphReady.value && (analyticsStore.subscription === "Msingi" ? (
           <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
             <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
             <h3 class="text-sm font-medium">Kilichouliziwa sana</h3>
