@@ -103,7 +103,7 @@ export async function detectSwahiliTransaction(text: string, shopId: string): Pr
   // Step 1: Detect action
   const actionKey = Object.keys(verbMap).find(key => similarity(words[0], key) > 0.7);
   if (!actionKey) throw new Error("Hatua haijatambulika.");
-  const action = verbMap[actionKey];
+  const action = verbMap[actionKey] as 'nimemkopesha' | 'nimeuza' | 'nimetumia' | 'nimenunua';
 
   // Step 2: Remove action from text
   const restOfText = normalized.replace(actionKey, '').trim();
@@ -115,28 +115,59 @@ export async function detectSwahiliTransaction(text: string, shopId: string): Pr
 
   // Step 4: Match customer name (longest match)
   let customer: string | null = null;
-  for (const c of customers.sort((a, b) => b.length - a.length)) {
-    if (restOfText.includes(c)) {
-      customer = c;
-      break;
+  let afterCustomerText = restOfText;
+
+  if (action === 'nimemkopesha') {
+    for (const c of customers.sort((a, b) => b.length - a.length)) {
+      if (restOfText.includes(c)) {
+        customer = c;
+        afterCustomerText = restOfText.replace(c, '').trim();
+        break;
+      }
     }
   }
 
-  let afterCustomerText = customer ? restOfText.replace(customer, '').trim() : restOfText;
+
+  afterCustomerText = customer ? restOfText.replace(customer, '').trim() : restOfText;
 
 
-  // Step 5: Match product name (longest match)
+  // Step 5: Match product name (normalized comparison)
   let product: string | null = null;
-  for (const p of products.sort((a, b) => b.length - a.length)) {
-    if (afterCustomerText.includes(p)) {
-      product = p;
+  const normalizedText = afterCustomerText.toLowerCase().trim();
+
+  for (const p of products) {
+    const normalizedProduct = p.toLowerCase().trim();
+    
+    if (normalizedText.includes(normalizedProduct)) {
+      product = p; // Keep original casing for display
       break;
     }
   }
+
+  if (!product) {
+    // Try fuzzy matching if exact match fails
+    for (const p of products) {
+      if (fuzzyMatch(normalizedText, p.toLowerCase().trim())) {
+        product = p;
+        break;
+      }
+    }
+  }
+
   if (!product) throw new Error("Bidhaa haijatambulika.");
+
+  // Helper function for fuzzy matching
+  function fuzzyMatch(text: string, product: string): boolean {
+    return (
+      text.includes(product) || // Exact partial match
+      product.includes(text) || // Reverse inclusion
+      text.replace(/\s+/g, '').includes(product.replace(/\s+/g, '')) // Ignore spaces
+    );
+  }
 
   const afterProductText = afterCustomerText.replace(product, '').trim();
   const tokens = afterProductText.split(/\s+/);
+
 
   // Step 6: Extract quantity (before punguzo)
   const punguzoIndex = tokens.findIndex(w => w === 'punguzo');

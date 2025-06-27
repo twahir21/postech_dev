@@ -11,10 +11,10 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
 
     try{
 
-        let  {name, priceBought, priceSold, stock, minStock, unit} = body as productTypes;
+        let  { name, priceBought, priceSold, stock, minStock, unit } = body as productTypes;
 
         // sanitize or remove xss scripts if available
-        name = sanitizeString(name).trim();
+        name = sanitizeString(name).trim().toLowerCase();
         priceBought = sanitizeNumber(priceBought);
         priceSold = sanitizeNumber(priceSold);
         stock = sanitizeNumber(stock);
