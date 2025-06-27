@@ -105,3 +105,132 @@
   */
   animation: progress-bar var(--toast-duration) linear forwards;
 }
+
+
+/* HOME HYPNOTIC LOADER  */
+/* hypnotic-loader.css */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #1a1a2e;
+  overflow: hidden;
+  position: relative;
+}
+
+.hypnotic-loader {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.hypnotic-loader:before,
+.hypnotic-loader:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 8px solid transparent;
+  border-top-color: #00ffff;
+  animation: hypnotic-spin 2s linear infinite;
+  filter: drop-shadow(0 0 10px #00ffff)
+          drop-shadow(0 0 20px #00ffffaa)
+          drop-shadow(0 0 30px #00ffff55);
+}
+
+.hypnotic-loader:after {
+  border-top-color: #ff00ff;
+  animation-delay: 0.5s;
+  filter: drop-shadow(0 0 10px #ff00ff)
+          drop-shadow(0 0 20px #ff00ffaa)
+          drop-shadow(0 0 30px #ff00ff55);
+}
+
+.loading-text {
+  position: absolute;
+  bottom: 20%;
+  color: white;
+  font-family: 'Arial', sans-serif;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes hypnotic-spin {
+  0% {
+    transform: rotate(0deg);
+    border-top-color: #00ffff;
+    border-left-color: transparent;
+  }
+  50% {
+    border-top-color: #ff00ff;
+    border-left-color: #00ff88;
+  }
+  100% {
+    transform: rotate(360deg);
+    border-top-color: #00ffff;
+    border-left-color: transparent;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+    text-shadow: 0 0 5px #fff;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 15px #fff, 0 0 20px #00ffff;
+  }
+}
+
+/* Floating dots */
+.hypnotic-loader span {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  animation: float 3s infinite ease-in-out;
+}
+
+.hypnotic-loader span:nth-child(1) {
+  top: 20%;
+  left: 20%;
+  background: #00ffff;
+  animation-delay: 0s;
+}
+
+.hypnotic-loader span:nth-child(2) {
+  top: 60%;
+  left: 30%;
+  background: #ff00ff;
+  animation-delay: 0.5s;
+}
+
+.hypnotic-loader span:nth-child(3) {
+  top: 40%;
+  left: 70%;
+  background: #00ff88;
+  animation-delay: 1s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(10px) translateX(20px);
+  }
+  75% {
+    transform: translateY(-10px) translateX(-10px);
+  }
+}

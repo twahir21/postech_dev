@@ -6,6 +6,7 @@ import type { AnalyticsTypes } from "~/routes/api/types/analyTypes";
 import { formatMoney, toSwahiliFraction } from "~/routes/function/helpers";
 import { lowStockProductsData, netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph, subscriptionData, trialEndData } from "./context/store/netSales";
 import { RefetchContext } from "./context/refreshContext";
+import { Loader } from "./ui/Loader";
 
 export const HomeComponent = component$(() => {
 
@@ -28,7 +29,7 @@ export const HomeComponent = component$(() => {
     lowestPrdName: '' as string,
     lowestPrdStock: 0 as number,
     productMessage: "Hakuna bidhaa zilizoorodheshwa" as string,
-    subscription: "Trial" as "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial",
+    subscription: "Msingi" as "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial",
     remainingDays: "Zimebaki siku 0" as string,
   });
   const isGraphReady = useSignal(false);
@@ -114,200 +115,207 @@ useVisibleTask$(async ({ track }) => {
 });
 
   return (
-    <>
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {/* --------------------------------
-                   FAIDA 
-      -------------------------------- */}
-      <div class="bg-blue-200 text-blue-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="profit" class="pr-1.5">💵</span> 
-          Faida ya Jumla
-        </h3>
-        <p class="text-xl font-bold">{analyticsStore.profit}/=</p>
-      </div>
-
-      {/* --------------------------------
-                   MAUZO YA  JUMLA
-      -------------------------------- */}      
-      <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="sales" class="pr-1.5">📈</span> 
-          Mauzo ya Jumla
-        </h3>
-        <p class="text-xl font-bold">{analyticsStore.sales}/=</p>
-      </div>
-
-
-      {/* --------------------------------
-                   JUMLA YA MANUNUZI
-      -------------------------------- */}      
-      <div class="bg-pink-200 text-pink-800 p-4 rounded-2xl shadow text-center">
+  <>
+  {!isGraphReady.value ?(
+    // Custom Loader
+    <Loader />
+  ):(
+      <>
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* --------------------------------
+                    FAIDA 
+        -------------------------------- */}
+        <div class="bg-blue-200 text-blue-800 p-4 rounded-2xl shadow text-center">
           <h3 class="text-sm flex items-center justify-center">
-            <span role="img" aria-label="return" class="pr-1.5">🛒</span> 
-            Jumla ya Manunuzi
+            <span role="img" aria-label="profit" class="pr-1.5">💵</span> 
+            Faida ya Jumla
           </h3>
-          <p class="text-1xl font-semibold">{analyticsStore.purchases}/=</p>
-      </div>
-
-      {/* --------------------------------
-                   MATUMIZI YA JUMLA 
-      -------------------------------- */}      
-      <div class="bg-red-200 text-red-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="expenses" class="pr-1.5">💸</span> 
-          Matumizi ya jumla
-        </h3>
-        <p class="text-xl font-semibold">{analyticsStore.expenses}/=</p>
-      </div>
-
-      {/* ------------------------------------------
-                   BIDHAA YENYE FAIDA KUBWA
-      ------------------------------------------ */}      
-      <div class="bg-yellow-200 text-yellow-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="product" class="pr-1.5">🛒</span> 
-          Bidhaa yenye faida kubwa
-        </h3>
-
-        <p class="text-lg font-semibold mt-2">
-          {analyticsStore.profitableProductname}
-        </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-2 text-md mt-1">
-          <span class="bg-purple-50 px-3 py-1 rounded-full shadow-sm">
-            Faida ni {analyticsStore.profitableProductProfit}/=          
-          </span>
+          <p class="text-xl font-bold">{analyticsStore.profit}/=</p>
         </div>
-      </div>
 
-      {/* -------------------------------------
-                   BIDHAA INAYOUZWA SANA
-      ----------------------------------------- */}      
-      <div class="bg-purple-200 text-purple-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center font-medium">
-          <span role="img" aria-label="sold" class="pr-1.5">🔥</span>
-          Bidhaa inayouzwa sana
-        </h3>
-        <p class="text-lg font-semibold mt-2">
-          {analyticsStore.mostSoldPrdname}
-        </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-2 text-sm mt-1">
-          <span class="bg-purple-100 px-3 py-1 rounded-full shadow-sm">
-            {analyticsStore.productUnit}: {analyticsStore.mostSoldPrdQuantity}
-          </span>
-          <span class="bg-purple-100 px-3 py-1 rounded-full shadow-sm">
-            Mara: {analyticsStore.timessold}
-          </span>
-        </div>
-      </div>
-
-
-      {/* --------------------------------
-                  GRAPH DISPLAY 
-      -------------------------------- */}      
-      { isGraphReady.value && (analyticsStore.subscription === "Msingi" ? (
-        <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
-          <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
-          <h3 class="text-sm font-medium">Mtumiaji mwenye deni kubwa</h3>
-          <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
-        </div>
-      ) : (
-        <div class="bg-red-200 text-red-800 p-4 rounded-2xl shadow text-center">
-          <h3 class="text-sm flex items-center justify-center">
-            <span role="img" aria-label="most-debt" class="pr-1.5">💳</span> 
-            Mtumiaji mwenye deni kubwa
-          </h3>
-          <p class="text-lg font-semibold">{analyticsStore.mostDebt} – ({analyticsStore.amountDebt}/=)</p>
-          <p class="text-xs text-gray-600 italic">(Last payment: {analyticsStore.daysDebt})</p>
-        </div>
-      ))}
-
-      {/* ----------------------------------------------
-                   ANAYEDAIWA DENI LA MUDA MREFU
-      ------------------------------------------------- */}      
-      { isGraphReady.value &&  (analyticsStore.subscription === "Msingi" ? (
-        <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
-          <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
-          <h3 class="text-sm font-medium">Mtumiaji mwenye deni la muda mrefu</h3>
-          <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
-        </div>
-      ) : (
-        <div class="bg-yellow-200 text-yellow-800 p-4 rounded-2xl shadow text-center">
-          <h3 class="text-sm flex items-center justify-center">
-            <span role="img" aria-label="long-debt" class="pr-1.5">⏳</span> 
-            Mtumiaji mwenye deni la muda mrefu
-          </h3>
-          <p class="text-lg font-semibold">{analyticsStore.longDebt} – ({analyticsStore.amount}/=)</p>
-        </div>
-      ))}
-
-      {/* -------------------------------------
-                   HISA YA CHINI ZAIDI
-      ---------------------------------------- */}      
-      <div class="bg-orange-200 text-orange-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="low-stock" class="pr-1.5">⚠️</span> 
-          Hisa ya chini zaidi
-        </h3>
-        <p class="text-lg font-semibold">
-          {analyticsStore.lowestPrdName} – ({analyticsStore.lowestPrdStock} units)
-        </p>
-      </div>
-
-      {/* --------------------------------
-                   SAAS COUNTDOWN
-      -------------------------------- */}      
-      <div class="bg-indigo-200 text-indigo-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="countdown" class="pr-1.5">⏰</span> 
-          Kulipia Huduma
-        </h3>
-        <p class="text-lg font-semibold">{analyticsStore.remainingDays}</p>
-      </div>
-
-      {/* --------------------------------
-                   BIDHAA ULIZOSAJILI
-      -------------------------------- */}      
-      <div class="bg-indigo-200 text-indigo-800 p-4 rounded-2xl shadow text-center">
-        <h3 class="text-sm flex items-center justify-center">
-          <span role="img" aria-label="countdown" class="pr-1.5">📦</span> 
-          Bidhaa ulizosajili
-        </h3>
-        <p class="text-sm font-semibold">{analyticsStore.productMessage}</p>
-      </div>
-
-      {/* --------------------------------
-                   KILICHOULIZIWA SANA
-      -------------------------------- */}        
-      { isGraphReady.value && (analyticsStore.subscription === "Msingi" ? (
-          <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
-            <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
-            <h3 class="text-sm font-medium">Kilichouliziwa sana</h3>
-            <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
-        </div>
-        ) : (
+        {/* --------------------------------
+                    MAUZO YA  JUMLA
+        -------------------------------- */}      
         <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
           <h3 class="text-sm flex items-center justify-center">
-            <span role="img" aria-label="asked-product" class="pr-1.5">❓</span> 
-            Kilichouliziwa sana
+            <span role="img" aria-label="sales" class="pr-1.5">📈</span> 
+            Mauzo ya Jumla
           </h3>
-          <p class="text-1xl font-semibold">Moh Energy</p>
+          <p class="text-xl font-bold">{analyticsStore.sales}/=</p>
         </div>
-        ))}
 
-        {/* Total Expired Products */}
-        {/* <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
+
+        {/* --------------------------------
+                    JUMLA YA MANUNUZI
+        -------------------------------- */}      
+        <div class="bg-pink-200 text-pink-800 p-4 rounded-2xl shadow text-center">
+            <h3 class="text-sm flex items-center justify-center">
+              <span role="img" aria-label="return" class="pr-1.5">🛒</span> 
+              Jumla ya Manunuzi
+            </h3>
+            <p class="text-1xl font-semibold">{analyticsStore.purchases}/=</p>
+        </div>
+
+        {/* --------------------------------
+                    MATUMIZI YA JUMLA 
+        -------------------------------- */}      
+        <div class="bg-red-200 text-red-800 p-4 rounded-2xl shadow text-center">
           <h3 class="text-sm flex items-center justify-center">
-            <span role="img" aria-label="expired" class="pr-1.5">📅</span> 
-            Jumla ya bidhaa zilizo-expire
+            <span role="img" aria-label="expenses" class="pr-1.5">💸</span> 
+            Matumizi ya jumla
           </h3>
-          <p class="text-1xl font-semibold">0</p>
-        </div> */}
+          <p class="text-xl font-semibold">{analyticsStore.expenses}/=</p>
+        </div>
+
+        {/* ------------------------------------------
+                    BIDHAA YENYE FAIDA KUBWA
+        ------------------------------------------ */}      
+        <div class="bg-yellow-200 text-yellow-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
+            <span role="img" aria-label="product" class="pr-1.5">🛒</span> 
+            Bidhaa yenye faida kubwa
+          </h3>
+
+          <p class="text-lg font-semibold mt-2">
+            {analyticsStore.profitableProductname}
+          </p>
+          <div class="flex flex-col sm:flex-row justify-center gap-2 text-md mt-1">
+            <span class="bg-purple-50 px-3 py-1 rounded-full shadow-sm">
+              Faida ni {analyticsStore.profitableProductProfit}/=          
+            </span>
+          </div>
+        </div>
+
+        {/* -------------------------------------
+                    BIDHAA INAYOUZWA SANA
+        ----------------------------------------- */}      
+        <div class="bg-purple-200 text-purple-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center font-medium">
+            <span role="img" aria-label="sold" class="pr-1.5">🔥</span>
+            Bidhaa inayouzwa sana
+          </h3>
+          <p class="text-lg font-semibold mt-2">
+            {analyticsStore.mostSoldPrdname}
+          </p>
+          <div class="flex flex-col sm:flex-row justify-center gap-2 text-sm mt-1">
+            <span class="bg-purple-100 px-3 py-1 rounded-full shadow-sm">
+              {analyticsStore.productUnit}: {analyticsStore.mostSoldPrdQuantity}
+            </span>
+            <span class="bg-purple-100 px-3 py-1 rounded-full shadow-sm">
+              Mara: {analyticsStore.timessold}
+            </span>
+          </div>
+        </div>
 
 
-      </div>
-      {isGraphReady.value && <Graph />}
-      <RecentProductsTable />
-    </>
+        {/* ------------------------------------
+                    MTUMIAJI MWENYE DENI KUBWA
+        ---------------------------------------- */}  
+        { analyticsStore.subscription === "Msingi" ? (
+          <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+            <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+            <h3 class="text-sm font-medium">Mtumiaji mwenye deni kubwa</h3>
+            <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
+          </div>
+        ) : (
+          <div class="bg-[#EABDE6] text-red-800 p-4 rounded-2xl shadow text-center">
+            <h3 class="text-sm flex items-center justify-center">
+              <span role="img" aria-label="most-debt" class="pr-1.5">💳</span> 
+              Mtumiaji mwenye deni kubwa
+            </h3>
+            <p class="text-lg font-semibold">{analyticsStore.mostDebt} – ({analyticsStore.amountDebt}/=)</p>
+            <p class="text-xs text-gray-600 italic">(Last payment: {analyticsStore.daysDebt})</p>
+          </div>
+        )}
+
+        {/* ----------------------------------------------
+                    ANAYEDAIWA DENI LA MUDA MREFU
+        ------------------------------------------------- */}      
+        { analyticsStore.subscription === "Msingi" ? (
+          <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+            <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+            <h3 class="text-sm font-medium">Mtumiaji mwenye deni la muda mrefu</h3>
+            <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
+          </div>
+        ) : (
+          <div class="bg-[#E5E3D4] text-yellow-800 p-4 rounded-2xl shadow text-center">
+            <h3 class="text-sm flex items-center justify-center">
+              <span role="img" aria-label="long-debt" class="pr-1.5">⏳</span> 
+              Mtumiaji mwenye deni la muda mrefu
+            </h3>
+            <p class="text-lg font-semibold">{analyticsStore.longDebt} – ({analyticsStore.amount}/=)</p>
+          </div>
+        )}
+
+        {/* -------------------------------------
+                    HISA YA CHINI ZAIDI
+        ---------------------------------------- */}      
+        <div class="bg-orange-200 text-orange-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
+            <span role="img" aria-label="low-stock" class="pr-1.5">⚠️</span> 
+            Hisa ya chini zaidi
+          </h3>
+          <p class="text-lg font-semibold">
+            {analyticsStore.lowestPrdName} – ({analyticsStore.lowestPrdStock} units)
+          </p>
+        </div>
+
+        {/* --------------------------------
+                    SAAS COUNTDOWN
+        -------------------------------- */}      
+        <div class="bg-indigo-200 text-indigo-800 p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
+            <span role="img" aria-label="countdown" class="pr-1.5">⏰</span> 
+            Kulipia Huduma
+          </h3>
+          <p class="text-lg font-semibold">{analyticsStore.remainingDays}</p>
+        </div>
+
+        {/* --------------------------------
+                    BIDHAA ULIZOSAJILI
+        -------------------------------- */}      
+        <div class="bg-[#dd9ca9] text-[#6b2936] p-4 rounded-2xl shadow text-center">
+          <h3 class="text-sm flex items-center justify-center">
+            <span role="img" aria-label="countdown" class="pr-1.5">📦</span> 
+            Bidhaa ulizosajili
+          </h3>
+          <p class="text-sm font-semibold">{analyticsStore.productMessage}</p>
+        </div>
+
+        {/* --------------------------------
+                    KILICHOULIZIWA SANA
+        -------------------------------- */}        
+        { analyticsStore.subscription === "Msingi" ? (
+            <div class="bg-gray-200 text-gray-500 p-4 rounded-2xl shadow text-center relative opacity-50">
+              <div class="absolute top-2 right-2 text-sm text-gray-400">🔒</div>
+              <h3 class="text-sm font-medium">Kilichouliziwa sana</h3>
+              <p class="text-lg font-semibold mt-2">Lipia Lite au zaidi</p>
+          </div>
+          ) : (
+          <div class="bg-green-200 text-green-800 p-4 rounded-2xl shadow text-center">
+            <h3 class="text-sm flex items-center justify-center">
+              <span role="img" aria-label="asked-product" class="pr-1.5">❓</span> 
+              Kilichouliziwa sana
+            </h3>
+            <p class="text-1xl font-semibold">Moh Energy</p>
+          </div>
+          )}
+
+          {/* Total Expired Products */}
+          {/* <div class="bg-gray-200 text-gray-800 p-4 rounded-2xl shadow text-center">
+            <h3 class="text-sm flex items-center justify-center">
+              <span role="img" aria-label="expired" class="pr-1.5">📅</span> 
+              Jumla ya bidhaa zilizo-expire
+            </h3>
+            <p class="text-1xl font-semibold">0</p>
+          </div> */}
+
+
+        </div>
+        {isGraphReady.value && <Graph />}
+        <RecentProductsTable />
+      </>
+)}
+  </>
   );
 });
