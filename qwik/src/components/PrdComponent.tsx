@@ -16,7 +16,6 @@ interface Product {
   unit: string;
   createdAt: string;
   updatedAt: string;
-  isQRCode: boolean;
 }
 
 export const CrudPrdComponent =  component$(() => {

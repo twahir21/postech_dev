@@ -420,7 +420,7 @@ export const head: DocumentHead = {
       
       // Open Graph (OG) tags for social media
       { property: "og:title", content: "myPosTech - Mfumo wa Kisasa wa Biashara" },
-      { property: "og:description", content: "Mfumo ya kisasa unayotumia QR Codes. fuatilia bidhaa, mauzo na madeni. myPosTech ~ Biashara yako, teknolojia yetu" },
+      { property: "og:description", content: "Mfumo ya kisasa unayotumia Sauti au maandishi kurekodi. fuatilia bidhaa, mauzo na madeni. myPosTech ~ Biashara yako, teknolojia yetu" },
       { property: "og:image", content: "https://www.mypostech.store/thumbnail2.webp" },
       { property: "og:url", content: "https://mypostech.store" },
       { property: "og:type", content: "website" },
@@ -430,7 +430,7 @@ export const head: DocumentHead = {
       // Twitter Card meta tags
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "myPosTech - Mfumo bora kwa biashara zote" },
-      { name: "twitter:description", content: "Mauzo ya haraka kwa kutumia QR, dashibodi ya Kiswahili, na muundo wa kisasa wa simu." },
+      { name: "twitter:description", content: "Mauzo ya haraka kwa kutumia Mic (sauti), dashibodi ya Kiswahili, na muundo wa kisasa wa simu." },
       { name: "twitter:image", content: "https://mypostech.store/thumbnail2.webp" },
   
       // Structured Data (JSON-LD) for enhanced SEO
@@ -463,9 +463,9 @@ export const head: DocumentHead = {
                   },
                   {
                     "@type": "Product",
-                    "name": "myPosTech QR POS System",
+                    "name": "myPosTech - POS System",
                     "image": "https://mypostech.store/thumbnail2.webp",
-                    "description": "POS system with QR code support, real-time analytics, debt tracking, and Swahili dashboard.",
+                    "description": "POS system with sell-by-mic support, real-time analytics, debt tracking, and Swahili dashboard.",
                     "brand": {
                       "@type": "Brand",
                       "name": "myPosTech"
@@ -502,7 +502,7 @@ export const head: DocumentHead = {
                         "name": "Je, myPosTech ni nini?",
                         "acceptedAnswer": {
                           "@type": "Answer",
-                          "text": "myPosTech ni mfumo wa kisasa wa mauzo na stoo unaotumia QR codes kusaidia wafanyabiashara."
+                          "text": "myPosTech ni mfumo wa kisasa wa mauzo na stoo unaotumia Sauti au maandishi kusaidia wafanyabiashara."
                         }
                       },
 

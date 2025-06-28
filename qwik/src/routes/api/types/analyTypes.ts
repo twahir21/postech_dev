@@ -37,7 +37,6 @@ export interface lowestProduct {
     unit: string;
     createdAt: string;
     updatedAt: string;
-    isQRCode: boolean;
 }
 
 export interface lowStockProducts {
@@ -53,7 +52,6 @@ export interface lowStockProducts {
     unit: string;
     createdAt: string;
     updatedAt: string;
-    isQRCode: boolean;
 } // array
 
 

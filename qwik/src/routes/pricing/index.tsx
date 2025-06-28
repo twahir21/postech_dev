@@ -16,7 +16,7 @@ export default component$(() => {
         <p class="text-sm text-gray-600">Kwa duka dogo la mtaa, mama ntilie, kibanda</p>
         <p class="text-2xl font-bold mt-4">Tsh 5,000/= <span class="text-sm text-gray-500">kwa mwezi</span></p>
         <ul class="mt-4 space-y-2 text-sm">
-          <li>✔ Mauzo kupitia QR Code za bidhaa</li>
+          <li>✔ Mauzo kupitia Sauti au maandishi </li>
           <li>✔ Kurekodi mauzo kiotomatiki</li>
           <li>✔ Ripoti za matumizi, faida na mauzo kwa mwezi mmoja</li>
           <li>✔ Kutunza Kumbukumbu mwezi mmoja</li>
@@ -72,7 +72,6 @@ export default component$(() => {
           <li>✔ Kutunza Kumbukumbu miezi 6</li>
           <li>✔ Mpaka aina za bidhaa 1500</li>
           <li>✔ Kutuma taarifa kama kuna bidhaa imekwisha au ipo chini sana</li>
-          <li>✔ Kumbukumbu za QR Code za nyuma</li>
         </ul>
 
         {/* <button class="bg-gradient-to-r from-purple-500 via-purple-700 to-purple-900 text-white text-sm font-semibold py-2 rounded-lg transition mt-4">

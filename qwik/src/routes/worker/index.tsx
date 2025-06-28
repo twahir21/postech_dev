@@ -8,7 +8,6 @@ interface Assistant {
 }
 
 const allPermissions = [
-  "Tumia QR Code",
   "Ongeza Bidhaa",
   "Futa Bidhaa",
   "Rekebisha Bei",

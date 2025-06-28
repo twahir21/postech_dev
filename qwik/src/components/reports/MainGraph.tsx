@@ -37,6 +37,7 @@ export const MainGraph = component$(() => {
     // ----------------------------------------------
     const barChart = new ApexCharts(document.querySelector("#bar-chart"), {
       chart: { type: 'bar', height: 250 },
+      plotOptions: { bar: { borderRadius: 2 } },
       series: [
         { name: 'Matumizi', data: [200, 300, 250, 400, 350, 280, 300] },
         { name: 'Manunuzi', data: [500, 600, 550, 620, 580, 610, 590] },
