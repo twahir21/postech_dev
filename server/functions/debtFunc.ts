@@ -89,9 +89,11 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
     total: sql<number>`SUM(${debtPayments.amountPaid})`
   }).from(debtPayments).where(eq(debtPayments.shopId, shopId));
 
-  // receipt data
+  // fuse recentPayment, total debts, and debtReceipt.
+  // receipt data (grouping by date ...)
   const debtReceipts = await mainDb
     .select({
+      date: sql`DATE(${debts.createdAt})`.as('date'),
       customerId: debts.customerId,
       product: products.name,
       quantity: debts.quantity,
@@ -100,7 +102,9 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
     })
     .from(debts)
     .innerJoin(products, eq(debts.productId, products.id))
-    .where(eq(debts.shopId, shopId));
+    .where(eq(debts.shopId, shopId))
+    .orderBy(desc(debts.createdAt))
+    
 
 
   return {

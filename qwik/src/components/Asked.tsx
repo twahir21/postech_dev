@@ -39,31 +39,31 @@ export const AskedProducts = component$(() => {
   })
 
 
-  const deleteData = $(async () => {
-    const newApi = new CrudService<{ id?: string; name: string}>("asked");
+  // const deleteData = $(async () => {
+  //   const newApi = new CrudService<{ id?: string; name: string}>("asked");
 
-    const apiRes = await newApi.delete();
+  //   const apiRes = await newApi.delete();
     
-    // fire a toast
-    modal.isOpen = true;
-    modal.isSuccess = apiRes.success;
-    modal.message = apiRes.message || (apiRes.success ? "umefanikiwa kufuta" : "Imefeli kufuta");
+  //   // fire a toast
+  //   modal.isOpen = true;
+  //   modal.isSuccess = apiRes.success;
+  //   modal.message = apiRes.message || (apiRes.success ? "umefanikiwa kufuta" : "Imefeli kufuta");
 
-  })
+  // })
 
-  const updateData = $(async () => {
-    const newApi = new CrudService<{ id?: string; name: string}>("asked");
+  // const updateData = $(async () => {
+  //   const newApi = new CrudService<{ id?: string; name: string}>("asked");
 
-    const apiRes = await newApi.update();
+  //   const apiRes = await newApi.update();
     
-    // fire a toast
-    if(!apiRes.success) {
-      modal.isOpen = true;
-      modal.isSuccess = false;
-      modal.message = apiRes.message || "Imeshindwa kuongeza tarifa";
-      return
-    }
-  })
+  //   // fire a toast
+  //   if(!apiRes.success) {
+  //     modal.isOpen = true;
+  //     modal.isSuccess = false;
+  //     modal.message = apiRes.message || "Imeshindwa kuongeza tarifa";
+  //     return
+  //   }
+  // })
 
   const fetchData = $(async () => {
     const newApi = new CrudService<{id?: string; data: { id?: string; name: string; count: number }[]}>("asked");

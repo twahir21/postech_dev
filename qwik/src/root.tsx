@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import {
   QwikCityProvider,
   RouterOutlet,
@@ -8,6 +8,8 @@ import { RouterHead } from "./components/router-head/router-head";
 import { isDev } from "@builder.io/qwik";
 
 import "./global.css";
+import { canShowPrompt, captureBeforeInstallPrompt, getDeferredPrompt, setPromptShown } from "./routes/function/pwa-install";
+import { PWAPOP } from "./components/ui/pwaPOP";
 
 export default component$(() => {
   /**
@@ -16,6 +18,16 @@ export default component$(() => {
    *
    * Don't remove the `<head>` and `<body>` elements.
    */
+  const showPwaPrompt = useSignal(false);
+
+  useVisibleTask$(() => {
+    captureBeforeInstallPrompt();
+    if (canShowPrompt()) {
+      showPwaPrompt.value = true;
+      setPromptShown();
+    }
+  });
+
 
   return (
     <QwikCityProvider>
@@ -32,6 +44,24 @@ export default component$(() => {
       <body lang="en" class="font-ubuntu">
         <RouterOutlet />
         {!isDev && <ServiceWorkerRegister />}
+
+        {showPwaPrompt.value && (
+          <PWAPOP
+            onAccept$={async () => {
+              const prompt = getDeferredPrompt();
+              if (prompt) {
+                // Directly install without showing browser's prompt
+                prompt.prompt();
+                await prompt.userChoice;
+              }
+              showPwaPrompt.value = false;
+            }}
+            onReject$={() => {
+              showPwaPrompt.value = false;
+            }}
+          />
+        )}
+
       </body>
     </QwikCityProvider>
   );

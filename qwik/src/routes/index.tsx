@@ -221,17 +221,17 @@ export default component$(() => {
           {/* Left side - text */}
           <div class="w-full md:w-3/4">
             <h1 class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4">
-              Boresha biashara yako kwa QR Code
+              Tunza Biashara yako kwa sauti au maandishi.
             </h1>
             <p class="text-sm sm:text-base md:text-base text-gray-600 mb-6 dark:text-gray-400">
               <Typewriter
-                text="Mfumo wa kisasa ulio na uwezo wa kuboresha na kurahisisha shughuli za kila siku za biashara yako kwa ku scan QR Codes maalumu zitakazotengenezwa na mfumo, hivyo kufanya mahesabu yako na rekodi za mauzo kiotomatiki kwa simu yako tu!. Pia unaweza kupakua App yako, itakuja kama ujumbe ukiwa unatumia mfumo mara kwa mara"
+                text="Mfumo wa kisasa ulio na uwezo wa kuboresha na kurahisisha shughuli za kila siku za biashara yako kwa kutumia kinasa sauti au maandishi kufanya mahesabu yako na rekodi za mauzo kiotomatiki kwa simu yako tu!"
                 speed={50}
               />
             </p>
             <div class="flex flex-wrap gap-4">
               <Link
-                href="/auth?reg=true"
+                href="/private"
                 class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-full shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base"
               >
                 Jaribu Bure (siku 14)
@@ -289,8 +289,8 @@ export default component$(() => {
               <p class="text-sm sm:text-base md:text-base text-gray-600 dark:text-gray-300">
                 myPosTech umeundwa mahsusi kutatua changamoto halisi za wafanyabiashara wakubwa na wadogo.
                 Wafanyabiashara wengi walikuwa wanapoteza faida kwa sababu ya kumbukumbu hafifu za bidhaa zao, hesabu zisizo sahihi, bidhaa kuisha bila kujua kupelekea kukosa wateja, na madeni lisilofuatiliwa vizuri.
-                myPosTech imekuja kama suluhisho rahisi, salama na nafuu – kwa kila biashara, Kwa kutengeneza QR Code za bidhaa zako kiotomatiki, kuuza na kuscan QR Code ya bidhaa, kurekodi mauzo kiotomatiki, na kuona faida yako papo hapo.
-                Mfumo hujifunza mwenendo wa biashara yako kupitia akili bandia (AI), na hukupa ushauri wa bidhaa gani kuagiza, lini, na kwa bei ipi.
+                myPosTech imekuja kama suluhisho rahisi, salama na nafuu – kwa kila biashara, Kwa kusajili bidhaa kwa mara moja tu, kuuza kwa kusema "Nimeuza sukari robo", kurekodi mauzo kiotomatiki, na kuona faida yako papo hapo.
+                {/* Mfumo hujifunza mwenendo wa biashara yako kupitia akili bandia (AI) { }, na hukupa ushauri wa bidhaa gani kuagiza, lini, na kwa bei ipi. */}
                 myPosTech - Biashara yako, Teknolojia yetu.
               </p>
           </div>        

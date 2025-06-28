@@ -32,7 +32,7 @@ export const Pains =  component$(() => {
         <div class="bg-green-50 dark:bg-gray-400 rounded-xl p-6 shadow-md border-2 border-green-300">
           <h3 class="text-xl font-semibold text-green-700 dark:text-green-900 mb-4">✅ myPosTech Inatatua Kwa Urahisi</h3>
           <ul class="space-y-3 text-sm md:text-base">
-            <li>✔ Kurekodi mauzo kwa kuscan QR ya bidhaa</li>
+            <li>✔ Kurekodi mauzo kwa kutumia kinasa sauti au maandishi kiotomatiki</li>
             <li>✔ Kuonyesha faida, hasara na matumizi kwa muda halisi</li>
             <li>✔ Kufuatilia madeni na kumbukumbu za kila mteja</li>
             <li>✔ Kuhifadhi taarifa zote salama hata bila bando</li>

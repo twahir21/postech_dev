@@ -1,56 +1,36 @@
 import { component$, useSignal } from '@builder.io/qwik';
-import type { JSXOutput } from '@builder.io/qwik';
 
 interface Step {
   emoji: string;
   title: string;
-  description: string | JSXOutput;
+  description: string;
 }
 
 const steps: Step [] = [
   {
     emoji: '📥',
-    title: '1. Tengeneza QR za Bidhaa zako',
-    description: `Jisajili bure siku 14 za mwanzo kisha ingia kwenye dashboard. Bonyeza kitufe cha "Anza hapa" kisha Sajili bidhaa moja tu kwa kila aina na msambazaji wake. mfano: sajili cocacola kutoka bonite mara 1 kisha hamia soda nyingine. Ukimaliza, bonyeza kitufe cha “Tengeneza QR Code”. Utapakua faili lenye QR Codes za bidhaa zako.
-👉 Kama bidhaa mpya imekuja baadaye, isajili kwanza au kama bei imebadilika badili kwenye rekodi ya bidhaa, kisha utaona kitufe cha “Tengeneza QR Code” kimefunguka tena – bonyeza upate QR mpya.`,
+    title: '1. Sajili bidhaa zako.',
+    description: `Jisajili bure siku 14 za mwanzo kisha ingia kwenye dashboard. Bonyeza kitufe cha "Anza hapa" kisha Sajili bidhaa moja tu kwa kila aina na msambazaji wake. mfano: sajili cocacola kutoka bonite mara 1 kisha hamia soda nyingine.
+    👉 Kama bidhaa mpya imekuja baadaye, isajili kwanza au kama bei imebadilika badili kwenye rekodi ya bidhaa.`,
   },
   {
-    emoji: '🗂️',
-    title: '2. Tunza QR Code za bidhaa zako',
-    description: `Faili ulilopakuwa linabeba QR Code zote, nenda katoe stationery (Ni mara moja tu mpaka bidhaa itakapobadilishwa bei) kisha chukua karatasi zenye QR Code hifadhi au ili weka sehemu rahisi kwa ajili ya matumizi kwa muuzaji. Inashauriwa kubandika QR kwenye bidhaa zinazohusika moja tu. Mfano: bandika QR code ya coca kwenye kreti la coca ili ukitaka kuuza coca unatumia ile ile QR Code moja. Kila QR Code ina jina la bidhaa zako.`,
-  },{
-    emoji: '📸',
-    title: "3. Scan QR Code ukifanya mauzo, manunuzi, matumizi au kukopesha",
-    description: (
-  <>
-    Ni rahisi sana, tumia Google Lens au App yoyote play isiyo na matangazo au Pata app isiyo na matangazo
-    kwa watu wa Android, bofya  👉{' '}
-    <a
-      href="https://play.google.com/store/apps/details?id=com.mayur.neoqrcodescanner"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="text-blue-600 dark:text-blue-900 underline"
-    >
-      Pakua hapa
-    </a>
-    . Kisha fungua app hiyo, scan QR Code ya bidhaa yako, kisha bonyeza link inayotokea ili kuhakiki taarifa.
-  </>
-)
-
+    emoji: '🎤',
+    title: '2. Tumia mic kufanya mauzo, manunuzi au matumizi au kukopesha.',
+    description: `Bonyeza kitufe cha ℹ️ kisha soma utaratibu wote, kisha bonyeza kitufe cha 🎙️ kuanza kurekodi kilichofanyika, au kama sauti changamoto tumia text kwa kubonyeza kitufe cha ✍️.`
   },
   {
     emoji: '🧾',
-    title: '4. Hakiki taarifa kisha zitunze',
-    description: `Kila utakapouza, au kuagiza mzigo mpya, au kutumia kitu kwenye biashara yako au kukopesha una scan QR Code ya bidhaa yako, halafu unabonyeza link itayokuja hapa utakuta sehemu ya kuhakiki kama ni mauzo, matumizi, madeni au kununua (ile ile bidhaa) kisha weka kiwango chako (stoku au hisa) kisha tuma taarifa.`,
+    title: '3. Hakiki taarifa kisha zitunze',
+    description: `Hakiki kama taarifa au sentensi uliojaza ndio inayotakiwa kisha tuma ili kurekodi. Rudia hatua namba mbili na tatu kila unapofanya mauzo, manunuzi (ya bidhaa uliosajili), matumizi au kukopesha. Kama ni kukopesha sajili mteja kwanza`,
   },
   {
     emoji: '📊',
-    title: '5. Pata Faida na Ripoti',
+    title: '4. Pata Faida na Ripoti',
     description: `Rudi mwanzoni mwa dashboard (Nyumbani), na utaona hesabu kamili — kila siku na ripoti zako utaziona. Hongera umefanikiwa kujua mfumo wetu. myPosTech - Biashara yako, Teknolojia yetu.`,
   },
   {
     emoji: '📱',
-    title: '6. [Sio Lazima] Hakiki hesabu zako kwa calculator',
+    title: '5. [Sio Lazima] Hakiki hesabu zako kwa calculator',
     description: `Tumekuwekea Calculator sehemu mbili, kwenye Dashboard na kwenye kuhakiki mauzo ili, kama unataka kuhakiki taarifa zako jisikie huru kufanya hivyo.`
   }
 ];

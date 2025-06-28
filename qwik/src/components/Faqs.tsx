@@ -7,8 +7,8 @@ export const Faqs = component$(() => {
       answer: 'myPosTech ni mfumo wa kisasa wa kuuza na kusimamia biashara kupitia simu au kompyuta, unaosaidia kutunza kumbukumbu, kupata ripoti, na kuongeza faida.',
     },
     {
-      question: 'Je, nahitaji intaneti kutumia myPosTech?',
-      answer: 'Hapana! myPosTech inaweza kufanya kazi bila intaneti kwa kutumia PWA, hasa kwa vifurushi vya msingi na lite.',
+      question: 'Je, ni bure nikianza kutumia au kujaribu mfumo ?',
+      answer: 'Ndio, ni bure ndani ya siku 14 usichelewe account itafungwa.',
     },
     {
       question: 'Naweza kulipa vipi kifurushi?',
