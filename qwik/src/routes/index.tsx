@@ -11,6 +11,7 @@ import { Pains } from "~/components/Pains";
 import { Steps } from "~/components/Steps";
 import { Last } from "~/components/Last";
 import { Partiners } from "~/components/Partiners";
+import { InstallPWA } from "~/components/ui/install";
 
 export default component$(() => {
 
@@ -229,17 +230,19 @@ export default component$(() => {
                 speed={50}
               />
             </p>
-            <div class="flex flex-wrap gap-4">
+            <div class="flex flex-col md:flex-row gap-4">
               <Link
                 href="/private"
-                class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-full shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base"
+                class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-3 rounded-full shadow-md hover:bg-gray-800 transition text-sm sm:text-base md:text-base text-center"
               >
                 Jaribu Bure (siku 14)
               </Link>
 
+              <InstallPWA />
+
               <Link
                 href="#video"
-                class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-700 to-green-900 text-white rounded-full shadow-2xl animate-pulse hover:animate-none transition text-sm sm:text-base"
+                class="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-700 to-green-900 text-white rounded-full shadow-2xl animate-pulse hover:animate-none transition text-sm sm:text-base"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M6.5 5.5v9l8-4.5-8-4.5z" />
@@ -247,6 +250,7 @@ export default component$(() => {
                 Tazama Video
               </Link>
             </div>
+
           </div>
 
     {/* Right side - image */}
