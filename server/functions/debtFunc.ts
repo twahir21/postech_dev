@@ -3,6 +3,7 @@ import { mainDb } from "../database/schema/connections/mainDb";
 import { customers, debtPayments, debts, products } from "../database/schema/shop";
 import { sanitizeNumber } from "./security/xss";
 import Decimal from "decimal.js";
+import type { MergedCustomerData } from "../types/types";
 
 // Define types for better TypeScript safety
 interface DebtStatistics {
@@ -12,20 +13,6 @@ interface DebtStatistics {
   lastPayment: Date | null;
 }
 
-interface CustomerDebt {
-  customerId: string;
-  name: string;
-  totalDebt: string;
-  remainingAmount: string;
-  lastPaymentDate: Date | null;
-}
-
-interface DebtPaymentHistory {
-  customerId: string;
-  name: string;
-  totalPaid: number;
-  paymentDate: Date;
-}
 
 // Combined query with pagination
 export async function debtFunc ({ shopId, userId, query }: { shopId: string, userId: string, query: { page: number, pageSize: number } }): Promise<{ success: boolean, data?: unknown, message: string }> {
@@ -147,9 +134,10 @@ for (const receipt of debtReceipts) {
 }
 
 
-const mergedData = Array.from(resultMap.values());
-const paginatedData = mergedData.slice((page - 1) * pageSize, page * pageSize);
+const resultMap2 = new Map<string, MergedCustomerData>();
 
+const mergedData: MergedCustomerData[] = Array.from(resultMap2.values());
+const paginatedData: MergedCustomerData[] = mergedData.slice((page - 1) * pageSize, page * pageSize);
 
 console.log(paginatedData, customerDebts, paymentHistory, debtReceipts, mergedData.length);
 
@@ -171,12 +159,9 @@ const totalCustomDebt = await mainDb
         pagination: {
         currentPage: page,
         pageSize,
-        total: mergedData.length,
+        total: mergedData.length
         },
-        customerDebts: customerDebts as CustomerDebt[],
-        recentPayments: paymentHistory as DebtPaymentHistory[],
-        debtReceipts,
-        data: paginatedData
+        paginatedData
     }],
     message: "Madeni ya wateja yamepatikana kwa mafanikio."
   };

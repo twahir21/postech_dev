@@ -112,3 +112,47 @@ export  interface jwtTypes {
     readonly sign: (morePayload: Record<string, string | number> & JWTPayloadSpec) => Promise<string>;
     readonly verify: (jwt?: string) => Promise<false | (Record<string, string | number> & JWTPayloadSpec)>;
   }
+
+
+  // ------------------
+  // DEBTS TYPES
+  // ------------------
+  interface CustomerDebt {
+  debtId: string;
+  customerId: string;
+  name: string;
+  totalDebt: number;
+  remainingAmount: number;
+  lastPaymentDate: Date;
+  createdAt: Date;
+}
+
+interface PaymentHistory {
+  customerId: string;
+  name: string;
+  totalPaid: number;
+  paymentDate: Date;
+}
+
+interface DebtReceipt {
+  date: Date;
+  customerId: string;
+  product: string;
+  quantity: number;
+  priceSold: number;
+  total: number;
+}
+
+export interface MergedCustomerData extends CustomerDebt {
+  payment: {
+    totalPaid: number;
+    lastPayment: Date;
+  } | null;
+  receipts: {
+    date: Date;
+    product: string;
+    quantity: number;
+    priceSold: number;
+    total: number;
+  }[];
+}
