@@ -1,12 +1,12 @@
 import { $, component$, useContext, useResource$, useSignal, useStore } from '@builder.io/qwik';
 import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './ui/Toast';
-import type { CustomerDebt, DataItemDebts, RecentPayment } from '~/routes/api/types/debTypes';
 import { formatDateOnly, formatDateTime, formatMoney } from '~/routes/function/helpers';
 import { Popup } from './ui/Popup';
 import { Receipt } from './ui/Receipt';
 import { RefetchContext } from './context/refreshContext';
 import { subscriptionData } from './context/store/netSales';
+import type { DataItemDebts } from '~/routes/api/types/debTypes';
 
 export const DebtComponent = component$(() => {
 
@@ -16,10 +16,6 @@ export const DebtComponent = component$(() => {
     isSuccess: false,
     allDebts: "0" as string,
     allDebters: 0 as number,
-    arrData: {
-      DebtData: [] as CustomerDebt[],
-      recentPayments: [] as RecentPayment[]
-    },
     madeniYaliyokusanywa: 0 as number,
     madeniYaliyolipwa: 0 as number,
     totalCollected: 0 as number
@@ -53,15 +49,11 @@ export const DebtComponent = component$(() => {
     modal.allDebts = formatMoney(Number(debtResults.data[0].statistics.totalDebts))
     modal.allDebters = Number(debtResults.data[0].statistics.totalDebters);
 
-    modal.arrData.DebtData = debtResults.data[0].customerDebts;
-    modal.arrData.recentPayments = debtResults.data[0].recentPayments;
-
     modal.madeniYaliyokusanywa = debtResults.data[0].madeniYaliyokusanywa;
     modal.madeniYaliyolipwa = debtResults.data[0].madeniYaliyolipwa;
 
     modal.totalCollected = debtResults.data[0].totalCollected;
 
-    console.log(debtResults.data[0].debtReceipts)
 
     // calculate total pages
     totalPages.value = Math.ceil(
@@ -78,39 +70,7 @@ export const DebtComponent = component$(() => {
     debtRefetch.value = false;
   });
 
-  
-  // Combine debts for same customer
-const groupedDebts = Object.values(
-  modal.arrData.DebtData.reduce((acc, debt) => {
-    const id = debt.customerId;
-    if (!acc[id]) {
-      acc[id] = { ...debt }; // first instance
-    } else {
-      // Merge debts
-      acc[id].totalDebt = (
-        Number(acc[id].totalDebt) + Number(debt.totalDebt)
-      ).toString();
-      acc[id].remainingAmount = (
-        Number(acc[id].remainingAmount) + Number(debt.remainingAmount)
-      ).toString();
-      // keep latest lastPaymentDate
-      const current = new Date(acc[id].lastPaymentDate || '');
-      const incoming = new Date(debt.lastPaymentDate || '');
-      if (incoming > current) {
-        acc[id].lastPaymentDate = debt.lastPaymentDate;
-      }
-    }
-    return acc;
-  }, {} as Record<string, CustomerDebt>)
-);
 
-const paymentMap = modal.arrData.recentPayments.reduce((acc, payment) => {
-  if (!acc[payment.customerId]) {
-    acc[payment.customerId] = [];
-  }
-  acc[payment.customerId].push(payment);
-  return acc;
-}, {} as Record<string, RecentPayment[]>);
 
 if (subscription.value === 'Msingi'){
   return (

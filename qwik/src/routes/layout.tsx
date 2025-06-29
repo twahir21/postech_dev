@@ -48,6 +48,26 @@ export const onGet: RequestHandler = async ({ url, cookie, request, redirect, er
 
   rateLimitMap.set(ip, record);
 
+  // 🔐 VPN/Proxy Blocking
+  if (ip !== "127.0.0.1") {
+      try {
+      const proxyRes = await fetch(`https://proxycheck.io/v2/${ip}?vpn=1&asn=1`);
+  const proxyData = await proxyRes.json();
+  const ipKey = Object.keys(proxyData).find((k) => k !== "status")!;
+  const details = proxyData[ipKey];
+
+  if (details.proxy === "yes" || details.type === "VPN") {
+    console.warn(`VPN/Proxy detected from IP ${ip}. Blocking access.`);
+    throw redirect(
+      302,
+      `/bloc?ip=${ip}&location=${encodeURIComponent(`${details.city}, ${details.country}`)}&network=${encodeURIComponent(details.provider || details.organisation)}`
+    );
+  }
+  } catch (error) {
+    error instanceof Error ? console.log(error.message) :  console.log("failed");
+  }
+  }
+
   // Auth logic
   const isPrivate = url.pathname.startsWith("/private");
   

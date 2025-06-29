@@ -1,57 +1,50 @@
 import Elysia from "elysia";
+import { mainDb } from "../../database/schema/connections/mainDb";
+import { eq, sql } from "drizzle-orm";
+import { visitorDetails } from "../../database/schema/analytics.schema";
 
 export const trackingVisitors = new Elysia()
-    .get("/check-visitor", async ({ request }) => {
+    .post("/sign-visitorDetails", async ({ visitorId, request }: { visitorId: string; request: Request }) => {
         try {
-                const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
-                const userAgent = request.headers.get('user-agent') || ''; // capture browser or device info
-                const referer = request.headers.get('referer') || ''; // captures the previous URL that led the user to your page.
-                const refererDomain = referer.split('/').slice(2).join('/');
+        // check if user exist
+        const isAvailable = await mainDb.select({ id: visitorDetails.id }).from(visitorDetails).where(eq(visitorDetails.visitorId, visitorId));
 
-                const testIp2 = "196.249.93.101";
-                const testIp = "185.252.220.151"
+        if (isAvailable.length === 0) {
+            // insert new visitor
+            const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
+            const userAgent = request.headers.get('user-agent') || ''; // capture browser or device info
+            const referer = request.headers.get('referer') || ''; // captures the previous URL that led the user to your page.
+            const refererDomain = referer.split('/').slice(2).join('/');
+            const date = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
 
-                // // free and no sign no setting ip no api key up but no region 
-                // const res = await fetch(`https://ipapi.co/json/`);
-                // console.log(res)
-                // const data = await res.json();
-                // console.log("Data: ", data);
+            const result = await fetch(`https://proxycheck.io/v2/${ip}?vpn=1&asn=1`);
 
-                // // ? ip -geo most free-tier accurate api go to https://ipgeolocation.io
-                // const ipApi = "19d9d86130224c369009ae54213dc479";
-
-                // const res2 = await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${ipApi}&ip=${testIp}`, { verbose: true });
-
-                // const data2 = await res2.json();
-
-                // console.log("Data2: ", data2)
-
-                // // iphub key
-                // const ipHubApi = "Mjg1NTA6U1RCY0Y3V1RRQVpjdVBQQmdSYXg0NXhjcTZqV1Y5bnQ=";
-
-                // const res3 = await fetch("http://v2.api.iphub.info/ip/196.249.93.101")
-
-                // proxycheck, it checks vpn, country and city of ip address and free no sign up no key but 1000 req/day but pricing is good.
-                // ? use this and warn user with message "Matumizi ya VPN hayahujisiwi kwa ajili ya usalama wetu"
-                // it looks vpn proxy and tor (block all)
-
-                // ! store login time and logout time for best tracking ...
-
-                const res4 = await fetch(`https://proxycheck.io/v2/${testIp}?vpn=1&asn=1`);
-
-                const data4 = await res4.json();
-                console.log("Data4: ", data4);
+            const visitorInfo = await result.json();
+            const data = Object.keys(visitorInfo).find((k) => k !== "status")!;
+            const details = visitorInfo[data];
 
 
-                return {
-                    success: true,
-                    ip,
-                    userAgent,
-                    referer,
-                    refererDomain,
-                    date: new Date(Date.now())
-                }
-
+            // insert data
+            await mainDb.insert(visitorDetails).values({
+                visitorId, 
+                proxy: details.proxy,
+                type: details.type,
+                continent: details.continent,
+                country: details.country,
+                region: details.region,
+                city: details.city,
+                latitude: details.latitude,
+                longitude: details.longitude,
+                timezone: details.timezone,
+                provider: details.provider,
+                currency: details.currency.name + ` (${details.currency.code})`,
+                userAgent,
+                referer,
+                refererDomain,
+                date,
+                ip
+            });
+        }
         } catch (error) {
             return {
                 success: false,
@@ -59,5 +52,35 @@ export const trackingVisitors = new Elysia()
                         ? error.message 
                         : "Hitilafu kwenye seva"
             }
+        }
+    })
+    .get("count-visitorDetails", async () => {
+        const totalCount = await mainDb.select({
+            total: sql<number>`COUNT(DISTINCT ${visitorDetails.visitorId})`,
+            date: visitorDetails.date
+        }).from(visitorDetails).groupBy(visitorDetails.date);   
+
+        if(totalCount.length === 0) {
+            return {
+                success: true,
+                total: 0,
+                users: { index: [], dates: [] }
+            }
+        }
+
+        // -- Daily
+        // SELECT COUNT(DISTINCT ip) FROM visitorDetails WHERE date = '2025-06-29';
+
+        // -- Weekly
+        // SELECT COUNT(DISTINCT ip) FROM visitorDetails WHERE date >= date('now', '-7 days');
+
+        // -- Monthly
+        // SELECT COUNT(DISTINCT ip) FROM visitorDetails WHERE date >= date('now', 'start of month');
+
+
+        return {
+            success: true,
+            total: totalCount[0].total,
+            users: { index: totalCount.map((_, i) => i), dates: totalCount.map(t => t.date) }
         }
     })

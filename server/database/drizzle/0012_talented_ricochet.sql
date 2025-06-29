@@ -1,0 +1,20 @@
+CREATE TABLE "visitor_details" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"visitor_id" text NOT NULL,
+	"proxy" text,
+	"type" text,
+	"continent" text,
+	"country" text,
+	"city" text,
+	"region" text,
+	"latitude" text,
+	"longitude" text,
+	"timezone" text,
+	"provider" text,
+	"currency" text,
+	"user_agent" text,
+	"referer" text,
+	"referer_domain" text,
+	"date" text,
+	"ip" text
+);

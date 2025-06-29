@@ -139,7 +139,7 @@ const resultMap2 = new Map<string, MergedCustomerData>();
 const mergedData: MergedCustomerData[] = Array.from(resultMap2.values());
 const paginatedData: MergedCustomerData[] = mergedData.slice((page - 1) * pageSize, page * pageSize);
 
-console.log(paginatedData, customerDebts, paymentHistory, debtReceipts, mergedData.length);
+console.log(paginatedData);
 
 
 const totalCustomDebt = await mainDb
