@@ -31,6 +31,7 @@ interface DebtPaymentHistory {
 export async function debtFunc ({ shopId, userId, query }: { shopId: string, userId: string, query: { page: number, pageSize: number } }): Promise<{ success: boolean, data?: unknown, message: string }> {
     try {
     const { page, pageSize } = query;
+
   // First get the statistical data
   const [stats] = await mainDb.select({
     totalDebts: sql<number>`SUM(${debts.totalAmount})`,
@@ -39,7 +40,23 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
     lastPayment: sql<Date | null>`MAX(${debts.lastPaymentDate})`,
   }).from(debts).where(eq(debts.shopId, shopId));
 
+  // Madeni yaliyolipwa (fully paid debts)
+  const fullyPaidDebtsCount = await mainDb.select({
+    count: sql<number>`COUNT(*)`
+  }).from(debts).where(and(
+    eq(debts.shopId, shopId),
+    eq(debts.remainingAmount, "0.00")
+  ));
+
+  // Malipo yaliyokusanywa (total amount paid)
+  const [totalCollected] = await mainDb.select({
+    total: sql<number>`SUM(${debtPayments.amountPaid})`
+  }).from(debtPayments).where(eq(debtPayments.shopId, shopId));
+
+
+  //-------------------------------------------------------------------
   // Get paginated customer debts (sorted by highest remaining debt)
+  //-------------------------------------------------------------------
   const customerDebts = await mainDb.select({
     debtId: debts.id,
     customerId: debts.customerId,
@@ -76,19 +93,6 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
       .orderBy(desc(sql`MAX(${debtPayments.paymentDate})`))
       .limit(5);
 
-      // Madeni yaliyolipwa (fully paid debts)
-    const fullyPaidDebtsCount = await mainDb.select({
-      count: sql<number>`COUNT(*)`
-    }).from(debts).where(and(
-      eq(debts.shopId, shopId),
-      eq(debts.remainingAmount, "0.00")
-    ));
-
-  // Malipo yaliyokusanywa (total amount paid)
-  const [totalCollected] = await mainDb.select({
-    total: sql<number>`SUM(${debtPayments.amountPaid})`
-  }).from(debtPayments).where(eq(debtPayments.shopId, shopId));
-
   // fuse recentPayment, total debts, and debtReceipt.
   // receipt data (grouping by date ...)
   const debtReceipts = await mainDb
@@ -104,24 +108,75 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
     .innerJoin(products, eq(debts.productId, products.id))
     .where(eq(debts.shopId, shopId))
     .orderBy(desc(debts.createdAt))
-    
 
+
+    
+    const resultMap = new Map<string, any>();
+
+// Initialize with customerDebts
+for (const debt of customerDebts) {
+  resultMap.set(debt.customerId, {
+    ...debt,
+    payment: null,
+    receipts: []
+  });
+}
+
+// Merge paymentHistory
+for (const payment of paymentHistory) {
+  if (resultMap.has(payment.customerId)) {
+    resultMap.get(payment.customerId).payment = {
+      totalPaid: payment.totalPaid,
+      lastPayment: payment.paymentDate
+    };
+  }
+}
+
+// Merge debtReceipts
+for (const receipt of debtReceipts) {
+  const customer = resultMap.get(receipt.customerId);
+  if (customer) {
+    customer.receipts.push({
+      date: receipt.date,
+      product: receipt.product,
+      quantity: receipt.quantity,
+      priceSold: receipt.priceSold,
+      total: receipt.total
+    });
+  }
+}
+
+
+const mergedData = Array.from(resultMap.values());
+const paginatedData = mergedData.slice((page - 1) * pageSize, page * pageSize);
+
+
+console.log(paginatedData, customerDebts, paymentHistory, debtReceipts, mergedData.length);
+
+
+const totalCustomDebt = await mainDb
+  .select({ count: sql<number>`count(distinct ${debts.customerId})` })
+  .from(debts)
+  .where(eq(debts.shopId, shopId));
+
+  console.log("Total debtors: ", totalCustomDebt[0].count)
 
   return {
     success: true,
     data: [{
         statistics: stats as DebtStatistics,
-        customerDebts: customerDebts as CustomerDebt[],
-        recentPayments: paymentHistory as DebtPaymentHistory[],
         madeniYaliyolipwa: fullyPaidDebtsCount[0].count,
         malipoYaliyokusanywa: totalCollected.total || 0,
         totalCollected: Number(totalCollected.total) || 0,
         pagination: {
         currentPage: page,
         pageSize,
-        totalCount: await getTotalDebtersCount(shopId)
+        total: mergedData.length,
         },
-        debtReceipts
+        customerDebts: customerDebts as CustomerDebt[],
+        recentPayments: paymentHistory as DebtPaymentHistory[],
+        debtReceipts,
+        data: paginatedData
     }],
     message: "Madeni ya wateja yamepatikana kwa mafanikio."
   };
@@ -131,14 +186,6 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
             message: error instanceof Error ? error.message : "Seva imeshindwa."
         }
     }
-}
-
-// Helper function to get total count (for proper pagination)
-async function getTotalDebtersCount(shopId: string) {
-  const [result] = await mainDb.select({
-    count: sql<number>`COUNT(DISTINCT ${debts.customerId})`,
-  }).from(debts).where(eq(debts.shopId, shopId));
-  return result.count;
 }
 
 export const payDebt = async ({ shopId, userId, body }: { shopId: string; userId: string; body: { amountPaid: number, customerId: string, debtId: string } }): Promise<{ success: boolean, data?: unknown, message: string }> => {
