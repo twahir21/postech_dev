@@ -1,16 +1,18 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { askedProducts } from "../database/schema/shop";
 import { sanitizeString } from "./security/xss";
 
-export const askedFunc = async ({ shopId, userId }: { shopId: string; userId: string }): Promise<{ success: boolean; message: string; data?: unknown}> => {
+export const askedFuncFetch = async ({ shopId, userId }: { shopId: string; userId: string }): Promise<{ success: boolean; message: string; data?: unknown}> => {
     try {
-        const data = await mainDb.select({ name: askedProducts.productName, count: askedProducts.quantityRequested }).from(askedProducts).where(eq(askedProducts.shopId, shopId));
+        const data = await mainDb.select({ name: askedProducts.productName, count: askedProducts.quantityRequested, id: askedProducts.id  }).from(askedProducts).where(eq(askedProducts.shopId, shopId));
 
+        
         if (data.length === 0){
             return {
-                success: false,
-                message: "hakuna chochote, tafadhali ongeza kwanza"
+                success: true,
+                message: "Hakuna taarifa zilizopatikana",
+                data: [{ data: [] }]
             }
         }
 
@@ -37,7 +39,15 @@ export const askedFuncPost = async ({ shopId, userId, body }: { shopId: string; 
         name = sanitizeString(name);
 
         // check if exist
-        const data = await mainDb.select({ name: askedProducts.productName }).from(askedProducts).where(eq(askedProducts.shopId, shopId));
+        const data = await mainDb
+            .select({ name: askedProducts.productName })
+            .from(askedProducts)
+            .where(
+                and(
+                    eq(askedProducts.productName, name), // Check if the product name already exists
+                    eq(askedProducts.shopId, shopId)
+                )
+            );
 
         if (data.length > 0) {
             return {
@@ -68,7 +78,14 @@ export const askedFuncPost = async ({ shopId, userId, body }: { shopId: string; 
 
 export const deleteAsked = async({ userId, shopId, id }: { userId: string; shopId: string; id: string }): Promise<{ success: boolean; message: string }> => {
     try {
-        await mainDb.delete(askedProducts).where(eq(askedProducts.id, id))
+
+        await mainDb.delete(askedProducts).
+        where(
+            and (
+                eq(askedProducts.id, id),
+                eq(askedProducts.shopId, shopId)
+            )
+        );
         return {
             success: true,
             message: "Umefanikiwa kufuta taarifa"
