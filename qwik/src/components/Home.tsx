@@ -3,7 +3,7 @@ import { RecentProductsTable } from "./Recent";
 import { Graph } from "./Graph";
 import { CrudService } from "~/routes/api/base/oop";
 import type { AnalyticsTypes } from "~/routes/api/types/analyTypes";
-import { formatMoney, toSwahiliFraction } from "~/routes/function/helpers";
+import { formatDateOnly, formatMoney, toSwahiliFraction } from "~/routes/function/helpers";
 import { lowStockProductsData, netExpensesGraph, netPurchasesGraph, netSalesGraph, salesGraph, subscriptionData, trialEndData } from "./context/store/netSales";
 import { RefetchContext } from "./context/refreshContext";
 import { Loader } from "./ui/Loader";
@@ -21,11 +21,12 @@ export const HomeComponent = component$(() => {
     mostSoldPrdname: 'hakuna' as string,
     productUnit: 'hakuna' as string,
     timessold: 0 as number,
-    longDebt: "" as string,
+    longDebt: "Hakuna" as string,
     amount: '0' as string,
-    mostDebt: '' as string,
+    mostDebt: 'Hakuna' as string,
     amountDebt: '0' as string,
-    daysDebt: '' as string,
+    prdUnit: 'Hakuna' as string,
+    daysDebt: 'Hakuna' as string,
     lowestPrdName: '' as string,
     lowestPrdStock: 0 as number,
     productMessage: "Hakuna bidhaa zilizoorodheshwa" as string,
@@ -110,6 +111,22 @@ useVisibleTask$(async ({ track }) => {
     subscription.value = analytics.subscription.trim() as "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial";
 
     console.log("Analytics: ", analytics);
+
+    // most debt user
+    analyticsStore.mostDebt = analytics.mostDebtUser.name;
+    analyticsStore.amountDebt = formatMoney(Number(analytics.mostDebtUser.remainingAmount));
+
+    // long debt user
+    analyticsStore.longDebt = analytics.longTermDebtUser.name;
+    analyticsStore.amount = formatMoney(Number(analytics.longTermDebtUser.remainingAmount));
+    analyticsStore.daysDebt = formatDateOnly(analytics.longTermDebtUser.createdAt);
+
+    // lowest stock product
+    analyticsStore.lowestPrdName= analytics.lowestProduct.name;
+    analyticsStore.lowestPrdStock = analytics.lowestProduct.stock;
+    analyticsStore.prdUnit = analytics.lowestProduct.unit;
+
+    // now allow rendering of the graph
     isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
 
 });
@@ -223,8 +240,7 @@ useVisibleTask$(async ({ track }) => {
               <span role="img" aria-label="most-debt" class="pr-1.5">💳</span> 
               Mtumiaji mwenye deni kubwa
             </h3>
-            <p class="text-lg font-semibold">{analyticsStore.mostDebt} – ({analyticsStore.amountDebt}/=)</p>
-            <p class="text-xs text-gray-600 italic">(Last payment: {analyticsStore.daysDebt})</p>
+            <p class="text-lg font-semibold">{analyticsStore.mostDebt}  ( sh. {analyticsStore.amountDebt}/=)</p>
           </div>
         )}
 
@@ -243,7 +259,10 @@ useVisibleTask$(async ({ track }) => {
               <span role="img" aria-label="long-debt" class="pr-1.5">⏳</span> 
               Mtumiaji mwenye deni la muda mrefu
             </h3>
-            <p class="text-lg font-semibold">{analyticsStore.longDebt} – ({analyticsStore.amount}/=)</p>
+            <p class="text-lg font-semibold">{analyticsStore.longDebt} (sh. {analyticsStore.amount}/=)</p>
+
+            <p class="text-xs text-gray-600 italic">(Tangu: {analyticsStore.daysDebt})</p>
+
           </div>
         )}
 
@@ -256,7 +275,7 @@ useVisibleTask$(async ({ track }) => {
             Hisa ya chini zaidi
           </h3>
           <p class="text-lg font-semibold">
-            {analyticsStore.lowestPrdName} – ({analyticsStore.lowestPrdStock} units)
+            {analyticsStore.lowestPrdName}  (Imebaki: {analyticsStore.prdUnit} {analyticsStore.lowestPrdStock})
           </p>
         </div>
 
@@ -312,7 +331,7 @@ useVisibleTask$(async ({ track }) => {
 
 
         </div>
-        {isGraphReady.value && <Graph />}
+        <Graph />
         <RecentProductsTable />
       </>
 )}
