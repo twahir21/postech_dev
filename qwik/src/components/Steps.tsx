@@ -65,7 +65,7 @@ export const Steps = component$(() => {
             <h3 class="font-semibold text-lg mb-2 text-center flex items-center gap-2">
               {step.title}
             </h3>
-            {openStepIndex.value === index ? '' : <p class="text-xs text-blue-500 mt-1">Bonyeza kuona zaidi ...</p> }
+            {openStepIndex.value === index ? '' : <p class="text-xs text-blue-500 dark:text-black mt-1">Bonyeza kuona zaidi ...</p> }
 
             {openStepIndex.value === index && (
               <p class="text-sm text-gray-600 dark:text-gray-300 text-center whitespace-pre-wrap">

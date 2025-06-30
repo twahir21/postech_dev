@@ -114,7 +114,7 @@ export default component$(() => {
         })
   
     // Load saved theme on client
-    useVisibleTask$(() => {
+    useVisibleTask$( async () => {
       const stored = localStorage.getItem('theme');
       if (stored === 'dark') {
         theme.value = 'dark';
@@ -128,8 +128,10 @@ export default component$(() => {
         // Get the visitor identifier when you need it.
         const fp = await fpPromise
         const result = await fp.get()
+          console.log("Raw: ", result.visitorId)
+
         visitorIdData.value = result.visitorId
-      })()
+        console.log("Visitor ID 1: ", visitorIdData.value);
       // Check if 'isCounted' exists in localStorage
       const isCounted = localStorage.getItem('isCounted');
 
@@ -137,14 +139,15 @@ export default component$(() => {
       console.log('isCounted flag exists with value "yes"');
       } else {
         // Set the flag if it doesn't exist or isn't 'yes'
-        $(async () => {
+        console.log(visitorIdData.value, 'visitorIdData.value', typeof visitorIdData.value);
           const api = new CrudService<{ id?: string; visitorId: string }>("sign-visitorDetails");
-          await api.create({ visitorId: visitorIdData.value });
-        });
+          await api.create({ visitorId: result.visitorId });
 
-        localStorage.setItem('isCounted', 'yes');
-        console.log('Set isCounted flag to "yes"');
+          localStorage.setItem('isCounted', 'yes');
+          console.log('Set isCounted flag to "yes"');
       }
+      })()
+
     });
   
       // Update SVG path based on theme
