@@ -29,6 +29,7 @@ export const HomeComponent = component$(() => {
     daysDebt: 'Hakuna' as string,
     lowestPrdName: '' as string,
     lowestPrdStock: 0 as number,
+    mostAsked: 'Hakuna' as string,
     productMessage: "Hakuna bidhaa zilizoorodheshwa" as string,
     subscription: "Msingi" as "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial",
     remainingDays: "Zimebaki siku 0" as string,
@@ -125,6 +126,9 @@ useVisibleTask$(async ({ track }) => {
     analyticsStore.lowestPrdName= analytics.lowestProduct.name;
     analyticsStore.lowestPrdStock = analytics.lowestProduct.stock;
     analyticsStore.prdUnit = analytics.lowestProduct.unit;
+
+    // most asked
+    analyticsStore.mostAsked = analytics.mostAsked;
 
     // now allow rendering of the graph
     isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
@@ -317,7 +321,7 @@ useVisibleTask$(async ({ track }) => {
               <span role="img" aria-label="asked-product" class="pr-1.5">❓</span> 
               Kilichouliziwa sana
             </h3>
-            <p class="text-1xl font-semibold">Moh Energy</p>
+            <p class="text-1xl font-semibold">{analyticsStore.mostAsked}</p>
           </div>
           )}
 

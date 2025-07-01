@@ -107,6 +107,7 @@ export interface AnalyticsTypes {
     id?: string;
     profitPerProduct: ProfitPerProduct[];
     highestProfitProduct: highestProfitProduct | null;
+    mostAsked: string;
     netProfit: netProfit;
     lowestProduct: lowestProduct;
     lowStockProducts: lowStockProducts[];

@@ -1,6 +1,6 @@
 import { eq, and, sql, lte, asc, desc, ilike, gte, or } from 'drizzle-orm';
 import { mainDb } from '../database/schema/connections/mainDb';
-import { customers, debts, products, purchases, sales } from '../database/schema/shop';
+import { askedProducts, customers, debts, products, purchases, sales } from '../database/schema/shop';
 import { formatDistanceToNow } from "date-fns";
 import type { exportSet, SalesQuery } from '../types/types';
 import { prodCheck } from './utils/packages';
@@ -258,12 +258,21 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
         if (!trialData) return;
         const trialEnd = timeRemainingUntil(trialData);
 
+        const mostAsked = await mainDb
+          .select({ name: askedProducts.productName })
+          .from(askedProducts)
+          .where(eq(askedProducts.shopId, shopId))
+          .orderBy(desc(askedProducts.quantityRequested))
+          .limit(1).then(rows => rows[0].name);
+
+
         console.timeEnd("Analytics");
 
         return {
             success: true,
             data: [{
                   profitPerProduct,
+                  mostAsked,
                   highestProfitProduct,
                   netProfit,
                   lowestProduct,

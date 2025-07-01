@@ -63,7 +63,7 @@ export const askedFuncPost = async ({ shopId, userId, body }: { shopId: string; 
 
         let { name } = body;
 
-        name = sanitizeString(name);
+        name = sanitizeString(name).trim().toLowerCase();
 
         // check if exist
         const data = await mainDb
