@@ -6,7 +6,7 @@ import { Popup } from './ui/Popup';
 import { Receipt } from './ui/Receipt';
 import { RefetchContext } from './context/refreshContext';
 import { subscriptionData } from './context/store/netSales';
-import type { DataItemDebts } from '~/routes/api/types/debTypes';
+import type { DataItemDebts, paginatedData } from '~/routes/api/types/debTypes';
 
 export const DebtComponent = component$(() => {
 
@@ -16,6 +16,9 @@ export const DebtComponent = component$(() => {
     isSuccess: false,
     allDebts: "0" as string,
     allDebters: 0 as number,
+    arrData: {
+      DebtData: [] as paginatedData[],
+    },
     madeniYaliyokusanywa: 0 as number,
     madeniYaliyolipwa: 0 as number,
     totalCollected: 0 as number
@@ -54,6 +57,8 @@ export const DebtComponent = component$(() => {
 
     modal.totalCollected = debtResults.data[0].totalCollected;
 
+    modal.arrData.DebtData = debtResults.data[0].paginatedData;
+
 
     // calculate total pages
     totalPages.value = Math.ceil(
@@ -83,6 +88,8 @@ if (subscription.value === 'Msingi'){
     </>
   )
 }
+const groupedDebts = modal.arrData.DebtData;
+const paymentMap: Record<string, any[]> = {};
 
   return (
     <>
@@ -136,7 +143,7 @@ if (subscription.value === 'Msingi'){
               >
                 <div class="flex justify-between items-center">
                   <h3 class="font-semibold text-lg md:text-xl text-gray-800">{debt.name}</h3>
-                  <span class="text-sm text-gray-500">💳 {formatDateOnly(debt.createdAt ?? "hakuna")}</span>
+                  <span class="text-sm text-gray-500">💳 {formatDateOnly(debt.createdAt)}</span>
                 </div>
 
                 <div class="text-sm md:text-base text-gray-600 space-y-1">

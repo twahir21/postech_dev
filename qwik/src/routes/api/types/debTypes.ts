@@ -11,7 +11,14 @@ interface Pagination {
   totalCount: number; 
 }
 
-interface paginatedData {
+export interface paginatedData {
+  debtId: string;
+  customerId: string;
+  name: string;
+  totalDebt: string;
+  remainingAmount: string;
+  lastPaymentDate: null | string; // ISO date string or null
+  createdAt: string; // ISO date string
   payment: {
     totalPaid: number;
     lastPayment: Date;
@@ -23,7 +30,7 @@ interface paginatedData {
     priceSold: number;
     total: number;
   }[]; 
-}[]
+}
 
 export interface DataItemDebts {
   id?: string; // Optional ID for the data item
@@ -32,5 +39,5 @@ export interface DataItemDebts {
   madeniYaliyokusanywa: number;
   totalCollected: number;
   pagination: Pagination;
-  paginatedData: paginatedData;
+  paginatedData: paginatedData[];
 }

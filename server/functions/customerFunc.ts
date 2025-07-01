@@ -185,7 +185,12 @@ export const CustomerDel = async ({ userId, shopId, customerId, headers }: { use
         const customer = await mainDb
         .select()
         .from(customers)
-        .where(eq(customers.id, customerId))
+        .where(
+          and(
+            eq(customers.shopId, shopId),
+            eq(customers.id, customerId)
+          )
+        )
         .then((rows) => rows[0]);
     
         if (!customer) {
@@ -196,8 +201,14 @@ export const CustomerDel = async ({ userId, shopId, customerId, headers }: { use
         }
     
         // delete product
-        await mainDb.delete(customers).where(eq(customers.id, customerId));
-    
+        await mainDb.delete(customers)
+          .where(
+            and(
+              eq(customers.id, customerId),
+              eq(customers.shopId, shopId)
+            )
+          );
+
         return {
             success: true,
             message: "Mteja ameondolewa kwa mafanikio"
@@ -227,7 +238,12 @@ export const customerUpdate = async ({userId, shopId, customerId, body, headers}
         const customer = await mainDb
         .select()
         .from(customers)
-        .where(eq(customers.id, customerId))
+        .where(
+          and (
+          eq(customers.id, customerId),
+          eq(customers.shopId, shopId)
+          )
+        )
         .then((rows) => rows[0]);
     
         if (!customer) {
@@ -241,9 +257,13 @@ export const customerUpdate = async ({userId, shopId, customerId, body, headers}
         const updatedCustomers = await mainDb.update(customers).set({
             name,
             contact      
-        }).where(eq(customers.id, customerId));
-
-
+        }).where(
+          and (
+          eq(customers.id, customerId),
+          eq(customers.shopId, shopId)
+          )
+        );
+        
     
         return {
             success: true,

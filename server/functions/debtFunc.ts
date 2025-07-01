@@ -16,8 +16,11 @@ interface DebtStatistics {
 
 // Combined query with pagination
 export async function debtFunc ({ shopId, userId, query }: { shopId: string, userId: string, query: { page: number, pageSize: number } }): Promise<{ success: boolean, data?: unknown, message: string }> {
-    try {
+  console.log("reached", shopId, userId, query); 
+  try {
     const { page, pageSize } = query;
+
+    console.log(page, pageSize, typeof page, typeof pageSize);
 
   // First get the statistical data
   const [stats] = await mainDb.select({
@@ -134,9 +137,8 @@ for (const receipt of debtReceipts) {
 }
 
 
-const resultMap2 = new Map<string, MergedCustomerData>();
 
-const mergedData: MergedCustomerData[] = Array.from(resultMap2.values());
+const mergedData: MergedCustomerData[] = Array.from(resultMap.values());
 const paginatedData: MergedCustomerData[] = mergedData.slice((page - 1) * pageSize, page * pageSize);
 
 console.log(paginatedData);
@@ -147,7 +149,7 @@ const totalCustomDebt = await mainDb
   .from(debts)
   .where(eq(debts.shopId, shopId));
 
-  console.log("Total debtors: ", totalCustomDebt[0].count)
+  console.log("Total debtors: ", totalCustomDebt[0].count, mergedData.length)
 
   return {
     success: true,
@@ -159,7 +161,7 @@ const totalCustomDebt = await mainDb
         pagination: {
         currentPage: page,
         pageSize,
-        total: mergedData.length
+        totalCount: totalCustomDebt[0].count
         },
         paginatedData
     }],

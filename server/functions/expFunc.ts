@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm"
+import { and, desc, eq, sql } from "drizzle-orm"
 import { mainDb } from "../database/schema/connections/mainDb"
 import { expenses } from "../database/schema/shop"
 
@@ -85,7 +85,8 @@ export const expFunc = async ({
 export const delExp = async ({ shopId, userId, expenseId }: {shopId: string; userId: string; expenseId: string }): Promise<{ success: boolean; message: string }> => {
   try {
       // delete from the database
-      await mainDb.delete(expenses).where(eq(expenses.id, expenseId));
+      await mainDb.delete(expenses).where(
+        and(eq(expenses.shopId, shopId), eq(expenses.id, expenseId)));
 
       return {
         success: true,

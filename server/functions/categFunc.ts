@@ -31,7 +31,10 @@ export const categPost = async ({ body, headers, shopId, userId }: { body : cate
     .select()
     .from(categories)
     .where(
-        eq(categories.generalName, generalName)
+        and (
+        eq(categories.generalName, generalName),
+        eq(categories.shopId, shopId)
+        )
     );
 
     // Step 2: if exist return nothing

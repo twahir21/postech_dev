@@ -386,7 +386,12 @@ export const salesAnalytics = async ({ userId, shopId, query}: {userId: string, 
             .from(sales)
             .leftJoin(customers, eq(sales.customerId, customers.id))
             .leftJoin(products, eq(sales.productId, products.id))
-            .where(whereClause);
+            .where(
+              and(
+                whereClause,
+                eq(sales.shopId, shopId)
+              )
+            );
       
           const total = totalResult[0].count;
       
@@ -403,7 +408,12 @@ export const salesAnalytics = async ({ userId, shopId, query}: {userId: string, 
             .leftJoin(customers, eq(sales.customerId, customers.id))
             .leftJoin(products, eq(sales.productId, products.id))
             .leftJoin(purchases, eq(sales.productId, purchases.productId))
-            .where(whereClause)
+            .where(
+              and (
+              whereClause,
+              eq(sales.shopId, shopId)
+              )
+            )
             .limit(perPage)
             .offset(offset)
             .orderBy(desc(sales.createdAt));    

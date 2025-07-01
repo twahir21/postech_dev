@@ -131,7 +131,12 @@ export const updateAsked = async({ userId, shopId, id, body }: { userId: string;
     try {
         await mainDb.update(askedProducts).set({
             quantityRequested: body.count
-        }).where(eq(askedProducts.id, id))
+        }).where(
+            and(
+                eq(askedProducts.shopId, shopId),
+                eq(askedProducts.id, id)
+            )
+        )
 
         return {
             success: true,
