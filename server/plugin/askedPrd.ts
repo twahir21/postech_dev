@@ -12,11 +12,11 @@ export const askedPlugin = new Elysia()
         name: 'jwt',
         secret: JWT_SECRET,
     }))
-    .get("/asked", async({ cookie, jwt }) => {
+    .get("/asked", async({ cookie, jwt, query }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });
         if (!shopId || !userId) return;
 
-        return await askedFuncFetch({ shopId, userId })     
+        return await askedFuncFetch({ shopId, userId, query })     
     })
     .post("/asked", async({ cookie, jwt, body }) => {
         const { userId, shopId } = await extractId({ jwt, cookie });

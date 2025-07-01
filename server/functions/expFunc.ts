@@ -59,8 +59,8 @@ export const expFunc = async ({
       .from(expenses)
       .where(eq(expenses.shopId, shopId))
       .orderBy(desc(expenses.date))
-      .offset((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .offset((page - 1) * limit);
 
     return {
       success: true,

@@ -109,6 +109,8 @@ export const customerGet = async ({
       .limit(limit)
       .offset(offset);
 
+      console.log(existingCustomer.length, "CUSTOMER LENGTH")
+
 
     if (existingCustomer.length === 0) {
       return {

@@ -261,7 +261,7 @@ useVisibleTask$(async ({ track }) => {
             </h3>
             <p class="text-lg font-semibold">{analyticsStore.longDebt} (sh. {analyticsStore.amount}/=)</p>
 
-            <p class="text-xs text-gray-600 italic">(Tangu: {analyticsStore.daysDebt})</p>
+            <p class="text-md text-gray-600 italic">(Tangu: {analyticsStore.daysDebt})</p>
 
           </div>
         )}
@@ -275,8 +275,9 @@ useVisibleTask$(async ({ track }) => {
             Hisa ya chini zaidi
           </h3>
           <p class="text-lg font-semibold">
-            {analyticsStore.lowestPrdName}  (Imebaki: {analyticsStore.prdUnit} {analyticsStore.lowestPrdStock})
+            {analyticsStore.lowestPrdName}  
           </p>
+          <p class="text-md text-gray-600 italic">(Imebaki: {analyticsStore.prdUnit} {analyticsStore.lowestPrdStock})</p>
         </div>
 
         {/* --------------------------------

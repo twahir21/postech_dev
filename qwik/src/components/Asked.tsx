@@ -9,19 +9,25 @@ export const AskedProducts = component$(() => {
   const input = useSignal("");
   const name = useStore({ id: '', name: '' });
 
+  // pagination
+  const page = useSignal(1);
+  const perPage = 3;
+  const totalPages = useSignal(1);
+
   const modal = useStore({ isOpen: false, isSuccess: false, message: '' });
 
   const fetched = useSignal<{ id?: string; name: string; count: number }[] | null>(null);
 
   const fetchData = $(async () => {
-    const newApi = new CrudService<{ id?: string; data: { id?: string; name: string; count: number }[] }>("asked");
-    const apiRes = await newApi.get();
+    const newApi = new CrudService<{ id?: string; data: { id?: string; name: string; count: number }[]; currentPage?: string; totalPages: number }>("asked");
+    const apiRes = await newApi.getWithParams({ page: page.value, limit: perPage });
 
     if (!apiRes.success) {
       return;
     }
 
     fetched.value = apiRes.data[0].data;
+    totalPages.value = apiRes.data[0].totalPages
   });
 
   const sendData = $(async () => {
@@ -139,9 +145,30 @@ export const AskedProducts = component$(() => {
         )}
 
         <div class="flex justify-center mt-6 space-x-4">
-          <button class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">⬅️ Nyuma</button>
-          <span class="px-4 py-2">Ukurasa 1 ya 1</span>
-          <button class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Mbele ➡️</button>
+          <button class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+              onClick$={() => {
+              if (page.value > 1) {
+                page.value--;
+                fetchData();
+              }
+            }}
+            disabled={page.value === 1}
+
+          >
+            ⬅️ Nyuma
+          </button>
+          <span class="px-4 py-2">{`Ukurasa ${page.value} ya ${totalPages.value}`}</span>
+          <button class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+              onClick$={() => {
+              if (page.value < totalPages.value) {
+                page.value++;
+                fetchData();
+              }
+            }}
+            disabled={page.value === totalPages.value}
+          >
+            Mbele ➡️
+          </button>
         </div>
 
         {modal.isOpen && (
