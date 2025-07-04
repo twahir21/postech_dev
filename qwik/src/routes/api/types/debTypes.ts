@@ -21,10 +21,10 @@ export interface paginatedData {
   createdAt: string; // ISO date string
   payment: {
     totalPaid: number;
-    lastPayment: Date;
+    lastPayment: Date | null;
   } | null;
   receipts: {
-    date: Date;
+    date: Date | null;
     product: string;
     quantity: number;
     priceSold: number;

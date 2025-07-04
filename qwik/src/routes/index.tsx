@@ -128,10 +128,8 @@ export default component$(() => {
         // Get the visitor identifier when you need it.
         const fp = await fpPromise
         const result = await fp.get()
-          console.log("Raw: ", result.visitorId)
 
         visitorIdData.value = result.visitorId
-        console.log("Visitor ID 1: ", visitorIdData.value);
       // Check if 'isCounted' exists in localStorage
       const isCounted = localStorage.getItem('isCounted');
 

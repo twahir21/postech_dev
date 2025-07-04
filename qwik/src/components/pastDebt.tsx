@@ -40,8 +40,6 @@ export const DebtComponent = component$(() => {
 
     const debtResults = await newApi.get();
 
-    console.log(debtResults);
-
 
     if (!debtResults.success) {
       modal.isOpen = true;

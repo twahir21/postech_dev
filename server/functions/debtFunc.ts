@@ -63,8 +63,8 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
       eq(customers.shopId, shopId)
     ))
     .orderBy(desc(debts.remainingAmount))
-    .limit(pageSize)
-    .offset((page - 1) * pageSize);
+    // .limit(pageSize)
+    // .offset((page - 1) * pageSize);
 
   // Get recent payment history for the dashboard
     const paymentHistory = await mainDb.select({
@@ -99,9 +99,7 @@ export async function debtFunc ({ shopId, userId, query }: { shopId: string, use
     .where(eq(debts.shopId, shopId))
     .orderBy(desc(debts.createdAt))
 
-
-    
-    const resultMap = new Map<string, any>();
+  const resultMap = new Map<string, any>();
 
 // Initialize with customerDebts
 for (const debt of customerDebts) {
@@ -138,9 +136,10 @@ for (const receipt of debtReceipts) {
 
 
 
-const mergedData: MergedCustomerData[] = Array.from(resultMap.values());
-const paginatedData: MergedCustomerData[] = mergedData.slice((page - 1) * pageSize, page * pageSize);
 
+// group by customerId → resultMap → mergedData
+const mergedData: MergedCustomerData[] = Array.from(resultMap.values());
+const paginatedData = mergedData.slice((page - 1) * pageSize, page * pageSize);
 console.log(paginatedData);
 
 
