@@ -1,1 +1,0 @@
-import{u as n}from"./q-Dk67VZbx.js";import{d as f}from"./q-Dk67VZbx.js";import{C as s}from"./q-DrN8Jx7F.js";import"./q-B4L2hSEC.js";const a=async()=>{const[o]=n(),t=await new s("notifyCount").get();t.success&&(o.notification=t.data[0].count)};export{f as _hW,a as s_2uv7nZtfDzo};

@@ -7,7 +7,7 @@ import { calculateTotal, formatFloatToFixed } from "./security/money";
 import { prodCheck } from "./utils/packages";
 
 // implementing crud for products 
-export const prodPost = async ({ body, headers, shopId, userId, supplierId, categoryId }: {body: productTypes, headers: headTypes, shopId: string, userId: string, categoryId: string, supplierId: string}) => {
+export const prodPost = async ({ body, headers, shopId, userId }: {body: productTypes, headers: headTypes, shopId: string, userId: string }) => {
 
     try{
 
@@ -29,13 +29,30 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
           message: prdResult.message
         }; // you must define otherwise function will not work
 
+        // check if product already exists
+        const existingProduct = await mainDb
+          .select()
+          .from(products)
+          .where(
+            and(
+              eq(products.name, name),
+              eq(products.shopId, shopId)
+            )
+          )
+          .then((rows) => rows[0]);
+
+        if (existingProduct) {
+          return {
+            success: false,
+            message: "Bidhaa hii tayari ipo"
+          }
+        }
+
         // now save to database to products
         const [insertedProduct] = await mainDb.insert(products).values({
             name,
-            categoryId,
             priceSold: formatFloatToFixed(priceSold),  // convert some data types to match that of database
             stock,
-            supplierId,
             shopId,
             minStock,
             unit,
@@ -53,7 +70,6 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
 
         // now save to purchases
         await mainDb.insert(purchases).values({
-            supplierId,
             productId: productId,
             shopId,
             quantity: stock,
@@ -61,17 +77,10 @@ export const prodPost = async ({ body, headers, shopId, userId, supplierId, cate
             totalCost: calculateTotal(String(priceBought), stock)
         });
 
-        // insert supplier price history
-        await mainDb.insert(supplierPriceHistory).values({
-            supplierId,
-            productId: productId,
-            shopId,
-            price: formatFloatToFixed(priceBought)
-        })
 
         return {
             success: true,
-            data: {name, priceBought, priceSold, stock, minStock, shopId, userId, categoryId, supplierId, unit },
+            data: {name, priceBought, priceSold, stock, minStock, shopId, userId, unit },
             message: "Umefanikiwa kusajili bidhaa"
         }   
         
@@ -143,11 +152,9 @@ export const prodGet = async ({
         .select({
           id: products.id,
           name: products.name,
-          categoryId: products.categoryId,
           priceSold: products.priceSold,
           stock: products.stock,
           shopId: products.shopId,
-          supplierId: products.supplierId,
           minStock: products.minStock,
           status: products.status,
           unit: products.unit,
@@ -313,9 +320,7 @@ export const prodUpdate = async ({userId, shopId, productId, body, headers}: {us
 
         }).where(eq(purchases.productId, productId));
 
-        await mainDb.update(supplierPriceHistory).set({
-            price: formatFloatToFixed(priceBought)
-        }).where(eq(supplierPriceHistory.productId, productId));
+
 
 
         const updatedProduct = await mainDb
@@ -372,7 +377,6 @@ export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, h
     productId = sanitizeString(productId);
     priceSold = sanitizeNumber(priceSold);
     priceBought = sanitizeNumber(priceBought);
-    supplierId = sanitizeString(supplierId);
     customerId = sanitizeString(customerId);
 
 
@@ -457,7 +461,6 @@ export const QrPost = async({ body, headers, userId, shopId }: { body: QrData, h
         // 2. Insert purchase
         await mainDb.insert(purchases).values({
           productId,
-          supplierId,
           shopId,
           quantity,
           priceBought: formatFloatToFixed(priceBought),

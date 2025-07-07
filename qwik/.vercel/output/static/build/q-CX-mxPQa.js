@@ -1,1 +1,0 @@
-import{B as a}from"./q-9pm_tjHx.js";import{a as o,x as n,S as s,F as r,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const c=l=>o(a,{name:"volume",...l,children:[o(s,null,3,"5G_0"),o(r,{children:e("polygon",null,{points:"11 5 6 9 2 9 2 15 6 15 11 19 11 5"},null,3,null)},3,"5G_1")],[n]:{name:n},[n]:{name:n}},0,"5G_2");export{c as s_PNRzcoGcyBg};

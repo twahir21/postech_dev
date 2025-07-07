@@ -94,7 +94,6 @@ export default component$(() => {
   const productRefetch = useSignal(false);
   const customerRefetch = useSignal(false);
   const supplierRefetch = useSignal(false);
-  const categoryRefetch = useSignal(false);
   const refetchAnalytics = useSignal(false);
   const debtRefetch = useSignal(false);
 
@@ -105,7 +104,6 @@ export default component$(() => {
     customerRefetch,
     debtRefetch,
     supplierRefetch,
-    categoryRefetch,
     refetchAnalytics
   });
 

@@ -43,6 +43,7 @@
     "@types/bun": "latest"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^4.6.2",
     "@tailwindcss/vite": "^4.1.4",
     "apexcharts": "^4.7.0",
     "chart.js": "^4.4.9",

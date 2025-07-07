@@ -1,7 +1,5 @@
-import { component$, useStore, useResource$, $, useContext } from '@builder.io/qwik';
+import { component$, useStore, $ } from '@builder.io/qwik';
 import { SupplierComponent } from './Supplier';
-import { fetchCategories, fetchSuppliers, globalStore } from '~/routes/function/helpers';
-import { RefetchContext } from './context/refreshContext';
 import { CrudService } from '~/routes/api/base/oop';
 import { swahiliLabels, swahiliPlaceholders } from '~/routes/api/base/forms';
 import { Toast } from './ui/Toast';
@@ -12,8 +10,6 @@ interface Product {
   stock: string;
   minStock: string;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
   unit: string;
-  categoryId?: string;
-  supplierId?: string;
 }
 
 interface Purchases {
@@ -21,14 +17,6 @@ interface Purchases {
 }
 
 interface Store {
-  category: {
-    id: string;
-    generalName: string;
-  }[];
-  supplier: {
-    id: string;
-    company: string;
-  }[];
   product: Product;
   purchases: Purchases;
   modal: {
@@ -41,8 +29,6 @@ interface Store {
 
 export const ProductComponent = component$(() => {
   const store = useStore<Store>({
-    category: [],
-    supplier: [],
     product: {
       name: '',
       priceSold: '',
@@ -61,67 +47,6 @@ export const ProductComponent = component$(() => {
     isLoading: false
   });
 
- const { 
-         supplierRefetch, 
-         categoryRefetch, 
-  } = useContext(RefetchContext);
-
-  // Fetch categories from backend with error handling
-  useResource$<any>(async ({ track }) => {
-    track(() => categoryRefetch.value);
-
-
-    try {
-      await fetchCategories(); // initial fetch
-      store.category = globalStore.categoriesData;
-      categoryRefetch.value = false;
-      return globalStore.categoriesData
-    } catch (error) {
-      store.category = [];
-      store.modal = { 
-        isOpen: true, 
-        message: error instanceof Error ? error.message : 'Tatizo limejitokeza', 
-        isSuccess: false 
-      };
-      return []; // Return empty array in case of an error
-    }
-  });
-
-    // Fetch suppliers from backend with error handling
-    useResource$<any>(async ({ track }) => {
-      track(() => supplierRefetch.value);
-  
-      try {
-        await fetchSuppliers(); // initial fetch
-        store.supplier = globalStore.supplierData;
-        // ✅ Reset the flag immediately after
-        supplierRefetch.value = false;
-        return globalStore.supplierData;
-      } catch (error) {
-        store.supplier = [];
-        store.modal = { 
-          isOpen: true, 
-          message: error instanceof Error ? error.message : 'Tatizo limejitokeza', 
-          isSuccess: false 
-        };
-      return []; // Return empty array in case of an error
-      }
-    });  
-
-  // Handle input changes for the form
-  const handleInputChange = $((field: keyof Store, value: string) => {
-    if (field === 'category') {
-      const selectedCategory = store.category.find(cat => cat.id === value);
-      if (selectedCategory) store.category = [selectedCategory]; // Ensure it's an array
-    } else if (field === 'supplier') {
-      const selectedSupplier = store.supplier.find(sup => sup.id === value);
-      if (selectedSupplier) store.supplier = [selectedSupplier];
-    }
-    else {
-      (store[field] as any) = value;
-    }
-  });
-  
   // Handle nested input changes for product and purchases
   const handleNestedInputChange = $((field: keyof Store, key: string, value: string) => {
     (store[field] as any)[key] = value;
@@ -134,8 +59,7 @@ export const ProductComponent = component$(() => {
       store.isLoading = true; // Start loading ...
       // Ensure no fields are empty
       if (!store.product.name || !store.product.priceSold || !store.product.stock || 
-          !store.product.minStock || !store.product.unit || !store.purchases.priceBought ||
-          store.category.length === 0 || store.supplier.length === 0) {
+          !store.product.minStock || !store.product.unit || !store.purchases.priceBought) {
         store.modal = { isOpen: true, message: 'Tafadhali jaza taarifa zote sahihi', isSuccess: false };
         return;
       }
@@ -159,8 +83,6 @@ export const ProductComponent = component$(() => {
         minStock,
         priceBought,
         unit: store.product.unit,
-        categoryId: store.category[0]?.id, // Use ID instead of full object
-        supplierId: store.supplier[0]?.id,
       };
       // Send data to backend
       interface prdPayload {   
@@ -171,8 +93,6 @@ export const ProductComponent = component$(() => {
         minStock: number;
         priceBought: number;
         unit: string;
-        categoryId: string;
-        supplierId: string;
       }
       const newCrudPrd = new CrudService<prdPayload>("products");
       const resData = await newCrudPrd.create(productPayload);
@@ -212,40 +132,6 @@ export const ProductComponent = component$(() => {
         </h2>
 
         <div class="grid grid-cols-2 gap-4">
-          {/* Category Dropdown */}
-          <select
-            class="border p-2 rounded w-full"
-            onChange$={(e) => handleInputChange('category', (e.target as HTMLSelectElement).value)}
-          >
-            <option value="">-- Chagua Kategoria --</option>
-            {store.category.length > 0 ? (
-              store.category.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.generalName}
-                </option>
-              ))
-            ) : (
-              <option disabled>Hakuna Kategoria</option>
-            )}
-          </select>
-
-          {/* Supplier Dropdown */}
-          <select
-            class="border p-2 rounded w-full"
-            onChange$={(e) => handleInputChange('supplier', (e.target as HTMLSelectElement).value)}
-          >
-            <option value="">-- Chagua Msambazaji --</option>
-            {store.supplier.length > 0 ? (
-              store.supplier.map((supplier) => (
-                <option key={supplier.id} value={supplier.id}>
-                  {supplier.company}
-                </option>
-              ))
-            ) : (
-              <option disabled>Hakuna Msambazaji</option>
-            )}
-          </select>
-
 
         {/* Product Inputs */}
         {Object.keys(store.product).map((key) => (

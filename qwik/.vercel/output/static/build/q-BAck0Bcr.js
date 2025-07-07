@@ -1,1 +1,0 @@
-import{u as t}from"./q-Dk67VZbx.js";import{d as g}from"./q-Dk67VZbx.js";import{C as e}from"./q-DrN8Jx7F.js";import"./q-B4L2hSEC.js";const a=async()=>{const[o]=t();(await new e("delete-cookie").get()).success&&o("/auth")};export{g as _hW,a as s_OJ0KQcVtDW4};

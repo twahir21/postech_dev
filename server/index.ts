@@ -3,7 +3,6 @@ import homePlugin from "./plugin/home";
 import regPlugin from "./plugin/registration";
 import { cors } from "@elysiajs/cors";
 
-import categoriesPlugin from "./plugin/categories";
 import suppPlugin from "./plugin/supplier";
 // import { rateLimitMiddleware } from "./functions/security/rateLimiting";
 import { loginPlugin } from "./plugin/login";
@@ -63,7 +62,6 @@ new Elysia()
     .use(homePlugin)
     .use(regPlugin)
     .use(loginPlugin)
-    .use(categoriesPlugin)
     .use(suppPlugin)
     .use(prodPlugin)
     .use(mailPlugin)

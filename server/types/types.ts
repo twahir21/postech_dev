@@ -19,16 +19,10 @@ export interface productTypes {
     stock: number;
     minStock: number;
     unit: string;
-    supplierId: string;
-    categoryId: string;
 }
 
 export interface headTypes {
     [key: string]: string | undefined;
-}
-
-export interface categoriesTypes {
-    generalName: string;
 }
 
 export interface suppTypes {

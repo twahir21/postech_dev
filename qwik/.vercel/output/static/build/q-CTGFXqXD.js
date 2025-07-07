@@ -1,1 +1,0 @@
-import{u as r}from"./q-Dk67VZbx.js";import{d as p}from"./q-Dk67VZbx.js";const i=(t,o)=>{const[a,s]=r();let e=o.trim();(t==="name"||t==="message")&&(e=e.toLowerCase()),a[t]=e,s(t,e)};export{p as _hW,i as s_Ri93UltydgY};

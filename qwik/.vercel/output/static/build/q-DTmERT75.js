@@ -1,1 +1,0 @@
-import{B as e}from"./q-9pm_tjHx.js";import{a,x as r,S as s,F as l,b as t}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=n=>a(e,{name:"square",...n,children:[a(s,null,3,"uK_0"),a(l,{children:t("rect",null,{x:"3",y:"3",width:"18",height:"18",rx:"2",ry:"2"},null,3,null)},3,"uK_1")],[r]:{name:r},[r]:{name:r}},0,"uK_2");export{i as s_vWIEBG0VKVU};

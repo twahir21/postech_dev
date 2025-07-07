@@ -35,7 +35,6 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
             id: products.id,
             priceSold: products.priceSold,
             stock: products.stock,
-            supplierId: products.supplierId
         })
         .from(products)
         .where(like(products.name, `%${product.split(' ')[0]}%`)) // match "mchele" in "mchele kilo"
@@ -96,7 +95,6 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
                         id: products.id,
                         priceSold: products.priceSold,
                         stock: products.stock,
-                        supplierId: products.supplierId
                     })
                     .from(products)
                     .where(like(products.name, `%${product.split(' ')[0]}%`)) // match "mchele" in "mchele kilo"
@@ -207,7 +205,6 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
                 // insert purchases
                 await mainDb.insert(purchases).values({
                     productId: productDetails.id,
-                    supplierId: productDetails.supplierId,
                     shopId,
                     quantity,
                     priceBought,

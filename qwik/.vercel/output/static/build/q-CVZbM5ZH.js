@@ -1,1 +1,0 @@
-import{B as r}from"./q-9pm_tjHx.js";import{a,x as n,S as s,F as e,b as m}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=l=>a(r,{name:"mouse-pointer-2",...l,children:[a(s,null,3,"NS_0"),a(e,{children:m("path",null,{d:"m4 4 7.07 17 2.51-7.39L21 11.07z"},null,3,null)},3,"NS_1")],[n]:{name:n},[n]:{name:n}},0,"NS_2");export{i as s_M0TEjlEY80A};

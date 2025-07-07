@@ -65,18 +65,6 @@ import {
 
 
 
-  
-  // -----------------
-  // Categories Table
-  // -----------------
-    export const categories = pgTable("categories", {
-      id: uuid("id").defaultRandom().primaryKey(),
-      generalName: text("name").notNull(),
-      shopId: uuid("shop_id").notNull().references(() => shops.id),
-  }, (table) => ({
-    uniqueCategory: uniqueIndex("unique_category").on(table.generalName, table.shopId), 
-  }));
-
   // -----------------
   // Suppliers Table (Updated)
   // -----------------
@@ -99,11 +87,9 @@ import {
   export const products = pgTable("products", {
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
-    categoryId: uuid("category_id").references(() => categories.id, { onDelete: "set null" }),
     priceSold: decimal("price_sold", { precision: 15, scale: 2}).notNull(), // is string but store up to 999 trillion and support USD dollar
     stock: doublePrecision("stock").notNull().default(0),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
-    supplierId: uuid("supplier_id").notNull().references(() => suppliers.id, { onDelete: "cascade" }),
     minStock: doublePrecision("min_stock").notNull().default(0),
     status: text("status").notNull().default("available"),
     unit: text("unit"),
@@ -119,7 +105,6 @@ import {
   export const purchases = pgTable("purchases", {
     id: uuid("id").defaultRandom().primaryKey(),
     productId: uuid("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
-    supplierId: uuid("supplier_id").notNull().references(() => suppliers.id, { onDelete: "cascade" }),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     quantity: doublePrecision("quantity").notNull().default(0), // Amount added to stock
     priceBought: decimal("price_bought", { precision: 15, scale: 2}).notNull(), // Cost price per unit

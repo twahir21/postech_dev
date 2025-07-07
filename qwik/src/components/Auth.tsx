@@ -65,7 +65,6 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
   // Update field values & validate
   type StateField = keyof Pick<typeof state, "name" | "email" | "username" | "password" | "phoneNumber">;
   const backendURL = env.mode === 'development' ? env.backendURL_DEV : env.backendURL;
-
   const handleInputChange = $((field: StateField, value: string) => {
     let sanitizedValue = value.trim();
   

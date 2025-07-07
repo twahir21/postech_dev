@@ -1,1 +1,0 @@
-import{u as n}from"./q-Dk67VZbx.js";const i=async()=>{const[a,o,s,e,t]=n();if(e.value!==a.value)return alert("Nenosiri hayafanani!");await fetch("/auth/reset-password",{method:"POST",body:JSON.stringify({email:s,token:t,newPassword:e.value}),headers:{"Content-Type":"application/json"}}),o.value=!0};export{i as s_8FGwy0Bv1KI};

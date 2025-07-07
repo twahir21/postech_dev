@@ -1,18 +1,5 @@
 import { t } from "elysia";
 
-export const categData = t.Object({
-    generalName: t.String({ 
-        minLength: 3, 
-        maxLength: 40, 
-        error () {
-            return {
-                success: false,
-                message: "Jina haliwezi kuwa chini ya herufi 3, na juu ya herufi 40"
-            }
-        }
-        
-    })
-});
 
 export const suppData = t.Object({
     company: t.String({
@@ -97,28 +84,7 @@ export const prodData = t.Object({
                 message: "Kiwango sio sahihi kama ni chini ya 1 au juu ya trillioni 100"
             }
         }
-    }),
-    categoryId: t.String({
-        minLength: 3,
-        maxLength: 70,
-        error() {
-            return {
-                success: false,
-                message: "ID haliwezi kuwa na herufi chini ya 3 na juu ya 70"
-            }
-        }
-    }),
-
-    supplierId: t.String({
-        minLength: 3,
-        maxLength: 70,
-        error() {
-            return {
-                success: false,
-                message: "ID haliwezi kuwa na herufi chini ya 3 na juu ya 70"
-            }
-        }
-    }),
+    })
 })
 
 export const prodUpdateValidation = t.Object({

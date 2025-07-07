@@ -2,7 +2,14 @@ User-agent: *
 Allow: /
 
 # Disallow sensitive or irrelevant directories
-Disallow: /reg/
+Disallow: /admin/
+Disallow: /temp/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /scan-qrcode/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /profile/
 
 
 # Sitemap location

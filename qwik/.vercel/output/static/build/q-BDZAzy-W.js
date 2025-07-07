@@ -1,1 +1,0 @@
-import{C as t}from"./q-DrN8Jx7F.js";import{d as r}from"./q-Dk67VZbx.js";import"./q-B4L2hSEC.js";const c=async()=>{const a=await new t("analytics").get();console.log("Analytics: ",a)};export{r as _hW,c as s_n0Kk8eOUGXw};

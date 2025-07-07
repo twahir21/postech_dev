@@ -1,1 +1,0 @@
-import{B as r}from"./q-9pm_tjHx.js";import{a,x as l,S as t,F as e,b as n}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const u=s=>a(r,{name:"rotate-ccw",...s,children:[a(t,null,3,"ps_0"),a(e,{children:[n("path",null,{d:"M3 2v6h6"},null,3,null),n("path",null,{d:"M3 13a9 9 0 1 0 3-7.7L3 8"},null,3,null)]},3,"ps_1")],[l]:{name:l},[l]:{name:l}},0,"ps_2");export{u as s_VkXKIF0rdZ8};

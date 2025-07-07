@@ -1,1 +1,0 @@
-import{B as r}from"./q-9pm_tjHx.js";import{a,x as n,S as m,F as o,b as s}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const c=l=>a(r,{name:"crown",...l,children:[a(m,null,3,"jg_0"),a(o,{children:s("path",null,{d:"m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"},null,3,null)},3,"jg_1")],[n]:{name:n},[n]:{name:n}},0,"jg_2");export{c as s_ePbkZM3FkOo};

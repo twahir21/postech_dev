@@ -43,6 +43,8 @@ export const HomeComponent = component$(() => {
   const { lowStockProducts } = useContext(lowStockProductsData);
   const { subscription } = useContext(subscriptionData);
 
+  const isLoading = useSignal(false);
+
   // refetch when changes occur in data
   const { productRefetch, refetchAnalytics } = useContext(RefetchContext);
   
@@ -51,9 +53,15 @@ useVisibleTask$(async ({ track }) => {
   track(() => productRefetch.value); // track the refetch signal
   track(() => refetchAnalytics.value);
 
+  // set loading state
+  isLoading.value = true;
+
     const analyticsApi = new CrudService<AnalyticsTypes>("analytics");
     const analyticsData = await analyticsApi.get();
-    if (!analyticsData.success) return;
+    if (!analyticsData.success) {
+      isLoading.value = false;
+      return;
+    }
     const analytics = analyticsData.data[0];
 
     // assign data to the store
@@ -114,30 +122,31 @@ useVisibleTask$(async ({ track }) => {
     console.log("Analytics: ", analytics);
 
     // most debt user
-    analyticsStore.mostDebt = analytics.mostDebtUser.name;
-    analyticsStore.amountDebt = formatMoney(Number(analytics.mostDebtUser.remainingAmount));
+    analyticsStore.mostDebt = analytics.mostDebtUser?.name || 'Hakuna';
+    analyticsStore.amountDebt = formatMoney(Number(analytics.mostDebtUser?.remainingAmount) || 0) || '0';
 
     // long debt user
-    analyticsStore.longDebt = analytics.longTermDebtUser.name;
-    analyticsStore.amount = formatMoney(Number(analytics.longTermDebtUser.remainingAmount));
-    analyticsStore.daysDebt = formatDateOnly(analytics.longTermDebtUser.createdAt);
+    analyticsStore.longDebt = analytics.longTermDebtUser?.name || 'Hakuna';
+    analyticsStore.amount = formatMoney(Number(analytics.longTermDebtUser?.remainingAmount) || 0) || '0';
+    analyticsStore.daysDebt = formatDateOnly(analytics.longTermDebtUser?.createdAt || 'Hakuna');
 
     // lowest stock product
-    analyticsStore.lowestPrdName= analytics.lowestProduct.name;
-    analyticsStore.lowestPrdStock = analytics.lowestProduct.stock;
-    analyticsStore.prdUnit = analytics.lowestProduct.unit;
+    analyticsStore.lowestPrdName= analytics.lowestProduct?.name || "Hakuna";
+    analyticsStore.lowestPrdStock = analytics.lowestProduct?.stock || 0;
+    analyticsStore.prdUnit = analytics.lowestProduct?.unit || "Hakuna";
 
     // most asked
     analyticsStore.mostAsked = analytics.mostAsked;
 
     // now allow rendering of the graph
+    isLoading.value = false; // ✅ set loading to false after data is fetched
     isGraphReady.value = true; // ✅ trigger Graph display only after data is ready
 
 });
 
   return (
   <>
-  {!isGraphReady.value ?(
+  { isLoading.value ?(
     // Custom Loader
     <Loader />
   ):(

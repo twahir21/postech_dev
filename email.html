@@ -1,114 +1,94 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kifurushi Kimeisha</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Umbali wa Muuzaji</title>
   <style>
-    :root {
-      --primary: #4cc9f0;
-      --danger: #f72585;
-      --bg: #f8f9fa;
-      --dark: #1f1f1f;
-      --shadow: rgba(0, 0, 0, 0.1);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #e0f7ff, #fceefb);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-
-    .card {
-      background: white;
-      padding: 3rem 2rem;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px var(--shadow);
-      max-width: 450px;
-      width: 100%;
-      text-align: center;
-      animation: fadeIn 0.6s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .icon {
-      font-size: 3rem;
-      color: var(--danger);
-      margin-bottom: 1rem;
-    }
-
-    h1 {
-      font-size: 1.6rem;
-      color: var(--dark);
-      margin-bottom: 1rem;
-    }
-
-    p {
-      color: #555;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-
-    .btn {
-      background: var(--primary);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .btn:hover {
-      background: #3dbfe1;
-    }
-
-    .footer {
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      color: #888;
-    }
+    body { font-family: sans-serif; padding: 2rem; }
+    .card { max-width: 400px; margin: auto; padding: 1.5rem; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    button { padding: 0.6rem 1.2rem; margin-top: 1rem; border: none; border-radius: 6px; cursor: pointer; }
+    input { width: 100%; padding: 0.6rem; margin-top: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #ccc; border-radius: 6px; }
+    .btn-blue { background-color: #2563eb; color: white; }
+    .btn-green { background-color: #16a34a; color: white; }
+    .error { color: red; font-size: 0.9rem; }
+    .result { font-weight: bold; font-size: 1.2rem; margin-top: 1rem; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="icon">🔒</div>
-    <h1>Kifurushi Chako Kimeisha</h1>
-    <p>
-      Samahani, muda wa kifurushi chako umeisha. Ili kuendelea kutumia huduma zetu,
-      tafadhali lipia kifurushi kipya sasa.
-    </p>
-    <button class="btn" onclick="window.location.href='/lipia'">
-      💳 Lipia Sasa
-    </button>
+    <h2>📍 Umbali kati yako na muuzaji</h2>
 
-    <div class="footer">
-      © 2025 Postech. Haki zote zimehifadhiwa.
-    </div>
+    <button class="btn-blue" onclick="getUserLocation()">Pata Mahali Ulipo</button>
+    <p id="location"></p>
+    <p class="error" id="error"></p>
+
+    <input type="number" id="vendorLat" placeholder="Lat ya muuzaji" />
+    <input type="number" id="vendorLng" placeholder="Lng ya muuzaji" />
+    
+    <button class="btn-green" onclick="calculateDistance()">Hesabu Umbali</button>
+    <p class="result" id="distance"></p>
   </div>
+
+  <script>
+    let userLat = null;
+    let userLng = null;
+
+    function getUserLocation() {
+      document.getElementById('error').textContent = '';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          userLat = pos.coords.latitude;
+          userLng = pos.coords.longitude;
+          document.getElementById('location').textContent = `Lat: ${userLat.toFixed(5)}, Lng: ${userLng.toFixed(5)}`;
+        },
+        (err) => {
+          document.getElementById('error').textContent = 'Error: ' + err.message;
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+
+    function toRad(value) {
+      return (value * Math.PI) / 180;
+    }
+
+    function calculateDistance() {
+      const lat2 = parseFloat(document.getElementById('vendorLat').value);
+      const lng2 = parseFloat(document.getElementById('vendorLng').value);
+      const distElem = document.getElementById('distance');
+      const errorElem = document.getElementById('error');
+
+      distElem.textContent = '';
+      errorElem.textContent = '';
+
+      if (userLat == null || userLng == null) {
+        errorElem.textContent = "Tafadhali pata mahali ulipo kwanza.";
+        return;
+      }
+
+      if (isNaN(lat2) || isNaN(lng2)) {
+        errorElem.textContent = "Weka lat na lng sahihi za muuzaji.";
+        return;
+      }
+
+      const R = 6371; // km
+      const dLat = toRad(lat2 - userLat);
+      const dLng = toRad(lng2 - userLng);
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(userLat)) *
+          Math.cos(toRad(lat2)) *
+          Math.sin(dLng / 2) ** 2;
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = R * c;
+
+      distElem.textContent =
+        distance < 1
+          ? `Umbali: ${(distance * 1000).toFixed(1)} mita`
+          : `Umbali: ${distance.toFixed(2)} km`;
+    }
+  </script>
 </body>
 </html>

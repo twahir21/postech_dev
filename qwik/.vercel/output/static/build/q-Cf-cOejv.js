@@ -1,1 +1,0 @@
-import{B as m}from"./q-9pm_tjHx.js";import{a,x as n,S as r,F as s,b as t}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const h=l=>a(m,{name:"twitch",...l,children:[a(r,null,3,"Vy_0"),a(s,{children:t("path",null,{d:"M21 2H3v16h5v4l4-4h5l4-4V2zm-10 9V7m5 4V7"},null,3,null)},3,"Vy_1")],[n]:{name:n},[n]:{name:n}},0,"Vy_2");export{h as s_Ym6I0KXJnwE};

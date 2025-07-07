@@ -1,1 +1,0 @@
-import{u as l}from"./q-Dk67VZbx.js";import{d as p}from"./q-Dk67VZbx.js";const d=(a,e)=>{const[t]=l(),o=a.target;if(t.editableFields[e]=o.value,e==="quantity"||e==="discount"){const s=parseFloat(t.query.priceSold||"0"),c=parseFloat(t.editableFields.quantity),i=parseFloat(t.editableFields.discount);t.calculatedTotal=c*s-i}};export{p as _hW,d as s_BJfjrRmdxqc};

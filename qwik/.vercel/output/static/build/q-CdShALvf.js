@@ -1,1 +1,0 @@
-import{u as r}from"./q-Dk67VZbx.js";import{d as h}from"./q-Dk67VZbx.js";import{C as u}from"./q-DrN8Jx7F.js";import"./q-B4L2hSEC.js";const p=async()=>{const[a,o,t,s,c]=r();t.value=!0;const e=await new u(`customers?search=${encodeURIComponent(s.value)}&page=${a.value}&limit=10`).get();t.value=!1,e.success&&(o.value=e.data,c.value=e.total)};export{h as _hW,p as s_UbvOlloZy6Y};

@@ -1,1 +1,0 @@
-import{B as r}from"./q-9pm_tjHx.js";import{a as o,x as a,S as l,F as m,b as s}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=n=>o(r,{name:"bookmark",...n,children:[o(l,null,3,"po_0"),o(m,{children:s("path",null,{d:"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"},null,3,null)},3,"po_1")],[a]:{name:a},[a]:{name:a}},0,"po_2");export{_ as s_OAa5BX5ydtQ};

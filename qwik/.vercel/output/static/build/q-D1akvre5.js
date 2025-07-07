@@ -1,1 +1,0 @@
-import{u as m}from"./q-Dk67VZbx.js";import{d as v}from"./q-Dk67VZbx.js";const t=({track:e,cleanup:l})=>{const[s,r,a,i,u,o]=m();e(()=>i.isOpen),e(()=>a.value),e(()=>i.duration??2e3),i.isOpen?a.value?(o.value>0&&(r.value=Date.now()-o.value),s()):u():s(),l(()=>{s()})};export{v as _hW,t as s_NKq40yoJO80};

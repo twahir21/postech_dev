@@ -1,1 +1,0 @@
-import{u as e}from"./q-Dk67VZbx.js";import{d as n}from"./q-Dk67VZbx.js";import{C as o}from"./q-DrN8Jx7F.js";import"./q-B4L2hSEC.js";const u=async()=>{const[t]=e(),s=await new o("getCustomers").get();s.success&&(t.customers=s.data)};export{n as _hW,u as s_GU7Gqe9h6eA};

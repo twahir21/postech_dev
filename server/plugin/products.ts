@@ -33,12 +33,6 @@ export const prodPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
-        if (!(body as productTypes).categoryId || !(body as productTypes).supplierId) {
-            return {
-                success: false,
-                message: "Category Id and supplier Id zinatakiwa"
-            }
-        }
 
         // block creating new product if unpaid
         const result = await blockUsage({ shopId });
@@ -55,8 +49,6 @@ export const prodPlugin = new Elysia()
             userId,
             shopId,
             headers,
-            categoryId: (body as productTypes).categoryId || "",
-            supplierId: (body as productTypes).supplierId || "",
         }); 
     }, {
         body: prodData

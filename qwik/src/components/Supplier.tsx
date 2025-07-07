@@ -1,14 +1,13 @@
 import { component$, useStore, $, useContext } from "@builder.io/qwik";
 import { RefetchContext } from "./context/refreshContext";
 import { CrudService } from "~/routes/api/base/oop";
-import type { categoriesPost, supplierData } from "~/routes/api/base/typeSafe";
+import type { supplierData } from "~/routes/api/base/typeSafe";
 import { Toast } from "./ui/Toast";
 
 export const SupplierComponent = component$(() => {
   const formState = useStore({
     name: "",
     contact: "",
-    category: "",
     errors: {
       name: "",
       contact: ""
@@ -24,7 +23,7 @@ export const SupplierComponent = component$(() => {
     },
     isLoading: false as boolean
   });
-  const { supplierRefetch, categoryRefetch }  = useContext(RefetchContext);
+  const { supplierRefetch }  = useContext(RefetchContext);
 
 
 
@@ -44,7 +43,7 @@ export const SupplierComponent = component$(() => {
   });
 
   // Handle Input Change
-  type FormField = keyof Pick<typeof formState, "name" | "contact" | "category">;
+  type FormField = keyof Pick<typeof formState, "name" | "contact">;
 
   const handleInputChange = $((field: FormField, value: string) => {
     formState[field] = value.trim(); // Now type-safe
@@ -62,21 +61,11 @@ export const SupplierComponent = component$(() => {
       if (formState.isLoading) return; // prevent multiple reqs
 
       formState.isLoading = true; // Start loading ...
-      // Send category only if it's not empty
-      if (formState.category.trim()) {
-        const categoryPostApi = new CrudService<categoriesPost>("categories");
-        categoryRefetch.value = true;
-        const result = await categoryPostApi.create({ generalName: formState.category });
-        if (!result.success) {
-          return;
-        }
-      }
 
       // Send supplier data
       const supplierDataApi = new CrudService<supplierData>("suppliers");
 
       supplierRefetch.value = true;
-      categoryRefetch.value = true;
       const result = await supplierDataApi.create({ company: formState.name.trim().toLowerCase(), contact: formState.contact.trim() });
 
       formState.modal = {
@@ -88,7 +77,6 @@ export const SupplierComponent = component$(() => {
       if (result.success) {
         formState.name = "";
         formState.contact = "";
-        formState.category = "";
         formState.errors = { name: "", contact: "" };
         formState.valid = { name: false, contact: false };
       }
@@ -126,17 +114,6 @@ export const SupplierComponent = component$(() => {
             onInput$={(e) => handleInputChange('contact', (e.target as HTMLInputElement).value)}
           />
           {formState.errors.contact && <p class="text-red-500 text-sm">{formState.errors.contact}</p>}
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Kategoria</label>
-          <input
-            type="text"
-            class="w-full mt-1 p-2 border rounded-lg"
-            placeholder="e.g. Ngano, Vinywaji"
-            value={formState.category}
-            onInput$={(e) => (formState.category = (e.target as HTMLInputElement).value)}
-          />
         </div>
 
         <button

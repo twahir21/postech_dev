@@ -1,1 +1,0 @@
-import{B as a}from"./q-9pm_tjHx.js";import{a as l,x as r,S as e,F as m,b as s}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=n=>l(a,{name:"circle",...n,children:[l(e,null,3,"KT_0"),l(m,{children:s("circle",null,{cx:"12",cy:"12",r:"10"},null,3,null)},3,"KT_1")],[r]:{name:r},[r]:{name:r}},0,"KT_2");export{i as s_W5mpWUGLmL4};

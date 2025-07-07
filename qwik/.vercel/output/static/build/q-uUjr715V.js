@@ -1,1 +1,0 @@
-import{B as e}from"./q-9pm_tjHx.js";import{a,x as n,S as o,F as s,b as r}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const u=l=>a(e,{name:"zap",...l,children:[a(o,null,3,"Be_0"),a(s,{children:r("polygon",null,{points:"13 2 3 14 12 14 11 22 21 10 12 10 13 2"},null,3,null)},3,"Be_1")],[n]:{name:n},[n]:{name:n}},0,"Be_2");export{u as s_n7uZkwlMTuE};

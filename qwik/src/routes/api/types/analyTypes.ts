@@ -27,7 +27,6 @@ export interface netProfit {
 export interface lowestProduct {
     id: string;
     name: string;
-    categoryId: string;
     priceSold: number;
     stock: number;
     shopId: string;
@@ -42,7 +41,6 @@ export interface lowestProduct {
 export interface lowStockProducts {
     id: string;
     name: string;
-    categoryId: string;
     priceSold: number;
     stock: number;
     shopId: string;
@@ -109,11 +107,11 @@ export interface AnalyticsTypes {
     highestProfitProduct: highestProfitProduct | null;
     mostAsked: string;
     netProfit: netProfit;
-    lowestProduct: lowestProduct;
+    lowestProduct: lowestProduct | null;
     lowStockProducts: lowStockProducts[];
     mostSoldProductByQuantity: mostSoldProductByQuantity | null;
-    longTermDebtUser: longTermDebtUser;
-    mostDebtUser: mostDebtUser;
+    longTermDebtUser: longTermDebtUser | null;
+    mostDebtUser: mostDebtUser | null;
     daysSinceDebt: string;
     salesByDay: salesByDay[];
     expensesByDay: expensesByDay[];

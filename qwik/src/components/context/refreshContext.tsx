@@ -7,7 +7,6 @@ export interface RefetchFlags {
   productRefetch: Signal<boolean>;
   customerRefetch: Signal<boolean>;
   supplierRefetch: Signal<boolean>;
-  categoryRefetch: Signal<boolean>;
   refetchAnalytics: Signal<boolean>;
   debtRefetch: Signal<boolean>;
 

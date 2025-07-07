@@ -1,1 +1,0 @@
-import{B as l}from"./q-9pm_tjHx.js";import{a as n,x as a,S as r,F as s,b as m}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=o=>n(l,{name:"moon",...o,children:[n(r,null,3,"f0_0"),n(s,{children:m("path",null,{d:"M12 3a6.364 6.364 0 0 0 9 9 9 9 0 1 1-9-9Z"},null,3,null)},3,"f0_1")],[a]:{name:a},[a]:{name:a}},0,"f0_2");export{i as s_HghRhitIdoU};

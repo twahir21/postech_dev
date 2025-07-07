@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
-import { askedProducts, categories, customers, debtPayments, debts, expenses, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, suppliers, users } from "../database/schema/shop";
+import { askedProducts, customers, debtPayments, debts, expenses, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, suppliers, users } from "../database/schema/shop";
 import type { headTypes, pswdType, shopTypes } from "../types/types";
 import { sanitizeString } from "./security/xss";
 import { hashPassword, verifyPassword } from "./security/hash";
@@ -145,7 +145,7 @@ export const deleteShop = async ({ shopId, userId, cookie }: {userId: string, sh
         const tables = [
           askedProducts, supplierPriceHistory, debtPayments, debts,
           sales, purchases, returns, expenses, products,
-          suppliers, customers, categories,
+          suppliers, customers
         ];
 
         await mainDb.transaction(async (tx) => {

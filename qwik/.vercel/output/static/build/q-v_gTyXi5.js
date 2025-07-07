@@ -1,1 +1,0 @@
-import{B as r}from"./q-9pm_tjHx.js";import{a as n,x as a,S as s,F as e,b as t}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=l=>n(r,{name:"edit-2",...l,children:[n(s,null,3,"C8_0"),n(e,{children:t("path",null,{d:"M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"},null,3,null)},3,"C8_1")],[a]:{name:a},[a]:{name:a}},0,"C8_2");export{i as s_80VbpZ49LAE};

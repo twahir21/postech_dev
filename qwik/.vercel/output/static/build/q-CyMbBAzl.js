@@ -1,1 +1,0 @@
-import{B as s}from"./q-9pm_tjHx.js";import{a as l,x as n,S as r,F as e,b as m}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=a=>l(s,{name:"minus",...a,children:[l(r,null,3,"Sj_0"),l(e,{children:m("line",null,{x1:"5",y1:"12",x2:"19",y2:"12"},null,3,null)},3,"Sj_1")],[n]:{name:n},[n]:{name:n}},0,"Sj_2");export{_ as s_C4cACltn02w};

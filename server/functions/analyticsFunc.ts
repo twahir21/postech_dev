@@ -170,11 +170,42 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
 
         // Destructure combined results
         const profitPerProduct = profitData || [];
-        const highestProfitProduct = profitPerProduct[0] || null;
+        const highestProfitProduct = await mainDb
+          .select({
+            productname: products.name,
+            profit: sql<number>`SUM(${sales.totalSales} - (COALESCE(${purchases.priceBought}, 0) * ${sales.quantity}))`
+          })
+          .from(sales)
+          .leftJoin(products, eq(sales.productId, products.id))
+          .leftJoin(purchases, eq(sales.productId, purchases.productId))
+          .where(eq(sales.shopId, shopId))
+          .groupBy(products.name)
+          .orderBy(desc(sql<number>`SUM(${sales.totalSales} - (COALESCE(${purchases.priceBought}, 0) * ${sales.quantity}))`))
+          .limit(1)
+          .then(rows => rows[0] || { productName: null, totalProfit: 0 });
 
-        const totalProfitFromProducts = profitPerProduct.reduce((sum, item) => {
-            return sum + Number(item.profit || 0);
-        }, 0);
+
+        const totalProfitFromProducts = await mainDb
+          .select({
+            date: sales.createdAt,
+            name: products.name,
+            totalSales: sales.totalSales,
+            priceBought: purchases.priceBought,
+            quantity: sales.quantity
+          })
+          .from(sales)
+          .leftJoin(products, eq(sales.productId, products.id))
+          .leftJoin(purchases, eq(sales.productId, purchases.productId))
+          .where(eq(sales.shopId, shopId))
+          .then(rows => {
+            if (!rows.length) return 0;
+            
+            return rows.reduce((totalProfit, row) => {
+              const cost = row.priceBought ? Number(row.priceBought)  * row.quantity : 0;
+              return totalProfit + (Number(row.totalSales) - cost);
+            }, 0);
+          });
+
 
         const totalSalesFromProducts = profitPerProduct.reduce((sum, item) => {
             return sum + Number(item.totalsales || 0);
@@ -263,8 +294,7 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
           .from(askedProducts)
           .where(eq(askedProducts.shopId, shopId))
           .orderBy(desc(askedProducts.quantityRequested))
-          .limit(1).then(rows => rows[0].name);
-
+          .limit(1).then(rows => rows[0]?.name ?? "Hakuna");
 
         console.timeEnd("Analytics");
 

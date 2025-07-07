@@ -1,1 +1,0 @@
-import{B as n}from"./q-9pm_tjHx.js";import{a as r,x as a,S as o,F as s,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const u=l=>r(n,{name:"cloud",...l,children:[r(o,null,3,"Kr_0"),r(s,{children:e("path",null,{d:"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"},null,3,null)},3,"Kr_1")],[a]:{name:a},[a]:{name:a}},0,"Kr_2");export{u as s_ZqrM0UO0hlo};

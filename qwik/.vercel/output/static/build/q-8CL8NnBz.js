@@ -1,1 +1,0 @@
-import{B as o}from"./q-9pm_tjHx.js";import{a,x as n,S as r,F as s,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=l=>a(o,{name:"play",...l,children:[a(r,null,3,"yb_0"),a(s,{children:e("polygon",null,{points:"5 3 19 12 5 21 5 3"},null,3,null)},3,"yb_1")],[n]:{name:n},[n]:{name:n}},0,"yb_2");export{_ as s_PXrmQezDbbU};

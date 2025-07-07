@@ -1,1 +1,0 @@
-import{B as r}from"./q-9pm_tjHx.js";import{a as l,x as a,S as s,F as t,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=n=>l(r,{name:"flag-triangle-right",...n,children:[l(s,null,3,"c9_0"),l(t,{children:e("path",null,{d:"M7 22V2l10 5-10 5"},null,3,null)},3,"c9_1")],[a]:{name:a},[a]:{name:a}},0,"c9_2");export{i as s_d06GVpFJ0Xg};

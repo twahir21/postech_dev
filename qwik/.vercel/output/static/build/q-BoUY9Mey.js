@@ -1,1 +1,0 @@
-import{B as r}from"./q-9pm_tjHx.js";import{a as n,x as a,S as o,F as s,b as e}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const _=l=>n(r,{name:"facebook",...l,children:[n(o,null,3,"19_0"),n(s,{children:e("path",null,{d:"M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"},null,3,null)},3,"19_1")],[a]:{name:a},[a]:{name:a}},0,"19_2");export{_ as s_32W7r4f0WEk};

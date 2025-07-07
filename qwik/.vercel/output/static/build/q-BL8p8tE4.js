@@ -1,1 +1,0 @@
-import{B as r}from"./q-9pm_tjHx.js";import{a,x as n,S as s,F as e,b as m}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const h=l=>a(r,{name:"unlink-2",...l,children:[a(s,null,3,"Xk_0"),a(e,{children:m("path",null,{d:"M15 7h2a5 5 0 0 1 0 10h-2m-6 0H7A5 5 0 0 1 7 7h2"},null,3,null)},3,"Xk_1")],[n]:{name:n},[n]:{name:n}},0,"Xk_2");export{h as s_HClSzT4e3q4};

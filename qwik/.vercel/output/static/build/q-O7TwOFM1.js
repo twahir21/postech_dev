@@ -1,1 +1,0 @@
-const e=async()=>{try{const o=await fetch("http://localhost:3000/graph",{credentials:"include"});o.ok||console.error("Invalid response from server");const r=await o.json();console.log(r)}catch(o){o instanceof Error?console.error(o.message):console.log("Unknown error occured")}};export{e as s_lGWtEBaRzVQ};

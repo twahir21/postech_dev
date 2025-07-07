@@ -347,3 +347,12 @@ Use ?? when you want to preserve valid falsy values like 0 or "".
 Use || when you're okay with any falsy value being replaced.
 
 # for max speed server should be 100ms - 300ms as maximum 
+
+## auto restocking based on sales data
+do this for how many product should be restocked based on prev analytics on sales
+
+# on low stock
+alert via email,sms and whatsapp about product with low stock
+
+# on re-order
+do a one-click re-order to vendor

@@ -1,1 +1,0 @@
-import{B as m}from"./q-9pm_tjHx.js";import{a,x as n,S as r,F as s,b as o}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const i=l=>a(m,{name:"mountain",...l,children:[a(r,null,3,"4B_0"),a(s,{children:o("path",null,{d:"m8 3 4 8 5-5 5 15H2L8 3z"},null,3,null)},3,"4B_1")],[n]:{name:n},[n]:{name:n}},0,"4B_2");export{i as s_79YZp00gxZw};

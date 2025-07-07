@@ -1,1 +1,0 @@
-import{B as e}from"./q-9pm_tjHx.js";import{a as n,x as a,S as l,F as m,b as s}from"./q-Dk67VZbx.js";import"./q-uemlvruI.js";const B=r=>n(e,{name:"thermometer",...r,children:[n(l,null,3,"BL_0"),n(m,{children:s("path",null,{d:"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"},null,3,null)},3,"BL_1")],[a]:{name:a},[a]:{name:a}},0,"BL_2");export{B as s_jzF895TjgwY};

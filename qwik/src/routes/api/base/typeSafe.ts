@@ -23,10 +23,6 @@ export interface CrudItem {
     limit: number;
   }
 
-  export interface categoriesPost {
-    id: string,
-    generalName: string
-  }
 
   export interface supplierData {
     id: string,
