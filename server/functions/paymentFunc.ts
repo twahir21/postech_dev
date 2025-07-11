@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { paymentSaaS, users } from "../database/schema/shop";
-import type { headTypes } from "../types/types";
+import type { headTypes, PaymentRequest, USSDCheckResponse } from "../types/types";
 import { createPayloadChecksum, decrypt, encrypt, generateOrderRef } from "./utils/clickpesa";
 
 // credentials
@@ -13,7 +13,7 @@ export const genToken = async ({ userId, shopId, headers }: { userId: string, sh
 
     try{
         // send req for getting token
-        const options = {method: 'POST', headers: {'client-id': clientID, 'api-key': apiKey}};
+        const options = { method: 'POST', headers: {'client-id': clientID, 'api-key': apiKey }};
         const response = await fetch('https://api.clickpesa.com/third-parties/generate-token', options);
         interface clickpesaToken {
             success: string; token: string
@@ -56,10 +56,12 @@ export const genToken = async ({ userId, shopId, headers }: { userId: string, sh
         }
     }
 }
-export const checkUSSD = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes }) => {
+export const checkUSSD = async ({ userId, shopId, headers, body }: { userId: string, shopId: string, headers: headTypes; body: PaymentRequest }) => {
 
 
     try{
+        const { price, duration, paymentMethod, plan } = body;
+        console.log("checkUSSD body:", body);
         // get token
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
                     .where(eq(paymentSaaS.shopId, shopId));
@@ -80,8 +82,9 @@ export const checkUSSD = async ({ userId, shopId, headers }: { userId: string, s
         const checksumKey = process.env.CLICKPESA_CHECKSUMKEY;
         if(!checksumKey) return;
 
+
         const payload = {
-            amount: "10000",
+            amount: price.toString(),
             currency: "TZS",
             orderReference,
         }
@@ -98,15 +101,18 @@ export const checkUSSD = async ({ userId, shopId, headers }: { userId: string, s
           };
           
         const checkUSSD = await fetch('https://api.clickpesa.com/third-parties/payments/preview-ussd-push-request', options2);
-        const checkUSSDResult = await checkUSSD.json().catch((err) => {
+        const checkUSSDResult: USSDCheckResponse = await checkUSSD.json().catch((err) => {
             return {
                 success: false,
                 message: err instanceof Error ? err.message : "Seva ya malipo imefeli"
             }
         });
+
+        console.log("checkUSSDResult:", checkUSSDResult);
         
         return {
-            checkUSSDResult
+            success: true,
+            message: "Huduma ya USSD inapatikana kwenye mtandao wako."
         }
 
     }catch(err){
@@ -236,6 +242,36 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
             message: err instanceof Error   
                         ? err.message
                         : "Hitilafu imetokea kwenye seva"
+        }
+    }
+}
+
+
+export const checkBalance = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes }) => {
+    try {
+        const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
+                    .where(eq(paymentSaaS.shopId, shopId));
+        
+        const value = encryptedToken[0].token;
+
+        const resultToken = decrypt(value);
+
+        const options = {method: 'GET', headers: {Authorization: `${resultToken}`}};
+
+        const resultBalance = await fetch('https://api.clickpesa.com/third-parties/account/balance', options);
+        console.log("Balance response:", resultBalance);
+        const result = await resultBalance.json();
+
+        console.log("Balance result:", result);
+
+        return {
+            success: true,
+            message: "Umefanikiwa kuangalia salio lako la ClickPesa",
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : "Hitilafu imetokea kwenye seva"
         }
     }
 }

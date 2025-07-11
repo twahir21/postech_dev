@@ -11,6 +11,10 @@ setInterval(async () => await cleanResets(), 1000 * 60 * 60); // every 1 hour
 // to run this file in background as worker use 
 // bun run cron.ts & 
 
+// use nohup bun run worker.ts > worker.log 2>&1 & for bun
+// run jobs -l  to check if running
+// to stop use kill 83248 (id of service)
+
 // use pm2 for production 
 // # Install PM2 globally
 // npm i -g pm2

@@ -24,6 +24,7 @@ export const SettingsComponent = component$(() => {
     isPassword?:boolean;
     isDelete?:boolean;
     isDelLoading: boolean;
+    phoneNumber: string;
     modal: {
       isSuccess: boolean;
       message: string;
@@ -40,6 +41,7 @@ export const SettingsComponent = component$(() => {
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
+    phoneNumber: '',
     isTrial: true,
     trialEnds: trialEnds, // Use the derived trialEnds variable
     isLoading: false,
@@ -59,13 +61,14 @@ export const SettingsComponent = component$(() => {
 
 
 
-  // logic for shopName and email
+  // logic for shopName and email and phoneNumber
   useResource$(async () => {
     if (store.isLoading) return; // prevent multiple reqs
     interface shopInfo {
       id: string,
       email: { email: string},
-      shopName: { shopName: string}
+      shopName: { shopName: string},
+      phoneNumber: { phoneNumber: string }
     }
     const shopApi = new CrudService<shopInfo>("shop");
     
@@ -77,6 +80,7 @@ export const SettingsComponent = component$(() => {
     }
     store.email = result.data[0].email.email;
     store.shopName = result.data[0].shopName.shopName;
+    store.phoneNumber = result.data[0].phoneNumber.phoneNumber;
     store.isLoading = false; // finishes loading ...
   });
 
@@ -85,9 +89,10 @@ export const SettingsComponent = component$(() => {
       store.isLoading = true;
           const payload = {
         email: store.email,
-        shopName: store.shopName
+        shopName: store.shopName,
+        phoneNumber: store.phoneNumber
       };
-      interface payloadEdit { id?: string; email: string; shopName: string}
+      interface payloadEdit { id?: string; email: string; shopName: string; phoneNumber: string }
       const editShopAPI = new CrudService<payloadEdit>("shop");
       const editShopData = await editShopAPI.update(payload);
       store.isLoading = false; //stop loading ...
@@ -180,6 +185,14 @@ export const SettingsComponent = component$(() => {
             placeholder="Admin Email"
             value={store.email}
             onInput$={(e) => (store.email = (e.target as HTMLInputElement).value)}
+          />
+          <label class="block text-sm font-medium text-gray-700 m-0">Simu ya malipo (Tigo au Airtel tu):</label>
+          <input
+            type="number"
+            class="w-full p-2 border rounded"
+            placeholder="2556123456789"
+            value={store.phoneNumber}
+            onInput$={(e) => (store.phoneNumber = (e.target as HTMLInputElement).value)}
           />
           <button class={`${store.isLoading ? 'bg-gray-400': 'bg-gray-600'} hover:bg-gray-700 text-white px-4 py-2 rounded `}
           onClick$={handleSubmit}

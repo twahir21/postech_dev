@@ -1,8 +1,11 @@
-import { component$, useSignal, useComputed$ } from '@builder.io/qwik';
+import { component$, useSignal, useComputed$, $, useStore } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
+import { CrudService } from '../api/base/oop';
+import type { PaymentRequest } from '../api/types/payTypes';
+import { Toast } from '~/components/ui/Toast';
 
 type PlanType = 'msingi' | 'lite';
-type PaymentMethod = 'tigopesa' | 'airtelmoney';
+type PaymentMethod = 'TIGO-PESA' | 'AIRTEL-MONEY';
 type Duration = 1 | 6 | 12;
 
 interface PlanDetails {
@@ -13,11 +16,18 @@ interface PlanDetails {
 export default component$(() => {
   const location = useLocation();
 
+  const modal = useStore({
+    isOpen: false,
+    isSuccess: false,
+    message: ''
+  });
+
   // Type-safe plan selection
   const params = new URLSearchParams(location.url.search);
   const plan = params.get('plan') as PlanType;
   const duration = useSignal<Duration>(1);
-  const paymentMethod = useSignal<PaymentMethod>('tigopesa');
+  const paymentMethod = useSignal<PaymentMethod>('TIGO-PESA');
+  const isLoading = useSignal(false);
 
   // Type-safe plan details
   const planDetails: Record<PlanType, PlanDetails> = {
@@ -31,8 +41,6 @@ export default component$(() => {
     6: 0.05, 
     12: 0.15 
   };
-
-
 
 
 const isValidPlan = (plan: string): plan is PlanType =>
@@ -53,6 +61,44 @@ if (!isValidPlan(plan)) return (
     const basePrice = planDetails[plan].monthly;
     const discount = discountRates[duration.value];
     return basePrice * duration.value * (1 - discount);
+  });
+
+
+  // Function to handle payment
+  const handlePayment = $(async () => {
+    isLoading.value = true;
+
+    const genTokenApi = new CrudService("mobile/generate-token");
+    const tokenRes = await genTokenApi.get();
+
+    if (!tokenRes.success) {
+      modal.isOpen = true;
+      modal.isSuccess = false;
+      modal.message = tokenRes.message || 'Kuna hitilafu katika kupata tokeni ya malipo, tafadhali jaribu tena baadaye.';
+      isLoading.value = false;
+      return;
+    }
+
+    const payApi = new CrudService<PaymentRequest>("mobile/check-USSD");
+    const result = await payApi.create({ price: totalPrice.value, duration: duration.value, paymentMethod: paymentMethod.value, plan: plan });
+
+
+    if (!result.success) {
+      modal.isOpen = true;
+      modal.isSuccess = result.success;
+      modal.message = result.message || 'Huwezi kufanya malipo bila kuwa na laini ya Tigo au Airtel kwenye kifaa chako.';
+    }
+
+    const payNowApi = new CrudService<PaymentRequest>("mobile/USSD-push");
+    const payNowResult = await payNowApi.get();
+
+    if (!payNowResult.success) {
+      modal.isOpen = true;
+      modal.isSuccess = false;
+      modal.message = payNowResult.message || 'Kuna hitilafu katika kuanzisha malipo, tafadhali jaribu tena baadaye.';
+    }
+
+    isLoading.value = false;
   });
 
 return (
@@ -84,7 +130,7 @@ return (
             <div class="mb-6">
               <label class="block mb-2 font-medium text-gray-700">Chagua njia ya malipo:</label>
               <div class="flex flex-wrap gap-4">
-                {(['tigopesa', 'airtelmoney'] as PaymentMethod[]).map((method) => (
+                {(['TIGO-PESA', 'AIRTEL-MONEY'] as PaymentMethod[]).map((method) => (
                   <label key={method} class="flex items-center gap-2 cursor-pointer">
                     <input 
                       type="radio" 
@@ -95,9 +141,9 @@ return (
                       class="h-5 w-5 text-green-600 focus:ring-green-500"
                     />
                     <img 
-                      src={`/${method === 'tigopesa' ? 'yas.webp' : 'airtel.webp'}`} 
-                      alt={method === 'tigopesa' ? 'Tigo Pesa' : 'Airtel Money'} 
-                      class={`w-23 h-auto ${method === 'tigopesa' ? '' : 'w-20'} rounded-full`}
+                      src={`/${method === 'TIGO-PESA' ? 'yas.webp' : 'airtel.webp'}`} 
+                      alt={method === 'TIGO-PESA' ? 'Tigo Pesa' : 'Airtel Money'} 
+                      class={`w-23 h-auto ${method === 'TIGO-PESA' ? '' : 'w-20'} rounded-full`}
                     />
                   </label>
                 ))}
@@ -112,13 +158,30 @@ return (
 
             <button
               class="bg-gradient-to-r from-blue-500 via-blue-700 to-blue-900 text-white w-full py-3 rounded-lg font-semibold shadow-md hover:from-blue-900 hover:via-blue-700 hover:to-blue-500 transition-all duration-600"
-              onClick$={() => console.log('Proceeding to payment...')}
+              onClick$={() => handlePayment() } disabled={ isLoading.value }
             >
-              Endelea na Malipo
+              { isLoading.value ?
+              // Custom Loader
+              <div class="inline-flex">
+              <div class="loaderCustom"></div>
+              </div> 
+              : 'Fanya Malipo' }
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modal Popup */}
+      {modal.isOpen && (
+        <Toast
+          isOpen={modal.isOpen}
+          type={modal.isSuccess}
+          message={modal.message}
+          onClose$={$(() => {
+            modal.isOpen = false;
+          })}
+        />
+      )}
   </>
 );
 

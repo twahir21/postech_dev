@@ -333,6 +333,16 @@ export const shopPutData = t.Object({
                 message: "Jina la duka haliwezi kuwa na herufi chini ya 3 au juu ya 40"
             }
         }
+    }),
+    phoneNumber: t.String({
+        maxLength: 15,
+        minLength: 10,
+        error() {
+            return {
+                success: false,
+                message: "Namba ya simu haiwezi kuwa na herufi chini ya 10 au juu ya 15"
+            }
+        }
     })
 });
 
@@ -510,4 +520,20 @@ export const resetPasswordData = t.Object({
             }
         }
     })
+});
+
+export const paymentRequestData = t.Object({
+    price: t.Number({
+        maximum: 999999999999.99,
+        minimum: 5000,
+        error() {
+            return {
+                success: false,
+                message: "Bei haiwezi kuwa chini ya 5000 au juu ya trillioni 100"
+            }
+        }
+    }),
+    duration: t.Union([t.Literal(1), t.Literal(6), t.Literal(12)]),
+    paymentMethod: t.Union([t.Literal('TIGO-PESA'), t.Literal('AIRTEL-MONEY')]),
+    plan: t.Union([t.Literal('msingi'), t.Literal('lite')])
 });

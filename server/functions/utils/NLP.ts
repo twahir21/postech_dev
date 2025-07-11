@@ -80,150 +80,6 @@ const fetchCustomers = async (
   }
 };
 
-const verbMap: Record<string, string> = {
-  nimeuza: 'nimeuza', niliuza: 'nimeuza', nauza: 'nimeuza', nimemuuzia: "nimeuza",
-  nimenunua: 'nimenunua', niliagiza: 'nimenunua', nimemnunulia: "nimenunua", nimeongeza: "nimenunua",
-  nimetumia: 'nimetumia', nilitumia: 'nimetumia',
-  nimekopesha: 'nimemkopesha', nilikopesha: 'nimemkopesha', ninamkopesha: 'nimemkopesha', namkopesha: 'nimemkopesha'
-};
-
-const similarity = (a: string, b: string) => {
-  let matches = 0;
-  const len = Math.max(a.length, b.length);
-  for (let i = 0; i < len; i++) {
-    if (a[i] === b[i]) matches++;
-  }
-  return matches / len;
-};
-
-export async function detectSwahiliTransaction(text: string, shopId: string): Promise<ParsedTransaction> {
-  const normalized = text.toLowerCase().trim();
-  const words = normalized.split(/\s+/);
-
-  // Step 1: Detect action
-  const actionKey = Object.keys(verbMap).find(key => similarity(words[0], key) > 0.7);
-  if (!actionKey) throw new Error("Hatua haijatambulika.");
-  const action = verbMap[actionKey] as 'nimemkopesha' | 'nimeuza' | 'nimetumia' | 'nimenunua';
-
-  // Step 2: Remove action from text
-  const restOfText = normalized.replace(actionKey, '').trim();
-
-  // Step 3: Load all customers and products
-  const customers = (await fetchCustomers(shopId)).name; // string[]
-  const products = (await fetchProducts(shopId)).name;   // string[]
-
-
-  // Step 4: Match customer name (longest match)
-  let customer: string | null = null;
-  let afterCustomerText = restOfText;
-
-  if (action === 'nimemkopesha') {
-    for (const c of customers.sort((a, b) => b.length - a.length)) {
-      if (restOfText.includes(c)) {
-        customer = c;
-        afterCustomerText = restOfText.replace(c, '').trim();
-        break;
-      }
-    }
-  }
-
-
-  afterCustomerText = customer ? restOfText.replace(customer, '').trim() : restOfText;
-
-
-  // Step 5: Match product name (normalized comparison)
-  let product: string | null = null;
-  const normalizedText = afterCustomerText.toLowerCase().trim();
-
-  for (const p of products) {
-    const normalizedProduct = p.toLowerCase().trim();
-    
-    if (normalizedText.includes(normalizedProduct)) {
-      product = p; // Keep original casing for display
-      break;
-    }
-  }
-
-  if (!product) {
-    // Try fuzzy matching if exact match fails
-    for (const p of products) {
-      if (fuzzyMatch(normalizedText, p.toLowerCase().trim())) {
-        product = p;
-        break;
-      }
-    }
-  }
-
-  if (!product) throw new Error("Bidhaa haijatambulika.");
-
-  // Helper function for fuzzy matching
-  function fuzzyMatch(text: string, product: string): boolean {
-    return (
-      text.includes(product) || // Exact partial match
-      product.includes(text) || // Reverse inclusion
-      text.replace(/\s+/g, '').includes(product.replace(/\s+/g, '')) // Ignore spaces
-    );
-  }
-
-  const afterProductText = afterCustomerText.replace(product, '').trim();
-  const tokens = afterProductText.split(/\s+/);
-
-
-  // Step 6: Extract quantity (before punguzo)
-  const punguzoIndex = tokens.findIndex(w => w === 'punguzo');
-  const quantityWords = punguzoIndex !== -1 ? tokens.slice(0, punguzoIndex) : tokens;
-  let quantity = 1;
-  for (const word of quantityWords.reverse()) {
-    const num = swahiliToNumber(word) || 0;
-    if (!isNaN(num)) {
-      quantity = num;
-      break;
-    }
-  }
-
-  // Step 7: Extract punguzo (after punguzo)
-  let punguzo = 0;
-  if (punguzoIndex !== -1 && punguzoIndex + 1 < tokens.length) {
-    const word = tokens[punguzoIndex + 1];
-    punguzo = swahiliToNumber(word) || 0;
-  }
-
-  return {
-    action,
-    customer,
-    product,
-    quantity,
-    punguzo
-  };
-}
-
-
-// Helper: Find the last numeric word before punguzo
-function findLastNumberIndex(words: string[], punguzoIndex: number) {
-  for (let i = (punguzoIndex !== -1 ? punguzoIndex : words.length) - 1; i >= 0; i--) {
-    const num = swahiliToNumber(words[i]) || 0;
-    if (!isNaN(num)) return i;
-  }
-  return -1;
-}
-
-interface ParsedTransaction {
-  action: string;
-  customer: string | null;
-  product: string;
-  quantity: number;
-  punguzo: number;
-}
-
-type ParsedNimetumia = {
-  action: string;
-  product: string;
-  quantity: number;
-  money: number;
-  activity: string;
-};
-
-
 /**
  * Parses sentences starting with "nimetumia", extracting:
  * - action
@@ -247,6 +103,7 @@ export function parseNimetumiaSentence(sentence: string): ParsedNimetumia {
   let product = 'nothing';
   let money: number = 0;
   let quantity: number = 1;
+  console.log("nimetumia is processing ...")
 
   // Find index of "kwa ajili ya"
   const activityIndex = words.findIndex((w, i) => w === 'kwa' && words[i + 1] === 'ajili' && words[i + 2] === 'ya');
@@ -300,7 +157,7 @@ export function parseNimetumiaSentence(sentence: string): ParsedNimetumia {
     }
   }
 
-
+  console.log("nimetumia datas ...: ", action, product.trim(), quantity, activity, money)
   return {
     action,
     product: product.trim() || 'haijajulikana',
@@ -309,6 +166,155 @@ export function parseNimetumiaSentence(sentence: string): ParsedNimetumia {
     money
   };
 }
+
+
+const verbMap: Record<string, string> = {
+  nimeuza: 'nimeuza', niliuza: 'nimeuza', nauza: 'nimeuza', nimemuuzia: "nimeuza",
+  nimenunua: 'nimenunua', niliagiza: 'nimenunua', nimemnunulia: "nimenunua", nimeongeza: "nimenunua",
+  nimetumia: 'nimetumia', nilitumia: 'nimetumia',
+  nimekopesha: 'nimemkopesha', nilikopesha: 'nimemkopesha', ninamkopesha: 'nimemkopesha', namkopesha: 'nimemkopesha'
+};
+
+const similarity = (a: string, b: string) => {
+  let matches = 0;
+  const len = Math.max(a.length, b.length);
+  for (let i = 0; i < len; i++) {
+    if (a[i] === b[i]) matches++;
+  }
+  return matches / len;
+};
+
+export async function detectSwahiliTransaction(text: string, shopId: string): Promise<ParsedTransaction> {
+  const normalized = text.toLowerCase().trim();
+  const words = normalized.split(/\s+/);
+
+  // Step 1: Detect action
+  const actionKey = Object.keys(verbMap).find(key => similarity(words[0], key) > 0.7);
+  if (!actionKey) throw new Error("Hatua haijatambulika.");
+  const action = verbMap[actionKey] as 'nimemkopesha' | 'nimeuza' | 'nimetumia' | 'nimenunua';
+
+  if (action === 'nimetumia') parseNimetumiaSentence(normalized);
+
+  // Step 2: Remove action from text
+  const restOfText = normalized.replace(actionKey, '').trim();
+
+  // Step 3: Load all customers and products
+  const customers = (await fetchCustomers(shopId)).name; // string[]
+  const products = (await fetchProducts(shopId)).name;   // string[]
+
+
+  // Step 4: Match customer name (longest match)
+  let customer: string | null = null;
+  let afterCustomerText = restOfText;
+
+  if (action === 'nimemkopesha') {
+    for (const c of customers.sort((a, b) => b.length - a.length)) {
+      if (restOfText.includes(c)) {
+        customer = c;
+        afterCustomerText = restOfText.replace(c, '').trim();
+        break;
+      }
+    }
+  }
+
+
+  afterCustomerText = customer ? restOfText.replace(customer, '').trim() : restOfText;
+
+
+// Step 5: Match product name (token matching and fuzzy scoring)
+let product: string | null = null;
+const normalizedText = afterCustomerText.toLowerCase();
+
+const exactMatch = products.find(p => normalizedText.includes(p.toLowerCase()));
+
+if (exactMatch) {
+  product = exactMatch;
+} else {
+  // Try partial matches
+  const partialMatches = products
+    .map(p => ({ name: p, score: similarity(normalizedText, p.toLowerCase()) }))
+    .filter(item => item.score > 0.5) // Adjust threshold
+    .sort((a, b) => b.score - a.score);
+
+  if (partialMatches.length === 1) {
+    product = partialMatches[0].name;
+  } else if (partialMatches.length > 1) {
+    const names = partialMatches.map(p => `"${p.name}"`).join(", ");
+    throw new Error(`Tafadhali fafanua bidhaa: ${names} zote zinafanana. Tafadhali taja bidhaa kamili.`);
+  }
+}
+
+if (!product) {
+  throw new Error("Bidhaa haijatambulika. Hakikisha jina lake lipo sahihi.");
+}
+
+
+  const afterProductText = afterCustomerText.replace(product, '').trim();
+  const tokens = afterProductText.split(/\s+/);
+
+
+  // Step 6: Extract quantity (before punguzo)
+  const punguzoIndex = tokens.findIndex(w => w === 'punguzo');
+  const quantityWords = punguzoIndex !== -1 ? tokens.slice(0, punguzoIndex) : tokens;
+  let quantity = 1;
+  for (const word of quantityWords.reverse()) {
+    const num = parseFloat(word);
+    console.log(word)
+    if (word.length > 0 && isNaN(num))  throw new Error("Tafadhali weka idadi halali kwa namba (mfano: 2 au 4.5), si maneno kama 'tano'.");
+
+    if (!isNaN(num)) {
+      quantity = num;
+      break;
+    }
+  }
+
+
+  // Step 7: Extract punguzo (after punguzo)
+  let punguzo = 0;
+  if (punguzoIndex !== -1 && punguzoIndex + 1 < tokens.length) {
+    const word = tokens[punguzoIndex + 1];
+    punguzo = parseFloat(word);
+    if (isNaN(punguzo)) {
+      throw new Error("Tafadhali weka punguzo kama namba halali (mfano: 2, 5.5)");
+    }
+  }
+
+  return {
+    action,
+    customer,
+    product,
+    quantity,
+    punguzo
+  };
+}
+
+
+// Helper: Find the last numeric word before punguzo
+function findLastNumberIndex(words: string[], punguzoIndex: number) {
+  for (let i = (punguzoIndex !== -1 ? punguzoIndex : words.length) - 1; i >= 0; i--) {
+    const num = swahiliToNumber(words[i]) || 0;
+    if (!isNaN(num)) return i;
+  }
+  return -1;
+}
+
+interface ParsedTransaction {
+  action: string;
+  customer: string | null;
+  product: string;
+  quantity: number;
+  punguzo: number;
+}
+
+type ParsedNimetumia = {
+  action: string;
+  product: string;
+  quantity: number;
+  money: number;
+  activity: string;
+};
+
+
 
 type NumberMap = Record<string, number>;
 

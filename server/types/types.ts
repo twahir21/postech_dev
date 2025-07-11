@@ -81,6 +81,7 @@ export type exportSet = {
 
 export interface shopTypes {
     email: string;
+    phoneNumber: string;
     shopName: string;
 }
 
@@ -149,4 +150,27 @@ export interface MergedCustomerData extends CustomerDebt {
     priceSold: number;
     total: number;
   }[];
+}
+
+
+export type PlanType = 'msingi' | 'lite';
+export type PaymentMethod = 'TIGO-PESA' | 'AIRTEL-MONEY';
+export type Duration = 1 | 6 | 12;
+
+export interface PaymentRequest {
+  id?: string;
+  price: number;
+  duration: Duration;
+  paymentMethod: PaymentMethod;
+  plan: PlanType;
+}
+
+export interface USSDCheckResponse {
+    checkUSSDResult: {
+        activeMethods: {
+        name: 'TIGO-PESA' | 'AIRTEL-MONEY';
+        status: 'AVAILABLE' | 'UNAVAILABLE'; 
+        fee: number;
+        }[];
+    };
 }

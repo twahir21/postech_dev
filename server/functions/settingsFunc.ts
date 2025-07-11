@@ -12,9 +12,9 @@ export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: str
         // get the concept of shop needed data
         const fetchShop = await mainDb.select({ shopName: shops.name }).from(shops).where(eq(shops.id, shopId));
         const fetchEmail = await mainDb.select({ email: users.email }).from(users).where(eq(users.id, userId));
+        const fetchPhone = await mainDb.select({ phoneNumber: users.phoneNumber }).from(users).where(eq(users.id, userId));
 
-
-        if (fetchShop.length === 0 || fetchEmail.length === 0) {
+        if (fetchShop.length === 0 || fetchEmail.length === 0 || fetchPhone.length === 0) {
         return {
             success: false,
             message: "Hakuna kilichopatikana"
@@ -23,7 +23,7 @@ export const shopSettingsFunc = async ({ shopId, userId, headers }: {userId: str
 
         return {
         success: true,
-        data: [{ shopName: fetchShop[0], email: fetchEmail[0]}],
+        data: [{ shopName: fetchShop[0], email: fetchEmail[0], phoneNumber: fetchPhone[0] }],
         message: "Umefanikiwa kupata taarifa"
         }
 
@@ -43,15 +43,16 @@ export const shopSettingsPut = async ({ shopId, userId, headers, body }: {userId
 
         try {
     
-          let { email, shopName } = body as shopTypes;
+          let { email, shopName, phoneNumber } = body as shopTypes;
     
           email = sanitizeString(email).trim();
           shopName = sanitizeString(shopName).trim();
+          phoneNumber = sanitizeString(phoneNumber).trim();
     
     
           // give the logic of saving to database
          await mainDb.update(users).set({
-            email
+            email, phoneNumber
           }).where(eq(users.id, userId));
 
     

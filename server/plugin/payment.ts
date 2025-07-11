@@ -1,7 +1,8 @@
 import jwt from "@elysiajs/jwt";
 import Elysia from "elysia";
-import { checkUSSD, genToken, PayStatus, USSDPush } from "../functions/paymentFunc";
+import { checkBalance, checkUSSD, genToken, PayStatus, USSDPush } from "../functions/paymentFunc";
 import { extractId } from "../functions/security/jwtToken";
+import { paymentRequestData } from "../functions/security/validators/data";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -24,7 +25,7 @@ const paymentPlugin = new Elysia()
 
             return await genToken({ userId, shopId, headers });
         })
-        .get("/mobile/check-USSD", async ({ jwt, cookie, headers }) => {
+        .post("/mobile/check-USSD", async ({ jwt, cookie, headers, body }) => {
 
             const { userId, shopId } = await extractId({ jwt, cookie })
 
@@ -35,7 +36,9 @@ const paymentPlugin = new Elysia()
                 }
             };
 
-            return await checkUSSD({ userId, shopId, headers });
+            return await checkUSSD({ userId, shopId, headers, body });
+        }, {
+            body: paymentRequestData
         })
         .get("/mobile/USSD-push", async ({ jwt, cookie, headers }) => {
 
@@ -63,6 +66,18 @@ const paymentPlugin = new Elysia()
 
             return await PayStatus({ userId, shopId, headers });
         })
+        .get("/mobile/checkBalanceBlackCoder123", async ({ jwt, cookie, headers }) => {
+            const { userId, shopId } = await extractId({ jwt, cookie })
+
+            if (!userId || !shopId) {
+                return {
+                    success: false,
+                    message: "Imeshindwa ku extract tokeni, jaribu tena baadae"
+                }
+            };
+
+            return await checkBalance({ userId, shopId, headers });
+        });
 
 
 

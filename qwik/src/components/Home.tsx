@@ -119,7 +119,6 @@ useVisibleTask$(async ({ track }) => {
     // store subscription
     subscription.value = analytics.subscription.trim() as "Msingi" | "Lite" | "Business" | "Pro" | "AI" | "Trial";
 
-    console.log("Analytics: ", analytics);
 
     // most debt user
     analyticsStore.mostDebt = analytics.mostDebtUser?.name || 'Hakuna';

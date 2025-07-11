@@ -137,7 +137,6 @@ export default component$(() => {
       console.log('isCounted flag exists with value "yes"');
       } else {
         // Set the flag if it doesn't exist or isn't 'yes'
-        console.log(visitorIdData.value, 'visitorIdData.value', typeof visitorIdData.value);
           const api = new CrudService<{ id?: string; visitorId: string }>("sign-visitorDetails");
           await api.create({ visitorId: result.visitorId });
 

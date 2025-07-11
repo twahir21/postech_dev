@@ -9,6 +9,7 @@ export const Speech = component$(() => {
   const transcript = useSignal('');
   const error = useSignal('');
   const showPopup = useSignal(false);
+  const isLoading = useSignal(false);
 
   const modal = useStore({
     isOpen: false,
@@ -57,6 +58,7 @@ export const Speech = component$(() => {
 
 
   const handleSend = $( async () => {
+    isLoading.value = true;
 
     const allowedActions = [
       'nimeuza', 'niliuza', 'nilimuuzia','nauza', 'nimemuuzia',
@@ -81,6 +83,7 @@ export const Speech = component$(() => {
 
 
     showPopup.value = false;
+    isLoading.value = false;
   });
 
   const handleRepeat = $(() => {
@@ -114,7 +117,7 @@ export const Speech = component$(() => {
 
           <div class="flex justify-between mt-4">
             <button class="text-2xl" onClick$={handleRepeat} title="Rudia"> <RepeatIcon /> </button>
-            <button class="text-2xl" onClick$={handleSend} title="Tuma"> <SendIcon /> </button>
+            <button class="text-2xl" onClick$={handleSend} title="Tuma" disabled={isLoading.value}> <SendIcon /> </button>
             <button class="text-red-500" onClick$={() => showPopup.value = false} title="Funga">❌</button>
           </div>
         </div>

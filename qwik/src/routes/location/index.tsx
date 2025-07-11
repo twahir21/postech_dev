@@ -13,12 +13,6 @@ export default component$(() => {
     error.value = "";
     isLoading.value = true;
     
-    if (!navigator.geolocation) {
-      error.value = "Geolocation not supported.";
-      isLoading.value = false;
-      return;
-    }
-
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         userLat.value = pos.coords.latitude;
@@ -33,9 +27,10 @@ export default component$(() => {
     );
   });
 
-  const toRad = $((value: number) => (value * Math.PI) / 180);
 
 const calculateDistance = $(() => {
+  const toRad = (value: number) => (value * Math.PI) / 180;
+
   distance.value = null;
 
   const lat1 = userLat.value;
@@ -53,7 +48,7 @@ const calculateDistance = $(() => {
     return;
   }
 
-  const R = 6371; // Radius of Earth in KM
+  const R = 6371; // Earth radius in KM
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);
   const a =
@@ -69,6 +64,7 @@ const calculateDistance = $(() => {
 
   error.value = "";
 });
+
 
 
   return (

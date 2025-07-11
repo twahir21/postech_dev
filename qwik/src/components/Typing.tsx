@@ -9,6 +9,7 @@ export const Typing = component$(() => {
   const suggestions = useSignal<string[]>([]);
   const showSuggestions = useSignal(false);
   const showPopup = useSignal(false);
+  const isLoading = useSignal(false);
 
 
   const modal = useStore({
@@ -41,7 +42,6 @@ const fetchSuggestions = $(async (query: string, type: 'product' | 'customer') =
 
 const handleKeyUp = $(async () => {
   const words = inputText.value.trim().split(/\s+/);
-  const endsWithSpace = inputText.value.endsWith(' ');
 
   // Autocomplete logic (same as before)
   const prefix = words[0];
@@ -59,14 +59,6 @@ const handleKeyUp = $(async () => {
     }
   }
 
-  // ✅ Auto-add "punguzo 0" after quantity
-  if (
-    endsWithSpace &&
-    !inputText.value.includes('punguzo') &&
-    totalWords >= 3 // minimum expected: verb + product + quantity
-  ) {
-    inputText.value = `${inputText.value.trim()} punguzo 0`;
-  }
 });
 
 
@@ -101,6 +93,7 @@ const selectSuggestion = $((name: string) => {
 
 
   const handleSubmit = $(async () => {
+    isLoading.value = true;
     const allowedActions = [
       'nimeuza', 'niliuza', 'nilimuuzia','nauza', 'nimemuuzia',
       'nimenunua', 'nimeongeza', 'niliagiza', 'nimemnunulia',
@@ -125,6 +118,7 @@ const selectSuggestion = $((name: string) => {
 
 
     showPopup.value = false;
+    isLoading.value = false;
   });
 
   // popup
@@ -190,8 +184,8 @@ const selectSuggestion = $((name: string) => {
       </div>
 
       <div class="flex justify-between items-center mt-3">
-        <button onClick$={togglePopup}>❌</button>
-        <button onClick$={handleSubmit}><SendIcon /></button>
+        <button onClick$={togglePopup} title='Funga'>❌</button>
+        <button onClick$={handleSubmit} title="Tuma" disabled={isLoading.value}><SendIcon /></button>
       </div>
 
     </div>}

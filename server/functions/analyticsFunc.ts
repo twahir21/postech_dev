@@ -123,48 +123,53 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
             // This is the most significant optimization: fetching all three types of data in one go.
             // Requires a more complex SQL query using Common Table Expressions (CTEs) or subqueries.
             mainDb.execute(sql`
-                WITH sales_data AS (
-                    SELECT
-                        TO_CHAR(created_at, 'Dy') AS day,
-                        SUM(total_sales) AS daily_sales
-                    FROM sales
-                    WHERE shop_id = ${shopId} AND created_at >= NOW() - INTERVAL '7 days'
-                    GROUP BY 1
-                ),
-                expenses_data AS (
-                    SELECT
-                        TO_CHAR(date, 'Dy') AS day,
-                        SUM(amount) AS daily_expenses
-                    FROM expenses
-                    WHERE shop_id = ${shopId} AND date >= NOW() - INTERVAL '7 days'
-                    GROUP BY 1
-                ),
-                purchases_data AS (
-                    SELECT
-                        TO_CHAR(created_at, 'Dy') AS day,
-                        SUM(quantity * price_bought) AS daily_purchases
-                    FROM purchases
-                    WHERE shop_id = ${shopId} AND created_at >= NOW() - INTERVAL '7 days'
-                    GROUP BY 1
-                )
-                SELECT
-                    COALESCE(sd.day, ed.day, pd.day) AS day,
-                    COALESCE(sd.daily_sales, 0) AS sales,
-                    COALESCE(ed.daily_expenses, 0) AS expenses,
-                    COALESCE(pd.daily_purchases, 0) AS purchases
-                FROM sales_data sd
-                FULL OUTER JOIN expenses_data ed ON sd.day = ed.day
-                FULL OUTER JOIN purchases_data pd ON COALESCE(sd.day, ed.day) = pd.day
-                ORDER BY
-                    CASE COALESCE(sd.day, ed.day, pd.day)
-                        WHEN 'Mon' THEN 1
-                        WHEN 'Tue' THEN 2
-                        WHEN 'Wed' THEN 3
-                        WHEN 'Thu' THEN 4
-                        WHEN 'Fri' THEN 5
-                        WHEN 'Sat' THEN 6
-                        WHEN 'Sun' THEN 7
-                    END
+              WITH sales_data AS (
+                  SELECT TO_CHAR(created_at, 'Dy') AS day, SUM(total_sales) AS daily_sales
+                  FROM sales
+                  WHERE shop_id = ${shopId} AND created_at >= NOW() - INTERVAL '7 days'
+                  GROUP BY 1
+              ),
+              expenses_data AS (
+                  SELECT TO_CHAR(date, 'Dy') AS day, SUM(amount) AS daily_expenses
+                  FROM expenses
+                  WHERE shop_id = ${shopId} AND date >= NOW() - INTERVAL '7 days'
+                  GROUP BY 1
+              ),
+              purchases_data AS (
+                  SELECT TO_CHAR(created_at, 'Dy') AS day, SUM(quantity * price_bought) AS daily_purchases
+                  FROM purchases
+                  WHERE shop_id = ${shopId} AND created_at >= NOW() - INTERVAL '7 days'
+                  GROUP BY 1
+              ),
+              profits_data AS (
+                  SELECT 
+                    TO_CHAR(s.created_at, 'Dy') AS day,
+                    SUM(s.total_sales - (COALESCE(p.price_bought, 0) * s.quantity)) AS daily_profit
+                  FROM sales s
+                  LEFT JOIN purchases p ON s.product_id = p.product_id
+                  WHERE s.shop_id = ${shopId} AND s.created_at >= NOW() - INTERVAL '7 days'
+                  GROUP BY 1
+              )
+              SELECT
+                COALESCE(sd.day, ed.day, pd.day, prd.day) AS day,
+                COALESCE(sd.daily_sales, 0) AS sales,
+                COALESCE(ed.daily_expenses, 0) AS expenses,
+                COALESCE(pd.daily_purchases, 0) AS purchases,
+                COALESCE(prd.daily_profit, 0) AS profit
+              FROM sales_data sd
+              FULL OUTER JOIN expenses_data ed ON sd.day = ed.day
+              FULL OUTER JOIN purchases_data pd ON COALESCE(sd.day, ed.day) = pd.day
+              FULL OUTER JOIN profits_data prd ON COALESCE(sd.day, ed.day, pd.day) = prd.day
+              ORDER BY
+                CASE COALESCE(sd.day, ed.day, pd.day, prd.day)
+                  WHEN 'Mon' THEN 1
+                  WHEN 'Tue' THEN 2
+                  WHEN 'Wed' THEN 3
+                  WHEN 'Thu' THEN 4
+                  WHEN 'Fri' THEN 5
+                  WHEN 'Sat' THEN 6
+                  WHEN 'Sun' THEN 7
+                END
             `)
         ]);
 
@@ -260,10 +265,11 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
         const netSalesByDay = [];
 
         const weekDaysOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        const dailyDataMap = new Map<string, { sales: number, expenses: number, purchases: number }>();
+        const dailyDataMap = new Map<string, { sales: number, expenses: number, purchases: number, profit: number }>();
 
-        // Initialize map with all days to ensure consistent order and zero values
-        weekDaysOrder.forEach(day => dailyDataMap.set(day, { sales: 0, expenses: 0, purchases: 0 }));
+        weekDaysOrder.forEach(day => {
+            dailyDataMap.set(day, { sales: 0, expenses: 0, purchases: 0, profit: 0 });
+        });
 
         for (const row of weeklySummaryData) {
             const day = row.day as string;
@@ -271,17 +277,20 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
                 dailyDataMap.get(day)!.sales = Number(row.sales || 0);
                 dailyDataMap.get(day)!.expenses = Number(row.expenses || 0);
                 dailyDataMap.get(day)!.purchases = Number(row.purchases || 0);
+                dailyDataMap.get(day)!.profit = Number(row.profit || 0);
             }
         }
 
-        for (const [day, data] of dailyDataMap.entries()) {
-            salesByDay.push({ day, sales: data.sales });
-            expensesByDay.push({ day, expenses: data.expenses });
-            purchasesPerDay.push({ day, purchases: data.purchases });
 
-            const netSales = data.sales - data.expenses - data.purchases;
-            netSalesByDay.push({ day, netSales });
-        }
+      for (const [day, data] of dailyDataMap.entries()) {
+          salesByDay.push({ day, sales: data.sales });
+          expensesByDay.push({ day, expenses: data.expenses });
+          purchasesPerDay.push({ day, purchases: data.purchases });
+
+          const netSales = data.profit - data.expenses; // 👈 as required
+          netSalesByDay.push({ day, netSales });
+      }
+
 
         // return product data
         const result = await prodCheck({ shopId });
