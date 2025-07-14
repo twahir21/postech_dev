@@ -1,0 +1,1 @@
+ALTER TABLE "payment_saas" ADD COLUMN "created_At" timestamp DEFAULT now();

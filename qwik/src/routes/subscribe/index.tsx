@@ -86,17 +86,20 @@ if (!isValidPlan(plan)) return (
     if (!result.success) {
       modal.isOpen = true;
       modal.isSuccess = result.success;
-      modal.message = result.message || 'Huwezi kufanya malipo bila kuwa na laini ya Tigo au Airtel kwenye kifaa chako.';
+      modal.message = result.message || 'Huduma ya malipo ina hitilafu kwa sasa, toa taarifa au jaribu tena baadae';
     }
 
-    const payNowApi = new CrudService<PaymentRequest>("mobile/USSD-push");
-    const payNowResult = await payNowApi.get();
+    // const payNowApi = new CrudService<PaymentRequest>("mobile/USSD-push");
+    // const payNowResult = await payNowApi.get();
 
-    if (!payNowResult.success) {
-      modal.isOpen = true;
-      modal.isSuccess = false;
-      modal.message = payNowResult.message || 'Kuna hitilafu katika kuanzisha malipo, tafadhali jaribu tena baadaye.';
-    }
+
+    console.log("resp3: ", result);
+
+    // if (!payNowResult.success) {
+    //   modal.isOpen = true;
+    //   modal.isSuccess = false;
+    //   modal.message = payNowResult.message || 'Huwezi kufanya malipo bila kuwa na laini ya Tigo au Airtel kwenye kifaa chako.';
+    // }
 
     isLoading.value = false;
   });

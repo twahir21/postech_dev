@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { paymentSaaS, users } from "../database/schema/shop";
 import type { headTypes, PaymentRequest, USSDCheckResponse } from "../types/types";
@@ -39,7 +39,8 @@ export const genToken = async ({ userId, shopId, headers }: { userId: string, sh
 
         await mainDb.insert(paymentSaaS).values({
             token: encryptedToken,
-            shopId
+            shopId,
+            amountToPay: "0"
         })
 
         return {
@@ -61,10 +62,9 @@ export const checkUSSD = async ({ userId, shopId, headers, body }: { userId: str
 
     try{
         const { price, duration, paymentMethod, plan } = body;
-        console.log("checkUSSD body:", body);
         // get token
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
-                    .where(eq(paymentSaaS.shopId, shopId));
+                    .where(eq(paymentSaaS.shopId, shopId)).orderBy(desc(paymentSaaS.createdAt));
         
         const value = encryptedToken[0].token;
 
@@ -75,7 +75,8 @@ export const checkUSSD = async ({ userId, shopId, headers, body }: { userId: str
 
         // save orderReference to database to avoid generating new order
         await mainDb.update(paymentSaaS).set({
-            orderId: orderReference
+            orderId: orderReference,
+            amountToPay: price.toString(),
         }).where(eq(paymentSaaS.shopId, shopId));
 
 
@@ -131,7 +132,7 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
     try{
         // get token
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
-                    .where(eq(paymentSaaS.shopId, shopId));
+                    .where(eq(paymentSaaS.shopId, shopId)).orderBy(desc(paymentSaaS.createdAt));
         
         const value = encryptedToken[0].token;
 
@@ -140,10 +141,12 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
 
         // processing USSD-PUSH service
         const orderData = await mainDb.select({
-            orderId: paymentSaaS.orderId
+            orderId: paymentSaaS.orderId,
+            amountToPay: paymentSaaS.amountToPay
         }).from(paymentSaaS).where(eq(paymentSaaS.shopId, shopId));
 
         const orderId = orderData[0].orderId;
+        const amountToPay = orderData[0].amountToPay;
 
         if (!orderId) {
             return {
@@ -156,7 +159,7 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
         if(!checksumKey) return;
 
         const payload = {
-            amount: "10000",
+            amount: amountToPay,
             currency: "TZS",
             orderReference: orderId,
         }
@@ -209,7 +212,7 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
 
     try{
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
-                    .where(eq(paymentSaaS.shopId, shopId));
+                    .where(eq(paymentSaaS.shopId, shopId)).orderBy(desc(paymentSaaS.createdAt));
         
         const value = encryptedToken[0].token;
 
@@ -250,7 +253,7 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
 export const checkBalance = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes }) => {
     try {
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
-                    .where(eq(paymentSaaS.shopId, shopId));
+                    .where(eq(paymentSaaS.shopId, shopId)).orderBy(desc(paymentSaaS.createdAt));
         
         const value = encryptedToken[0].token;
 
