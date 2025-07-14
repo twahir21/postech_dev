@@ -561,9 +561,9 @@ export const head: DocumentHead = {
           type: 'image/x-icon',
           href: '/favicon.ico'
         }, 
-        // {
-        //     rel: "manifest",
-        //     href: "https://www.mypostech.store/manifest.json",
-        // },
+         {
+             rel: "manifest",
+             href: "https://www.mypostech.store/manifest.json",
+         },
       ]
   };
