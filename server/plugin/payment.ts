@@ -19,7 +19,7 @@ const paymentPlugin = new Elysia()
             if (!userId || !shopId) {
                 return {
                     success: false,
-                    message: "Imeshindwa ku extract tokeni, jaribu tena baadae"
+                    message: "Tafadhali login kwanza ili kulipia"
                 }
             };
 
@@ -32,7 +32,7 @@ const paymentPlugin = new Elysia()
             if (!userId || !shopId) {
                 return {
                     success: false,
-                    message: "Imeshindwa ku extract tokeni, jaribu tena baadae"
+                    message: "Tafadhali login kwanza ili kulipia"
                 }
             };
 
@@ -47,7 +47,7 @@ const paymentPlugin = new Elysia()
             if (!userId || !shopId) {
                 return {
                     success: false,
-                    message: "Imeshindwa ku extract tokeni, jaribu tena baadae"
+                    message: "Tafadhali login kwanza ili kulipia"
                 }
             };
 
@@ -60,7 +60,7 @@ const paymentPlugin = new Elysia()
             if (!userId || !shopId) {
                 return {
                     success: false,
-                    message: "Imeshindwa ku extract tokeni, jaribu tena baadae"
+                    message: "Tafadhali login kwanza ili kulipia"
                 }
             };
 
@@ -72,7 +72,7 @@ const paymentPlugin = new Elysia()
             if (!userId || !shopId) {
                 return {
                     success: false,
-                    message: "Imeshindwa ku extract tokeni, jaribu tena baadae"
+                    message: "Tafadhali login kwanza ili kulipia"
                 }
             };
 

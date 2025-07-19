@@ -4,7 +4,6 @@ import jwt from "@elysiajs/jwt";
 import { extractId } from "../functions/security/jwtToken";
 import type { suppTypes } from "../types/types";
 import { suppData } from "../functions/security/validators/data";
-import { blockUsage } from "../functions/utils/block";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -35,15 +34,6 @@ const suppPlugin = new Elysia()
         const { userId, shopId } = await extractId({ jwt, cookie });
         if (!shopId || !userId) return;
 
-        // block creating new supplier
-        const result = await blockUsage({ shopId });
-
-        if (!result?.success) {
-            return {
-                success: false,
-                message: result?.message || "Huduma haijalipiwa"
-            }
-        }
         return suppPost ({ shopId, body: body as suppTypes, headers })
     }, {
         body: suppData

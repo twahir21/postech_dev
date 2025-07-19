@@ -1,4 +1,4 @@
-import Elysia, { redirect } from "elysia";
+import Elysia from "elysia";
 import { regPost } from "../functions/regFunc";
 import { registerData } from "../functions/security/validators/data";
 import { mainDb } from "../database/schema/connections/mainDb";

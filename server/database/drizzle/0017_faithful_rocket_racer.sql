@@ -1,0 +1,1 @@
+ALTER TABLE "payment_saas" ADD COLUMN "amount_to_pay" numeric(15, 2) NOT NULL;

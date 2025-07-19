@@ -4,7 +4,6 @@ import { extractId } from "../functions/security/jwtToken";
 import { prodDel, prodGet, prodPost, prodSearch, prodUpdate, QrPost } from "../functions/prodFunc";
 import type { productTypes, QrData } from "../types/types";
 import { prodData, prodUpdateValidation, QrPostData } from "../functions/security/validators/data";
-import { blockUsage } from "../functions/utils/block";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -33,16 +32,6 @@ export const prodPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
-
-        // block creating new product if unpaid
-        const result = await blockUsage({ shopId });
-
-        if (!result?.success) {
-            return {
-                success: false,
-                message: result?.message || "Huduma haijalipiwa"
-            };
-        }
 
         return await prodPost({
             body: body as productTypes,
@@ -92,14 +81,6 @@ export const prodPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
-        const result = await blockUsage({ shopId });
-
-        if (!result.success){
-            return {
-                success: false,
-                message: result.message || "Huduma haijalipiwa"
-            }
-        }
 
         return await QrPost({ 
             body: body as QrData, 

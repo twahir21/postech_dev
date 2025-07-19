@@ -62,6 +62,7 @@ export const checkUSSD = async ({ userId, shopId, headers, body }: { userId: str
 
     try{
         const { price, duration, paymentMethod, plan } = body;
+        console.log(paymentMethod)
         // get token
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
                     .where(eq(paymentSaaS.shopId, shopId)).orderBy(desc(paymentSaaS.createdAt));
@@ -110,6 +111,10 @@ export const checkUSSD = async ({ userId, shopId, headers, body }: { userId: str
         });
 
         console.log("checkUSSDResult:", checkUSSDResult);
+          const method = checkUSSDResult.activeMethods.find(
+    m => m.name.toUpperCase() === paymentMethod
+  );
+  console.log("method:", method.status);
         
         return {
             success: true,
@@ -138,6 +143,15 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
 
         const resultToken = decrypt(value);
 
+        const userAgent = headers['user-agent'] ?? "";
+    
+        if (!isPhoneRequest(userAgent)) {
+        return { 
+            success: false,
+            message: 'Huduma hii inapatikana kwa watumiaji wa simu tu yenye SIM card (laini)'
+        };
+         
+        }
 
         // processing USSD-PUSH service
         const orderData = await mainDb.select({
@@ -193,8 +207,10 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
                 message: err instanceof Error ? err.message : "Seva ya malipo imefeli"
             }
         });
+        console.log("ussdPush:", ussdPush);
         return {
-            ussdPush
+            success: true,
+            message: "Ingiza namba ya siri kulipia..."
         }
 
     }catch(err){
@@ -235,8 +251,10 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
                 message: err instanceof Error ? err.message : "Seva ya malipo imefeli"
             }
         });
+        console.log("Status: ", checkStatus)
         return {
-            checkStatus
+            success: true,
+            message: "Imeona hali ya malipo uliofanya"
         }
 
     }catch(err){
@@ -262,14 +280,26 @@ export const checkBalance = async ({ userId, shopId, headers }: { userId: string
         const options = {method: 'GET', headers: {Authorization: `${resultToken}`}};
 
         const resultBalance = await fetch('https://api.clickpesa.com/third-parties/account/balance', options);
-        console.log("Balance response:", resultBalance);
         const result = await resultBalance.json();
 
-        console.log("Balance result:", result);
+        // Define the Balance type interface
+        interface Balance {
+            currency: string;
+            balance: number;
+        }
+
+        // Type the response object
+        interface BalanceResponse {
+        balances: Balance[];
+        }
+
+        // Option 1: With type assertion (quick fix)
+        console.log("TZS Balance:", (result as BalanceResponse).balances.find(b => b.currency === "TZS")?.balance);
 
         return {
             success: true,
             message: "Umefanikiwa kuangalia salio lako la ClickPesa",
+            data: [{ Balance: (result as BalanceResponse).balances.find(b => b.currency === "TZS")?.balance }]
         }
     } catch (error) {
         return {
@@ -277,4 +307,30 @@ export const checkBalance = async ({ userId, shopId, headers }: { userId: string
             message: error instanceof Error ? error.message : "Hitilafu imetokea kwenye seva"
         }
     }
+}
+
+/**
+ * Checks if the request is from a mobile phone (for USSD/push services)
+ * @param userAgent - The User-Agent header string
+ * @returns boolean - True if phone, false otherwise
+ */
+export function isPhoneRequest(userAgent: string | null): boolean {
+  if (!userAgent) return false;
+
+  // Common mobile keywords in User-Agent strings
+  const mobileKeywords = [
+    'mobile', 'android', 'iphone', 'ipod', 'blackberry', 
+    'windows phone', 'nokia', 'opera mini', 'opera mobi'
+  ];
+
+  // Tablet keywords to exclude (optional)
+  const tabletKeywords = ['ipad', 'tablet', 'kindle'];
+
+  const lowerUserAgent = userAgent.toLowerCase();
+
+  // Check if contains mobile keyword but not tablet
+  return (
+    mobileKeywords.some(keyword => lowerUserAgent.includes(keyword)) &&
+    !tabletKeywords.some(keyword => lowerUserAgent.includes(keyword))
+  );
 }

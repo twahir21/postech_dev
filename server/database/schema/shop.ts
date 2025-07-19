@@ -267,6 +267,9 @@ import {
     createdAt: timestamp("created_At").defaultNow()
   });
 
+  // ------------------------------
+  // Notification Table
+  // ------------------------------
   export const notifications = pgTable("notifications", {
     id: uuid("id").defaultRandom().primaryKey(),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),

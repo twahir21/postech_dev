@@ -4,4 +4,3 @@ import { MemoryCache } from "./memoryCache";
 export const userCheckCache = new MemoryCache(15);
 export const shopCheckCache = new MemoryCache(15);
 export const loginCache = new MemoryCache(40);
-export const isPaidCache = new MemoryCache(10);

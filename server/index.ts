@@ -4,7 +4,6 @@ import regPlugin from "./plugin/registration";
 import { cors } from "@elysiajs/cors";
 
 import suppPlugin from "./plugin/supplier";
-// import { rateLimitMiddleware } from "./functions/security/rateLimiting";
 import { loginPlugin } from "./plugin/login";
 import { prodPlugin } from "./plugin/products";
 import { mailPlugin } from "./plugin/email/smtp";
@@ -22,7 +21,8 @@ import { trackingVisitors } from "./plugin/app/visitors";
 import { askedPlugin } from "./plugin/askedPrd";
 import { resetPlugin } from "./plugin/reset";
 import { speechPlugin } from "./plugin/speech";
-// import { csrfProtection } from "./plugin/CSRF";
+import { csrfProtection } from "./plugin/CSRF";
+import { rateLimitMiddleware } from "./functions/security/rateLimiting";
 
 const startTime = Date.now(); // Start time tracking
 
@@ -56,8 +56,8 @@ new Elysia()
     )
 
     // 💥 Add it here (before plugins that handle POST/PUT/etc.)
-    // .use(csrfProtection)
-    // .onRequest(rateLimitMiddleware)
+    .use(csrfProtection)
+    .onRequest(rateLimitMiddleware)
 
     .use(homePlugin)
     .use(regPlugin)

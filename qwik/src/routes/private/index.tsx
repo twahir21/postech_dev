@@ -270,10 +270,10 @@ export default component$(() => {
                           <div class="mt-2 space-y-2">
                             <li>⚖️ <strong>(Hiari) Taja Kipimo Kabla ya Kiasi:</strong> Mfano: <code>kilo</code>, <code>lita</code>, <code>katoni</code>, <code>pisi</code>.</li>
 
-                            <li>🔢 <strong>(Hiari) Taja Kiasi:</strong> Mfano: <code>moja</code>, <code>kumi</code>, <code>robo</code>, <code>nusu</code>, <code>nusu na robo au robo tatu</code>. Ukiacha ina maana ni 1</li>
+                            <li>🔢 <strong>(Hiari) Taja Kiasi:</strong> Mfano: 1, 1.5, 3.75. Tumia desimali kwa robo, nusu na robo tatu. Ukiacha ina maana ni 1</li>
 
-                            <li>💸 <strong>(Hiari) Taja Punguzo:</strong> Mfano: <code>punguzo mia</code>, <code>punguzo 200</code><br />
-                             ⚠️ <strong>Angalizo:</strong> Kama punguzo ni zaidi ya 10,000 tumia tarakimu, mfano <code>punguzo 12000</code></li>
+                            <li>💸 <strong>(Hiari) Taja Punguzo:</strong> Mfano: <code>punguzo 100</code>, <code>punguzo 200</code><br />
+                             ⚠️ <strong>Angalizo:</strong> Usitumie maneno kwenye namba, taja pesa kwa tarakimu.</li>
 
                           </div>
                         </details>
@@ -283,16 +283,15 @@ export default component$(() => {
                         {/* Warning accordion  */}
                         <details open={active.value === 'warning'} onToggle$={() => toggle('warning')}>
                           <summary class="cursor-pointer text-blue-600 hover:underline">
-                            {active.value === 'warning' ? '👇 Funga maelezo ya tahadhari' : '📘 Bonyeza kuona maelezo muhimu sana ya kuzingatia...'}
+                            {active.value === 'warning' ? '👇 Funga mifano' : '📘 Bonyeza kuona mifano ili kuelewa vizuri...'}
                           </summary>
                           <div class="mt-2 space-y-2">
-                            <li>⛔ <strong>Onyo Kuhusu Kiasi:</strong> Usiseme <code>maziwa nusu lita</code>. Badala yake sema <code>maziwa nusu</code> au <code>maziwa lita tatu</code> kwa usahihi wa mfumo</li>
 
                             <li>📝 <strong>Mifano ya Sentensi:</strong>
                               <ul class="list-disc pl-6 space-y-1">
-                                <li>Nimeuza chumvi tatu</li>
-                                <li>Nimenunua maziwa lita mbili</li>
-                                <li>Nimemkopesha mama juma sukari kilo tatu punguzo 300</li>
+                                <li>chumvi 3</li>
+                                <li>Nimenunua maziwa lita 2</li>
+                                <li>Nimemkopesha mama juma sukari kilo 3 punguzo 300</li>
                                 <li>Nimetumia 2000 kwa ajili ya nauli</li>
                               </ul>
                             </li>
