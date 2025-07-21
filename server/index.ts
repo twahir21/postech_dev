@@ -23,6 +23,7 @@ import { resetPlugin } from "./plugin/reset";
 import { speechPlugin } from "./plugin/speech";
 import { csrfProtection } from "./plugin/CSRF";
 import { rateLimitMiddleware } from "./functions/security/rateLimiting";
+import { bgJobsPlugin } from "./plugin/jobs/worker";
 
 const startTime = Date.now(); // Start time tracking
 
@@ -78,6 +79,7 @@ new Elysia()
     .use(askedPlugin)
     .use(resetPlugin)
     .use(speechPlugin)
+    .use(bgJobsPlugin)
 
 .listen(process.env.PORT ?? 3000) // am using Render.
 const endTime = Date.now(); // Start time tracking

@@ -46,8 +46,9 @@ export const bgJobsPlugin = new Elysia()
     pattern: '30 */12 * * *', // At minute 30 of every 12th hour
     async run() {
       try {
-        console.log('[Cron] Checking trial status...');
+        console.time("trialCheck")
         await isTrialEnd();
+        console.timeEnd("trialCheck")
       } catch (error) {
         console.error('[Cron] Trial check failed:', error);
       }
@@ -75,8 +76,9 @@ export const bgJobsPlugin = new Elysia()
     pattern: '15 * * * *', // At minute 15 of every hour
     async run() {
       try {
-        console.log('[Cron] Running cleanResets...');
+        console.time("reset-cleanup")
         await cleanResets();
+        console.timeEnd("reset-cleanup")
       } catch (error) {
         console.error('[Cron] Reset cleanup failed:', error);
       }
@@ -89,12 +91,12 @@ export const bgJobsPlugin = new Elysia()
     pattern: '30 9 * * *', // At 09:30 daily
     async run() {
       try {
-        console.log('[Cron] Sending trial end notifications...');
+        console.time("trial-notification")
         await notifyBeforeEnds();
+        console.timeEnd("trial-notification")
       } catch (error) {
         console.error('[Cron] Trial notifications failed:', error);
       }
     }
   }))
-  .listen(3010);
 

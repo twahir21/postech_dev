@@ -1,10 +1,10 @@
 import { mainDb } from "../../database/schema/connections/mainDb";
 import { emailVerifications, expenses, notifications, passwordResets, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, users } from "../../database/schema/shop";
-import { and, eq, lt } from "drizzle-orm";
-import nodemailer from "nodemailer";
+import { and, eq, inArray, lt } from "drizzle-orm";
 import "dotenv/config";
 import { retentionPeriods, type SubscriptionLevel } from "../../functions/utils/packages";
 import { notifyTrialEnd } from "../email/trialEnd.email";
+import { sendDelWarning } from "../email/backup.email";
 
 export const clearVerifiedEmails = async() => {
 
@@ -132,56 +132,6 @@ export const notifyBeforeEnds = async () => {
     }
 }
 
-export async function cleanupOldData() {
-  // 1. Get all shops and their subscriptions
-  const shopsWithSubs = await mainDb.select({
-    shopId: shops.id,
-    subscription: shops.subscription,
-  }).from(shops);
-
-  // 2. Define tables for cleanup 
-  const tables = [
-    expenses,
-    sales,
-    purchases,
-    returns,
-    supplierPriceHistory,
-    products,
-  ];
-
-  // 3. Loop each shop
-  for (const { shopId, subscription } of shopsWithSubs) {
-    // Retention is export function which has time for the deletion as per package 
-    const monthsToKeep = retentionPeriods[subscription as SubscriptionLevel];
-    if (!monthsToKeep) continue; // Skip if subscription is undefined or invalid
-
-    const cutoffDate = new Date();
-    cutoffDate.setMonth(cutoffDate.getMonth() - monthsToKeep);
-
-    // * Please implement deletion per timer
-    // ! ⚠️ Effect of bulk deletion
-// DB Spikes: CPU, memory, and I/O usage can spike sharply.
-
-// Table Locking: Can lock large parts of the table, blocking other reads/writes.
-
-// Transaction Logs Bloat: Can fill up disk with huge transaction logs.
-
-// Downtime in Low-RAM VPS: Deletion might freeze or kill DB if RAM is limited.
-
-// VACUUM Pressure (in PostgreSQL): Post-delete cleanup gets heavier.
-
-
-    for (const table of tables) {
-      await mainDb.delete(table).where(
-        and(
-          eq(table.shopId, shopId),
-          lt(table.createdAt, cutoffDate)
-        )
-      );
-    }
-  }
-}
-
 export const cleanResets = async () => {
   // 1. Get all password resets that have expired
   const expiredResets = await mainDb.select({ id: passwordResets.id })
@@ -191,6 +141,110 @@ export const cleanResets = async () => {
   // 2. Delete expired password resets
   for (const reset of expiredResets) {
     await mainDb.delete(passwordResets).where(eq(passwordResets.id, reset.id));
+  }
+}
+
+
+export async function cleanupOldData() {
+  // 1. Select all shops and their subscription
+const shopsWithSubs = await mainDb.select({
+    shopId: shops.id,
+    subscription: shops.subscription,
+    shopName: shops.name,
+    email: users.email,
+    phoneNumber: users.phoneNumber // Added phone number for notifications
+  })
+  .from(shops)
+  .innerJoin(shopUsers, eq(shops.id, shopUsers.shopId))
+  .innerJoin(users, eq(shopUsers.userId, users.id))
+
+  // 2. Define tables to delete (old Data per subscription)
+  const tables = [
+    expenses,
+    sales,
+    purchases,
+    returns,
+    supplierPriceHistory,
+    products,
+  ];
+
+  // 3. Loop each shop 
+  for (const { shopId, subscription, shopName, email } of shopsWithSubs) {
+    const monthsToKeep = retentionPeriods[subscription as SubscriptionLevel];
+    if (!monthsToKeep) continue;
+
+    const cutoffDate = new Date();
+    cutoffDate.setMonth(cutoffDate.getMonth() - monthsToKeep);
+
+    // send email and in-app notification before deletion occurs
+
+    const deletionCutoff = new Date();
+    deletionCutoff.setMonth(deletionCutoff.getMonth() - monthsToKeep);
+    const notificationCutoff = new Date(deletionCutoff);
+    notificationCutoff.setDate(notificationCutoff.getDate() - 7); // 7 days before deletion
+
+
+
+    if (new Date() >= notificationCutoff && new Date() < deletionCutoff) {
+      // save in-app notification
+      await mainDb.insert(notifications).values({
+        shopId, title: "Ufutaji wa taarifa", 
+        message: `Taarifa zako za zaidi ya ${monthsToKeep === 1 ? "mwezi" : "miezi"} ${monthsToKeep}, zitafutwa tarehe ${deletionCutoff.toLocaleDateString()}. Tafadhali pakua nakala yako kama unazihitaji`,      
+        type: "warning"
+      });
+      // sending email
+      await sendDelWarning ({ shopName, email, monthsToKeep, warningDays: 7 });
+    }
+
+
+    for (const table of tables) {
+      let attempts = 0;
+      const batchSize = 1000;
+
+    // 4. Implement retry-mechanism because much deletion is risky to database
+      while (attempts < 3) {
+        try {
+          while (true) {
+            // 5. Fetch rows in batches to avoid leakage and spikes in database 
+            const rowsToDelete = await mainDb
+              .select({ id: table.id })
+              .from(table)
+              .where(
+                and(
+                  eq(table.shopId, shopId),
+                  lt(table.createdAt, cutoffDate)
+                )
+              )
+              .limit(batchSize);
+
+            if (rowsToDelete.length === 0) break;
+            
+            // 6. Restructure array of ids to delete
+            const ids = rowsToDelete.map(r => r.id);
+            
+            // 7. Delete per selected ids above
+            await mainDb
+              .delete(table)
+              .where(inArray(table.id, ids));
+
+            console.log(`Deleted ${ids.length} rows from ${table._.name} for shop ${shopId}`);
+
+            // 9. Waits before next execution starts (cooldown here ..)
+            await new Promise(resolve => setTimeout(resolve, 300));
+          }
+
+          break; // Exit retry loop on success
+
+        } catch (error) {
+          // 10. Retry again if failed
+          attempts++;
+          console.error(`Attempt ${attempts} failed for table ${table._.name}, shop ${shopId}:`, error);
+          
+          // 11. Promolong the execution to avoid RAM and CPU much resource usage and deadlocks
+          await new Promise(resolve => setTimeout(resolve, 600));
+        }
+      }
+    }
   }
 }
 

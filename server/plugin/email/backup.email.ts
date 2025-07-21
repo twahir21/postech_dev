@@ -1,4 +1,9 @@
+import nodemailer from "nodemailer";
 
+export const sendDelWarning = async ({ email, shopName, monthsToKeep, warningDays }: { email: string; shopName: string; monthsToKeep: number; warningDays: number }) => {
+  const zohoEmail = "huduma@mypostech.store";
+
+    const html = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -58,14 +63,14 @@
         <div class="content">
             <p>Habari <strong>"${shopName}"</strong>,</p>
             
-            <p>Katika Sera yetu ya uhifadhi wa taarifa, Tutafuta taarifa zako za zamani ndani ya <strong>siku ${warningDays}</strong>.</p>
+            <p>Katika Sera yetu ya uhifadhi wa Taarifa, Tutafuta taarifa zako za zamani ndani ya <strong>siku ${warningDays}</strong>.</p>
             
-            <p>Kifurushi chako kinasapoti muda <strong> miezi ${monthsToKeep}</strong></p>
+            <p>Kifurushi chako kinasapoti muda wa <strong> ${monthsToKeep === 1 ? "mwezi" : "miezi"} ${monthsToKeep}</strong></p>
             
             <p>Kama unataka kuhifadhi taarifa zako, Pakua nakala (copy) yake kabla ya tarehe ya ufutaji</p>
             
             <center>
-                <a href="https://example.com/download-backup/12345" class="button">
+                <a href="#" class="button" download>
                     Pakua nakala yako (PDF)
                 </a>
             </center>
@@ -81,3 +86,23 @@
         </div>
     </body>
     </html>
+  `;
+
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.zoho.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: zohoEmail,
+      pass: process.env.ZOHO_APP_PASSWORD,
+    },
+  });
+
+  await transporter.sendMail({
+    from: `"myPosTech" <${zohoEmail}>`,
+    to: email,
+    subject: "Ufutaji wa taarifa za zamani - MyPostech",
+    html,
+  });
+};

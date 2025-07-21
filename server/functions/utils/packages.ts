@@ -16,14 +16,13 @@ export const subscriptionLimits: Record<SubscriptionLevel, number> = {
 };
 
 // this is used in cronjob (don't delete)
-
 export const retentionPeriods: Record<SubscriptionLevel, number> = {
-  "Trial": 1,       //1 month
-  "Msingi": 1,      // 1 month
-  "Lite": 3,        // 3 months
-  "Pro": 6,         // 6 months
-  "Business": 12,   // 1 year
-  "AI": 24,         // 2 years
+  "Trial": 1,         // 1 month (standard for trials)
+  "Msingi": 3,        // 3 months (basic tier)
+  "Lite": 6,          // 6 months 
+  "Pro": 12,          // 1 year (standard for professional tier)
+  "Business": 24,     // 2 years (for compliance/audit needs)
+  "AI": 36,           // 3 years (AI training data needs longer retention)
 };
 
 export const prodCheck = async ({ shopId }: { shopId: string }): Promise<{ success: boolean; message: string; data?: { shopSubscription: SubscriptionLevel; trialEnd: Date | null } }> => {
