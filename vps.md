@@ -131,3 +131,13 @@ BEGIN
     END LOOP;
 END $$;
 ```
+
+## SETTING UP CONNECTION POOLER 
+by default postgres doesnot support many users so we use:
+1. PgBounce for connection/pooling
+2. PgBounce for load balancing for advanced level of optimization
+
+2.1 setup:
+```bash
+sudo apt install pgbouncer
+```

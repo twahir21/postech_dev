@@ -70,10 +70,10 @@ export const bgJobsPlugin = new Elysia()
     }
   }))
   
-  // Clean resets every hour at :15
+  // Clean resets everyday at 8:15 AM
   .use(cron({
     name: 'reset-cleanup',
-    pattern: '15 * * * *', // At minute 15 of every hour
+    pattern: '15 8 * * *', 
     async run() {
       try {
         console.time("reset-cleanup")

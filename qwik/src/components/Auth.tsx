@@ -121,6 +121,11 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
             return;
           }
         }
+
+        if (state.password.length === 0 || state.username.length ===0) {
+          return
+        }
+        
         const payload = {
           ...(state.isLogin ? {} : { name: state.name, phoneNumber: state.phoneNumber }),
           email: state.email,
@@ -164,7 +169,6 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
         const frontendURL = env.mode === 'development'
                             ? env.frontendURL_DEV
                             : env.frontendURL;
-
         navigation(`${frontendURL}/private`); // Redirect to dashboard
       
 

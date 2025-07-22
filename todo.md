@@ -1,6 +1,6 @@
 # first
 1. Tengeneza jinsi ya kutumia mfumo kwenye ile video ili mtu akishindwa tu anacheki.
-
+# learn about MCP over http rest api
 # second
 1. mfumo wa Ami Ally
 2. mfumo wa E-commerce wa kitomanga online ordering system and payment
@@ -11,4 +11,7 @@
 2. Nguo na viatu from Dubai inshaa-Allah will be my second choice
 3. Furnitures more modern and multi-tasking (i have videos for making them)
 -Hizi ni furnitures ambazo zinakunjika ili kutomaliza nafasi na pia ni multi-task yaan ni meza na ni ngazi (one furninture)
+
+####
+tarehe 1/8 kuagiza mzigo na kuingia nao nane nane.
 

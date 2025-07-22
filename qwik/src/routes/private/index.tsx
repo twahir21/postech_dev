@@ -16,6 +16,7 @@ import { useAuthLoader } from "../layout";
 import { AskedProducts } from "~/components/Asked";
 import { Speech } from "~/components/Speech";
 import { Typing } from "~/components/Typing";
+import { PaymentBlockOverlay } from "~/components/Block";
 
 
 export default component$(() => {
@@ -25,8 +26,10 @@ export default component$(() => {
     input: "",
     showCalculator: false,
     username: "",
-    notification: 0
+    notification: 0,
   });
+
+  const isPaidSignal = useSignal<boolean | null>(null); // null = loading state
 
   const showTooltip = useSignal(false);
   const showMic = useSignal(false); // only render <Speech /> after tooltip closed
@@ -36,6 +39,18 @@ export default component$(() => {
     active.value = active.value === section ? null : section;
   });
 
+  // send to check if user has paid use useVisibleTask sothat it delays until crudService loads
+  useVisibleTask$(async () => {
+    const pay = new CrudService<{ id?: string; isPaid: boolean }>("isPaid");
+    const res = await pay.get();
+
+    if (!res.success) {
+      isPaidSignal.value = false;
+      return;
+    }
+    isPaidSignal.value = res.data[0].isPaid;
+
+  });
 
   const closeTooltip = $(() => {
     showTooltip.value = false;
@@ -78,8 +93,9 @@ export default component$(() => {
   useTask$(() => {
       let username = usernameData.value.username;
       if (!username) {
-        username = "Mgeni"
         fetchUsername; // actual call 
+        username = "Mgeni"
+
       }
 
       // Utility function to capitalize the first letter of each word
@@ -128,9 +144,11 @@ export default component$(() => {
 
   return (
     <div class="flex min-h-screen m-0">
+      { isPaidSignal.value === false &&
+      <PaymentBlockOverlay />}
       {/* Sidebar & Overlay */}
       <aside
-        class={`bg-gray-800 text-white fixed inset-y-0 left-0 transform transition-all duration-300 md:relative md:translate-x-0 w-64 p-4 z-50 ${
+        class={`bg-gray-800 text-white fixed inset-y-0 left-0 transform transition-all duration-300 md:relative md:translate-x-0 w-64 p-4 z-40 ${
           store.isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

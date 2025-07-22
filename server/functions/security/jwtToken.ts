@@ -63,6 +63,18 @@ export function isDecodedToken(token: unknown): token is DecodedToken {
         message: "Mtumiaji hayupo!"
       }
     }
+    
+    // check if user is paid 
+    const isPaid = await mainDb.select({ isPaid: shopUsers.isPaid })
+                    .from(shopUsers).where(eq(shopUsers.shopId, shopId))
+                    .then(r => r[0].isPaid);
+
+    if (!isPaid || isPaid === null ){
+      return {
+        success: false,
+        message: "Tafadhali lipia account yako kufurahia huduma zetu."
+      }
+    }
   
     // ✅ Now fully type-safe
     return { userId, shopId}

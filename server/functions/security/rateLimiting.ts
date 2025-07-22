@@ -15,7 +15,7 @@ export const rateLimitMiddleware = async ({
     request.headers.get("x-real-ip") ||
     "unknown-ip";
 
-  const limit = 15;
+  const limit = 40;
   const resetTime = 60 * 1000;
 
   const now = Date.now();

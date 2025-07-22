@@ -4,7 +4,7 @@ import jwt from '@elysiajs/jwt';
 import { authToken } from '../functions/security/validators/data';
 import { extractId, isDecodedToken } from '../functions/security/jwtToken';
 import { mainDb } from '../database/schema/connections/mainDb';
-import { users } from '../database/schema/shop';
+import { shopUsers, users } from '../database/schema/shop';
 import { eq } from 'drizzle-orm';
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
@@ -61,7 +61,8 @@ export const authPlugin = new Elysia()
                             : "Hitilafu kwenye seva"
             }
         }
-    }).get("/me", async ({ jwt, cookie, headers }) => {
+    })
+    .get("/me", async ({ jwt, cookie, headers }) => {
             try{
             const { userId, shopId } = await extractId({ jwt, cookie });
             if (!userId) return;
@@ -91,6 +92,37 @@ export const authPlugin = new Elysia()
                 message: error instanceof Error
                             ? error.message
                             : "Hitilafu kwenye seva"
+            }
+        }
+    })
+    .get("/isPaid", async({ jwt, cookie }) => {
+        try {
+            const { userId, shopId } = await extractId({ jwt, cookie });
+
+            if (!shopId || !userId) {
+                return {
+                    success: false,
+                    message: "Hakikisha ume login!"
+                }
+            }
+
+            const isPaid = await mainDb.select({ isPaid: shopUsers.isPaid })
+                .from(shopUsers)
+                .where(
+                    eq(shopUsers.shopId, shopId)
+                ).then(r => r[0].isPaid);
+
+            return {
+                success: true,
+                message: "Status ya malipo imepatikana!",
+                data: [{ isPaid }]
+            }
+        } catch (error) {
+            return {
+                success: false,
+                message: error instanceof Error ?
+                    error.message
+                    : "Hitilafu kwenye seva katika api ya kuangalia malipo"
             }
         }
     })
