@@ -14,7 +14,8 @@ const paymentPlugin = new Elysia()
         }))
         .get("/mobile/generate-token", async ({ jwt, cookie, headers }) => {
 
-            const { userId, shopId } = await extractId({ jwt, cookie })
+            const { userId, shopId } = await extractId({ jwt, cookie, checkIsPaid: true })
+
 
             if (!userId || !shopId) {
                 return {
@@ -27,7 +28,7 @@ const paymentPlugin = new Elysia()
         })
         .post("/mobile/check-USSD", async ({ jwt, cookie, headers, body }) => {
 
-            const { userId, shopId } = await extractId({ jwt, cookie })
+            const { userId, shopId } = await extractId({ jwt, cookie, checkIsPaid: true })
 
             if (!userId || !shopId) {
                 return {
@@ -42,7 +43,7 @@ const paymentPlugin = new Elysia()
         })
         .get("/mobile/USSD-push", async ({ jwt, cookie, headers }) => {
 
-            const { userId, shopId } = await extractId({ jwt, cookie })
+            const { userId, shopId } = await extractId({ jwt, cookie, checkIsPaid: true })
 
             if (!userId || !shopId) {
                 return {
@@ -55,7 +56,7 @@ const paymentPlugin = new Elysia()
         })
         .get("/mobile/payment-status", async ({ jwt, cookie, headers }) => {
 
-            const { userId, shopId } = await extractId({ jwt, cookie })
+            const { userId, shopId } = await extractId({ jwt, cookie, checkIsPaid: true })
 
             if (!userId || !shopId) {
                 return {
@@ -67,7 +68,7 @@ const paymentPlugin = new Elysia()
             return await PayStatus({ userId, shopId, headers });
         })
         .get("/mobile/checkBalanceBlackCoder123", async ({ jwt, cookie, headers }) => {
-            const { userId, shopId } = await extractId({ jwt, cookie })
+            const { userId, shopId } = await extractId({ jwt, cookie, checkIsPaid: true })
 
             if (!userId || !shopId) {
                 return {

@@ -20,21 +20,15 @@ export function isDecodedToken(token: unknown): token is DecodedToken {
   }
   
   
-  export const extractId = async ({ jwt, cookie }: { jwt: jwtTypes; cookie: CookieTypes })=> {
+  export const extractId = async ({ jwt, cookie, checkIsPaid }: { jwt: jwtTypes; cookie: CookieTypes; checkIsPaid?: boolean })=> {
     const token = cookie.auth_token?.value;
-    if (!token) {
-      return {
-        success: false,
-        message: "Huna ruhusa! - hakuna token"
-      }
-    }
   
     const decoded = await jwt.verify(token);
   
-    if (!isDecodedToken(decoded)) {
+    if (!token || !isDecodedToken(decoded)) {
       return {
         success: false,
-        message: "Huna ruhusa! - Token sio sahihi"
+        message: "Huna ruhusa! - Hakuna Tokeni au sio sahihi"
       }
     }
     const { userId, shopId } = decoded
@@ -42,41 +36,25 @@ export function isDecodedToken(token: unknown): token is DecodedToken {
     if (!shopId || !userId) {
       return {
         success: false,
-        message: "shopId au userId haipo"
+        message: "Imeshindwa kupata credentials jaribu tena baadae"
       }
     }
 
-    // check if user exist in database for validation and cache it, delete cache on deleting accout
-    const isAvaible = await mainDb.select({
-      userId: shopUsers.userId,
-      shopId: shopUsers.shopId
-    }).from(shopUsers).where(
-      and(
-        eq(shopUsers.shopId, shopId),
-        eq(shopUsers.userId, userId)
-      )
-    );
-
-    if(isAvaible.length === 0){
-      return {
-        success: false,
-        message: "Mtumiaji hayupo!"
-      }
-    }
-    
     // check if user is paid 
-    const isPaid = await mainDb.select({ isPaid: shopUsers.isPaid })
-                    .from(shopUsers).where(eq(shopUsers.shopId, shopId))
-                    .then(r => r[0].isPaid);
+  if (!checkIsPaid) {
+      const isPaid = await mainDb.select({ isPaid: shopUsers.isPaid })
+                .from(shopUsers).where(eq(shopUsers.shopId, shopId))
+                .then(r => r[0].isPaid);
 
-    if (!isPaid || isPaid === null ){
-      return {
-        success: false,
-        message: "Tafadhali lipia account yako kufurahia huduma zetu."
+      if (!isPaid || isPaid === null ){
+        return {
+          success: false,
+          message: "Tafadhali lipia account yako kufurahia huduma zetu."
+        }
       }
-    }
   
+    }
     // ✅ Now fully type-safe
-    return { userId, shopId}
+    return { userId, shopId }
   };
   

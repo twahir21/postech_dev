@@ -56,6 +56,7 @@ if (!isValidPlan(plan)) return (
   </div>
 );
 
+
   // Computed total with type safety
   const totalPrice = useComputed$(() => {
     const basePrice = planDetails[plan].monthly;

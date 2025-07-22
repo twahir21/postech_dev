@@ -3,6 +3,7 @@ import { mainDb } from "../database/schema/connections/mainDb";
 import { paymentSaaS, users } from "../database/schema/shop";
 import type { headTypes, PaymentRequest, USSDCheckResponse } from "../types/types";
 import { createPayloadChecksum, decrypt, encrypt, generateOrderRef } from "./utils/clickpesa";
+import { replaceWith255 } from "./utils/replaces";
 
 // credentials
 const clientID = process.env.CLICKPESA_CLIENT_ID!;
@@ -183,7 +184,8 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
         const phoneData = await mainDb.select({phoneNumber: users.phoneNumber})
                             .from(users).where(eq(users.id, userId));
 
-        const phoneNumber = phoneData[0].phoneNumber;
+        // replace with 255 if first number is 0
+        const phoneNumber = replaceWith255(phoneData[0].phoneNumber);
 
         const USSDpayload = {
             ...payload,
