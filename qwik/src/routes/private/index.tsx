@@ -288,7 +288,7 @@ export default component$(() => {
                           <div class="mt-2 space-y-2">
                             <li>⚖️ <strong>(Hiari) Taja Kipimo Kabla ya Kiasi:</strong> Mfano: <code>kilo</code>, <code>lita</code>, <code>katoni</code>, <code>pisi</code>.</li>
 
-                            <li>🔢 <strong>(Hiari) Taja Kiasi:</strong> Mfano: 1, 1.5, 3.75. Tumia desimali kwa robo, nusu na robo tatu. Ukiacha ina maana ni 1</li>
+                            <li>🔢 <strong>(Hiari) Taja Kiasi:</strong> Mfano: 1, 1.5, 3.75. Tumia desimali kwa robo, nusu na robo tatu. Ukiacha ina maana ni 1. Kama ni kukopesha lazima useme kiasi.</li>
 
                             <li>💸 <strong>(Hiari) Taja Punguzo:</strong> Mfano: <code>punguzo 100</code>, <code>punguzo 200</code><br />
                              ⚠️ <strong>Angalizo:</strong> Usitumie maneno kwenye namba, taja pesa kwa tarakimu.</li>

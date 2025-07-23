@@ -289,15 +289,6 @@ if (!product) {
 }
 
 
-// Helper: Find the last numeric word before punguzo
-function findLastNumberIndex(words: string[], punguzoIndex: number) {
-  for (let i = (punguzoIndex !== -1 ? punguzoIndex : words.length) - 1; i >= 0; i--) {
-    const num = swahiliToNumber(words[i]) || 0;
-    if (!isNaN(num)) return i;
-  }
-  return -1;
-}
-
 interface ParsedTransaction {
   action: string;
   customer: string | null;

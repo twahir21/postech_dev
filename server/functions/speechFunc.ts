@@ -42,7 +42,7 @@ export const handleSpeech = async (shopId: string, userId: string, text: string)
                         stock: products.stock,
                     })
                     .from(products)
-                    .where(like(products.name, `%${product.split(' ')[0]}%`))
+                    .where(eq(products.name, product))
                     .then(res => res[0]);
 
                 if (!productUse) {

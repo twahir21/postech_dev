@@ -147,7 +147,6 @@ export const AuthForm = component$<AuthFormProps>(({ isLogin }) => {
         const result = await authApi.create(payload);
 
         if (!result.success) {
-          console.log(result.message)
           state.modal = { 
             isOpen: true, 
             message: result.message || 'Hitilafu imetokea wakati wa kutuma', 
