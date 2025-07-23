@@ -157,7 +157,6 @@ export function parseNimetumiaSentence(sentence: string): ParsedNimetumia {
     }
   }
 
-  console.log("nimetumia datas ...: ", action, product.trim(), quantity, activity, money)
   return {
     action,
     product: product.trim() || 'haijajulikana',
@@ -221,26 +220,23 @@ export async function detectSwahiliTransaction(text: string, shopId: string): Pr
   afterCustomerText = customer ? restOfText.replace(customer, '').trim() : restOfText;
 
 
-// Step 5: Match product name (token matching and fuzzy scoring)
+// Step 5: Match product name (longest match)
 let product: string | null = null;
-const normalizedText = afterCustomerText.toLowerCase();
 
-const exactMatch = products.find(p => normalizedText.includes(p.toLowerCase()));
+// Sort products: longest first (most specific)
+const sortedProducts = [...products].sort((a, b) => b.length - a.length);
 
-if (exactMatch) {
-  product = exactMatch;
-} else {
-  // Try partial matches
-  const partialMatches = products
-    .map(p => ({ name: p, score: similarity(normalizedText, p.toLowerCase()) }))
-    .filter(item => item.score > 0.5) // Adjust threshold
-    .sort((a, b) => b.score - a.score);
+// Helper: escape special regex characters
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
-  if (partialMatches.length === 1) {
-    product = partialMatches[0].name;
-  } else if (partialMatches.length > 1) {
-    const names = partialMatches.map(p => `"${p.name}"`).join(", ");
-    throw new Error(`Tafadhali fafanua bidhaa: ${names} zote zinafanana. Tafadhali taja bidhaa kamili.`);
+// Find the longest product name that appears as a whole word
+for (const p of sortedProducts) {
+  const regex = new RegExp(`\\b${escapeRegExp(p)}\\b`, 'i'); // word boundary
+  if (regex.test(afterCustomerText)) {
+    product = p;
+    break; // longest match wins
   }
 }
 
