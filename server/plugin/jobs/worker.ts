@@ -2,7 +2,6 @@ import { Elysia } from 'elysia';
 import { cron } from '@elysiajs/cron';
 import { 
   clearVerifiedEmails,
-  pingAPI,
   isTrialEnd,
   cleanupOldData,
   cleanResets,
@@ -25,20 +24,6 @@ export const bgJobsPlugin = new Elysia()
     }
   }))
   
-  // Warm up API every 20 minutes
-  .use(cron({
-    name: 'api-warmup',
-    pattern: '*/20 * * * *', // Every 20 minutes
-    run() {
-      try {
-        console.time("pingAPI");
-        pingAPI();
-        console.timeEnd("pingAPI");
-      } catch (error) {
-        console.error('[Cron] API warmup failed:', error);
-      }
-    }
-  }))
   
   // Check trial status every 12 hours at :30
   .use(cron({

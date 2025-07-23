@@ -165,12 +165,13 @@ export interface PaymentRequest {
   plan: PlanType;
 }
 
-export interface USSDCheckResponse {
-    checkUSSDResult: {
-        activeMethods: {
-        name: 'TIGO-PESA' | 'AIRTEL-MONEY';
-        status: 'AVAILABLE' | 'UNAVAILABLE'; 
-        fee: number;
-        }[];
-    };
+
+export interface clickPesaRes {
+  name: string;       // e.g. "TIGO-PESA"
+  status: "AVAILABLE" | "UNAVAILABLE"; // constrain to known values
+  fee: number;
+}
+
+export interface CheckUSSDResult {
+  activeMethods: clickPesaRes[];
 }

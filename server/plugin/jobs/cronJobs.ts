@@ -21,18 +21,6 @@ export const clearVerifiedEmails = async() => {
 }
 
 
-export const pingAPI = () => {
-    // warm up the server and clear caches
-    try{
-        console.log("Karibu kwenye seva ya Elysia na Bun!");
-    }catch(error) {
-        console.log(error instanceof Error
-            ? error.message
-            :  "Hitilafu imetokea kwenye seva")
-    }
-}
-
-
 export const isTrialEnd = async () => {
     try{
     // 1. Get all shops and their subscriptions

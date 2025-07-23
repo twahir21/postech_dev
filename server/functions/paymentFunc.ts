@@ -1,7 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { mainDb } from "../database/schema/connections/mainDb";
 import { paymentSaaS, users } from "../database/schema/shop";
-import type { headTypes, PaymentRequest, USSDCheckResponse } from "../types/types";
+import type { CheckUSSDResult, headTypes, PaymentRequest } from "../types/types";
 import { createPayloadChecksum, decrypt, encrypt, generateOrderRef } from "./utils/clickpesa";
 import { replaceWith255 } from "./utils/replaces";
 
@@ -63,7 +63,6 @@ export const checkUSSD = async ({ userId, shopId, headers, body }: { userId: str
 
     try{
         const { price, duration, paymentMethod, plan } = body;
-        console.log(paymentMethod)
         // get token
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
                     .where(eq(paymentSaaS.shopId, shopId)).orderBy(desc(paymentSaaS.createdAt));
@@ -104,22 +103,27 @@ export const checkUSSD = async ({ userId, shopId, headers, body }: { userId: str
           };
           
         const checkUSSD = await fetch('https://api.clickpesa.com/third-parties/payments/preview-ussd-push-request', options2);
-        const checkUSSDResult: USSDCheckResponse = await checkUSSD.json().catch((err) => {
+        const checkUSSDResult: CheckUSSDResult = await checkUSSD.json().catch((err) => {
             return {
                 success: false,
                 message: err instanceof Error ? err.message : "Seva ya malipo imefeli"
             }
         });
 
-        console.log("checkUSSDResult:", checkUSSDResult);
-          const method = checkUSSDResult.activeMethods.find(
-    m => m.name.toUpperCase() === paymentMethod
-  );
-  console.log("method:", method.status);
+        const method = checkUSSDResult.activeMethods.find(
+            m => m.name.toUpperCase() === paymentMethod.toUpperCase()
+        );
         
-        return {
-            success: true,
-            message: "Huduma ya USSD inapatikana kwenye mtandao wako."
+        if (method && method?.status === 'AVAILABLE') {
+            return {
+                success: true,
+                message: "Huduma ya USSD inapatikana kwenye mtandao wako."
+            }
+        }else{
+            return {
+                success: false,
+                message: `Mtandao wa ${paymentMethod} upo kwenye maboresho, jaribu tena baadae au tumia mtandao mwingine.`
+            }
         }
 
     }catch(err){
