@@ -1,5 +1,6 @@
 import { $, component$, useStore } from "@builder.io/qwik";
 import { TrashIcon } from "lucide-qwik";
+import { CrudService } from "../api/base/oop";
 
 interface Assistant {
   id: number;
@@ -29,6 +30,12 @@ export default component$(() => {
       state.newPermissions.push(permission);
     }
   });
+
+  const fetchStatus = $(async () => {
+    const api = new CrudService("mobile/payment-status");
+    const response = await api.get();
+    console.log(response);
+  })
 
   const addAssistant = $(() => {
     if (state.newName.trim()) {
@@ -80,6 +87,11 @@ export default component$(() => {
           onClick$={addAssistant}
         >
           Ongeza Msaidizi
+        </button>
+
+        <button class="w-full bg-teal-600 text-white py-2 rounded hover:bg-teal-700 mt-4"
+        onClick$={fetchStatus}>
+          Angalia status ya malipo
         </button>
       </div>
 

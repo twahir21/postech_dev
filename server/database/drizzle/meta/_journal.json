@@ -127,6 +127,13 @@
       "when": 1752496765084,
       "tag": "0017_faithful_rocket_racer",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1753343354631,
+      "tag": "0018_thin_luke_cage",
+      "breakpoints": true
     }
   ]
 }

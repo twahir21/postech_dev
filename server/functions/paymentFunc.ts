@@ -4,6 +4,7 @@ import { paymentSaaS, users } from "../database/schema/shop";
 import type { CheckUSSDResult, headTypes, PaymentRequest } from "../types/types";
 import { createPayloadChecksum, decrypt, encrypt, generateOrderRef } from "./utils/clickpesa";
 import { replaceWith255 } from "./utils/replaces";
+import { logSnagErrors } from "../plugin/app/logSnag";
 
 // credentials
 const clientID = process.env.CLICKPESA_CLIENT_ID!;
@@ -230,8 +231,6 @@ export const USSDPush = async ({ userId, shopId, headers }: { userId: string, sh
 }
 
 export const PayStatus = async ({ userId, shopId, headers }: { userId: string, shopId: string, headers: headTypes }) => {
-
-
     try{
         const encryptedToken = await mainDb.select({ token: paymentSaaS.token}).from(paymentSaaS)
                     .where(eq(paymentSaaS.shopId, shopId)).orderBy(desc(paymentSaaS.createdAt));
@@ -246,7 +245,12 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
 
         const orderId = orderData[0].orderId;
 
-        if (!orderId) return;
+        if (!orderId){
+            return {
+                success: false,
+                message: "Order not found!"
+            }
+        };
 
         const options = {method: 'GET', headers: {Authorization: `${resultToken}`}};
 
@@ -257,7 +261,7 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
                 message: err instanceof Error ? err.message : "Seva ya malipo imefeli"
             }
         });
-        console.log("Status: ", checkStatus)
+        await logSnagErrors(`PayStatus: ${JSON.stringify(checkStatus)}`, "PayStatus")
         return {
             success: true,
             message: "Imeona hali ya malipo uliofanya"
