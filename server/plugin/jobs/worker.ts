@@ -1,5 +1,5 @@
 import { Elysia } from 'elysia';
-import { cron } from '@elysiajs/cron';
+import { cron, Patterns } from '@elysiajs/cron';
 import { 
   clearVerifiedEmails,
   isTrialEnd,
@@ -10,10 +10,10 @@ import {
 } from './cronJobs';
 
 export const bgJobsPlugin = new Elysia()
-  // Clear verified emails every 2 hours
+  // Clear verified emails everyday at 04:00
   .use(cron({
     name: 'clear-emails',
-    pattern: '0 */12 * * *', // At minute 0 of every 12 hours
+    pattern: Patterns.everyDayAt('04:00'), 
     async run() {
       try {
         console.time("clearVerifiedEmails");
@@ -29,7 +29,7 @@ export const bgJobsPlugin = new Elysia()
   // Check trial status every 12 hours at :30
   .use(cron({
     name: 'trial-check',
-    pattern: '30 */12 * * *', // At minute 30 of every 12th hour
+    pattern: Patterns.everyDayAt('03:00'), 
     async run() {
       try {
         console.time("trialCheck")
@@ -44,7 +44,7 @@ export const bgJobsPlugin = new Elysia()
   // Cleanup old data every 2 days at midnight
   .use(cron({
     name: 'old-data-cleanup',
-    pattern: '0 0 */2 * *', // At 00:00 every 2nd day
+    pattern: Patterns.everyDayAt('02:00'), 
     async run() {
       try {
         console.time("cleanupOldData");
@@ -59,7 +59,7 @@ export const bgJobsPlugin = new Elysia()
   // Cleanup cancelled payments at 03:00 every 
   .use(cron({
     name: 'cancelled-payments-cleanup',
-    pattern: '0 3 */2 * *', // At 03:00 every 2nd day
+    pattern: Patterns.everyDayAt('00:00'), 
     async run() {
       try {
         console.time("cleanupCancelledPayments");
@@ -74,7 +74,7 @@ export const bgJobsPlugin = new Elysia()
   // Clean resets everyday at 8:15 AM
   .use(cron({
     name: 'reset-cleanup',
-    pattern: '15 8 * * *', 
+    pattern: Patterns.everyDayAt('11:00'), 
     async run() {
       try {
         console.time("reset-cleanup")
@@ -86,10 +86,10 @@ export const bgJobsPlugin = new Elysia()
     }
   }))
 
-  // Notify before trial ends (daily at 9:30 AM)
+  // Notify before trial ends (daily at 5:00 AM)
   .use(cron({
     name: 'trial-notifications',
-    pattern: '30 9 * * *', // At 09:30 daily
+    pattern: Patterns.everyDayAt('05:00'), 
     async run() {
       try {
         console.time("trial-notification")
