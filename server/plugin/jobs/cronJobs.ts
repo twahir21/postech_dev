@@ -5,6 +5,7 @@ import "dotenv/config";
 import { retentionPeriods, type SubscriptionLevel } from "../../functions/utils/packages";
 import { notifyTrialEnd } from "../email/trialEnd.email";
 import { sendDelWarning } from "../email/backup.email";
+import { logSnagErrors, logSnagSuccess } from "../app/logSnag";
 
 export const clearVerifiedEmails = async() => {
 
@@ -12,11 +13,12 @@ export const clearVerifiedEmails = async() => {
     try{
         await mainDb.delete(emailVerifications)
                 .where(eq(emailVerifications.used, true));
-        console.log("Tumefuta email zilizohakikiwa");
+        await logSnagSuccess("Clear verified emails", "clearVerifiedEmails");
     }catch(error) {
-            console.log (error instanceof Error
-                    ? error.message
-                    :  "Hitilafu imetokea kwenye seva")
+        await logSnagErrors( 
+          error instanceof Error ? error.message : "Hitilafu imetokea kwenye seva"
+          , "clearVerifiedEmails"
+        );
     }
 }
 
@@ -56,14 +58,16 @@ export const isTrialEnd = async () => {
             const link = process.env.NODE_ENV === "development" ? process.env.FRONTEND_URL_DEV : process.env.FRONTEND_URL;
             await notifyTrialEnd({ shopName: shopName[0].name, link: link!, email: shop.email });
 
-
+            // 5. Log to Snag
+            await logSnagSuccess(`Trial ended for ${shopName[0].name}`, "isTrialEnd");
         }
     }
 
     }catch(error) {
-        console.log(error instanceof Error
+        await logSnagErrors(error instanceof Error
             ? error.message
-            :  "Hitilafu imetokea kwenye seva")
+            :  "Hitilafu imetokea kwenye seva",
+          "isTrialEnd");
     }
 }
 
@@ -112,11 +116,14 @@ export const notifyBeforeEnds = async () => {
                     });
                 }
             }
+          // log to logSnag
+          await logSnagSuccess(`Notification sent to ${shop.id}`, "notifyBeforeEnds"); 
         }
     } catch (error) {
-        console.log(error instanceof Error
+        await logSnagErrors(error instanceof Error
             ? error.message
-            : "Hitilafu imetokea kwenye seva");
+            : "Hitilafu imetokea kwenye seva", 
+          "notifyBeforeEnds");
     }
 }
 
@@ -134,7 +141,8 @@ export const cleanResets = async () => {
 
 
 export async function cleanupOldData() {
-  // 1. Select all shops and their subscription
+  try {
+      // 1. Select all shops and their subscription
 const shopsWithSubs = await mainDb.select({
     shopId: shops.id,
     subscription: shops.subscription,
@@ -214,8 +222,12 @@ const shopsWithSubs = await mainDb.select({
             await mainDb
               .delete(table)
               .where(inArray(table.id, ids));
-
-            console.log(`Deleted ${ids.length} rows from ${table._.name} for shop ${shopId}`);
+            
+            // 8. Log deleted rows
+            await logSnagSuccess(`
+              Deleted ${ids.length} rows from ${table._.name} for shop ${shopId}`,
+            "OldDataCleanup"
+            );
 
             // 9. Waits before next execution starts (cooldown here ..)
             await new Promise(resolve => setTimeout(resolve, 300));
@@ -226,13 +238,22 @@ const shopsWithSubs = await mainDb.select({
         } catch (error) {
           // 10. Retry again if failed
           attempts++;
-          console.error(`Attempt ${attempts} failed for table ${table._.name}, shop ${shopId}:`, error);
+          await logSnagErrors(
+            `Attempt ${attempts} failed for table ${table._.name}, shop ${shopId}:`
+            , "cleanupOldData"
+          );
           
           // 11. Promolong the execution to avoid RAM and CPU much resource usage and deadlocks
           await new Promise(resolve => setTimeout(resolve, 600));
         }
       }
     }
+  }
+  } catch (error) {
+    await logSnagErrors( 
+      error instanceof Error ? error.message : "Hitilafu imetokea kwenye seva", 
+      "cleanupOldData"
+    );
   }
 }
 
@@ -249,26 +270,34 @@ export const cleanCancelledPayments = async () => {
             .from(paymentSaaS)
             .where(eq(paymentSaaS.status, "failed"))
             .limit(batchSize);
-            
+
           if (rowsToDelete.length === 0) break;
           const ids = rowsToDelete.map(r => r.id);
           await mainDb
             .delete(paymentSaaS)
             .where(inArray(paymentSaaS.id, ids));
-          console.log(`Deleted ${ids.length} rows from ${paymentSaaS._.name}`);
+
+          await logSnagSuccess(`
+            Deleted ${ids.length} rows from ${paymentSaaS._.name}`,
+          "cleanupCancelledPayments"
+          );
           await new Promise(resolve => setTimeout(resolve, 300));
         }
         break;
       } catch (error) {
         attempts++;
-        console.error(`Attempt ${attempts} failed for table ${paymentSaaS._.name}:`, error);
+        await logSnagErrors(
+          `Attempt ${attempts} failed for table ${paymentSaaS._.name}:`, 
+          "cleanupCancelledPayments"
+        );
         await new Promise(resolve => setTimeout(resolve, 600));
       }
     }
   }
   catch(error) {
-    console.log (error instanceof Error
+    await logSnagErrors (error instanceof Error
               ? error.message
-              :  "Hitilafu imetokea kwenye func ya kufuta malipo yaliyoahirishwa")
+              :  "Hitilafu imetokea kwenye func ya kufuta malipo yaliyoahirishwa",
+              "cleanupCancelledPayments");
   }
 }

@@ -5,29 +5,23 @@ const logsnag = new LogSnag({
   project: "postech",
 });
 
-await logsnag.track({
-  channel: "errors",
-  event: "Database Failure",
-  description: "Insert failed for productId=123",
-  icon: "❌"
-});
 
-
-await logsnag.track({
-  channel: "errors",
-  event: "Database success",
-  description: "Insert failed for productId=123",
-  notify: true,
-  icon: "✅"
-});
-
-export const LogSnag1 = async () => {
+export const logSnagErrors = async ( description: string, event: string ) => {
   await logsnag.track({
     channel: "errors",
-    event: "Database success",
-    description: "Insert failed for productId=123",
+    event: `${event}`,
+    description: `${description}`,
     notify: true,
+    icon: "❌"
+  });
+}
+
+export const logSnagSuccess = async ( description: string, event: string ) => {
+  await logsnag.track({
+    channel: "success",
+    event: `${event}`,
+    description: `${description}`,
     icon: "✅"
   });
 }
-console.log("Logs sent to LogSnag");
+

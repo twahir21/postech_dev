@@ -5,9 +5,9 @@ import {
   isTrialEnd,
   cleanupOldData,
   cleanResets,
-  notifyBeforeEnds
+  notifyBeforeEnds,
+  cleanCancelledPayments
 } from './cronJobs';
-import { LogSnag1 } from '../app/logSnag';
 
 export const bgJobsPlugin = new Elysia()
   // Clear verified emails every 2 hours
@@ -43,7 +43,7 @@ export const bgJobsPlugin = new Elysia()
   
   // Cleanup old data every 2 days at midnight
   .use(cron({
-    name: 'data-cleanup',
+    name: 'old-data-cleanup',
     pattern: '0 0 */2 * *', // At 00:00 every 2nd day
     async run() {
       try {
@@ -52,6 +52,21 @@ export const bgJobsPlugin = new Elysia()
         console.timeEnd("cleanupOldData");
       } catch (error) {
         console.error('[Cron] Data cleanup failed:', error);
+      }
+    }
+  }))
+
+  // Cleanup cancelled payments at 03:00 every 
+  .use(cron({
+    name: 'cancelled-payments-cleanup',
+    pattern: '0 3 */2 * *', // At 03:00 every 2nd day
+    async run() {
+      try {
+        console.time("cleanupCancelledPayments");
+        await cleanCancelledPayments();
+        console.timeEnd("cleanupCancelledPayments");
+      } catch (error) {
+        console.error('[Cron] Cancelled payments cleanup failed:', error);
       }
     }
   }))
@@ -70,7 +85,7 @@ export const bgJobsPlugin = new Elysia()
       }
     }
   }))
-  
+
   // Notify before trial ends (daily at 9:30 AM)
   .use(cron({
     name: 'trial-notifications',
