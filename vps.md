@@ -141,3 +141,12 @@ by default postgres doesnot support many users so we use:
 ```bash
 sudo apt install pgbouncer
 ```
+
+## 📁 Example: Copy file from VPS to PC
+```bash
+scp root@123.45.67.89:/root/db.sql ~/Downloads/
+```
+### 📁 Example: Copy folder (add -r)
+```bash
+scp -r root@123.45.67.89:/root/myproject ~/Desktop/
+```

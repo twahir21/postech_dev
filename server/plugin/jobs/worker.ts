@@ -7,6 +7,7 @@ import {
   cleanResets,
   notifyBeforeEnds
 } from './cronJobs';
+import { LogSnag1 } from '../app/logSnag';
 
 export const bgJobsPlugin = new Elysia()
   // Clear verified emails every 2 hours

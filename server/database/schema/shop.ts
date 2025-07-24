@@ -262,9 +262,12 @@ import {
     id: uuid("id").defaultRandom().primaryKey(),
     shopId: uuid("shop_id").notNull().references(() => shops.id, { onDelete: "cascade" }),
     token: text("token_clickpesa").notNull(),
-    amountToPay: decimal("amount_to_pay", { precision: 15, scale: 2}).notNull(),
+    amountToPay: decimal("amount_to_pay", { precision: 15, scale: 2 }).notNull(),
     orderId: text("order_id"),
-    createdAt: timestamp("created_At").defaultNow()
+    createdAt: timestamp("created_At").defaultNow(),
+    status: text("status", {
+      enum: [ "success", "failed"]
+    })
   });
 
   // ------------------------------

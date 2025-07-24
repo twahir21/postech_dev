@@ -1,5 +1,5 @@
 import { mainDb } from "../../database/schema/connections/mainDb";
-import { emailVerifications, expenses, notifications, passwordResets, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, users } from "../../database/schema/shop";
+import { emailVerifications, expenses, notifications, passwordResets, paymentSaaS, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, users } from "../../database/schema/shop";
 import { and, eq, inArray, lt } from "drizzle-orm";
 import "dotenv/config";
 import { retentionPeriods, type SubscriptionLevel } from "../../functions/utils/packages";
@@ -236,3 +236,39 @@ const shopsWithSubs = await mainDb.select({
   }
 }
 
+export const cleanCancelledPayments = async () => {
+  try{
+    // delete in chuncks 
+    const batchSize = 1000;
+    let attempts = 0;
+    while (attempts < 3) {
+      try {
+        while (true) {
+          const rowsToDelete = await mainDb
+            .select({ id: paymentSaaS.id })
+            .from(paymentSaaS)
+            .where(eq(paymentSaaS.status, "failed"))
+            .limit(batchSize);
+            
+          if (rowsToDelete.length === 0) break;
+          const ids = rowsToDelete.map(r => r.id);
+          await mainDb
+            .delete(paymentSaaS)
+            .where(inArray(paymentSaaS.id, ids));
+          console.log(`Deleted ${ids.length} rows from ${paymentSaaS._.name}`);
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
+        break;
+      } catch (error) {
+        attempts++;
+        console.error(`Attempt ${attempts} failed for table ${paymentSaaS._.name}:`, error);
+        await new Promise(resolve => setTimeout(resolve, 600));
+      }
+    }
+  }
+  catch(error) {
+    console.log (error instanceof Error
+              ? error.message
+              :  "Hitilafu imetokea kwenye func ya kufuta malipo yaliyoahirishwa")
+  }
+}
