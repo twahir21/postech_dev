@@ -13,7 +13,7 @@ export const bgJobsPlugin = new Elysia()
   // Clear verified emails everyday at 04:00
   .use(cron({
     name: 'clear-emails',
-    pattern: Patterns.everyDayAt('04:00'), 
+    pattern: '0 4 * * *',
     async run() {
       try {
         console.time("clearVerifiedEmails");
@@ -29,7 +29,7 @@ export const bgJobsPlugin = new Elysia()
   // Check trial status every 12 hours at :30
   .use(cron({
     name: 'trial-check',
-    pattern: Patterns.everyDayAt('03:00'), 
+    pattern: '0 3 * * *', 
     async run() {
       try {
         console.time("trialCheck")
@@ -44,7 +44,7 @@ export const bgJobsPlugin = new Elysia()
   // Cleanup old data every 2 days at midnight
   .use(cron({
     name: 'old-data-cleanup',
-    pattern: Patterns.everyDayAt('02:00'), 
+    pattern: '0 2 * * *', 
     async run() {
       try {
         console.time("cleanupOldData");
@@ -59,7 +59,7 @@ export const bgJobsPlugin = new Elysia()
   // Cleanup cancelled payments at 03:00 every 
   .use(cron({
     name: 'cancelled-payments-cleanup',
-    pattern: Patterns.everyDayAt('00:00'), 
+    pattern: '0 1 * * *', 
     async run() {
       try {
         console.time("cleanupCancelledPayments");
@@ -74,7 +74,7 @@ export const bgJobsPlugin = new Elysia()
   // Clean resets everyday at 8:15 AM
   .use(cron({
     name: 'reset-cleanup',
-    pattern: Patterns.everyDayAt('11:00'), 
+    pattern: '0 0 * * *', 
     async run() {
       try {
         console.time("reset-cleanup")
@@ -89,7 +89,7 @@ export const bgJobsPlugin = new Elysia()
   // Notify before trial ends (daily at 5:00 AM)
   .use(cron({
     name: 'trial-notifications',
-    pattern: Patterns.everyDayAt('05:00'), 
+    pattern: '0 5 * * *', 
     async run() {
       try {
         console.time("trial-notification")
