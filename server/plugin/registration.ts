@@ -9,10 +9,6 @@ import jwt from "@elysiajs/jwt";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
-const frontendURL = process.env.NODE_ENV === 'development'
-                    ? process.env.FRONTEND_URL_DEV!
-                    : process.env.FRONTEND_URL!
-
 const regPlugin = new Elysia()
     .use(cookie()) // Use cookie plugin
     .use(

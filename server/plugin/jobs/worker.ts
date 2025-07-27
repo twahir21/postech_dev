@@ -29,7 +29,7 @@ export const bgJobsPlugin = new Elysia()
   // Check trial status every 12 hours at :30
   .use(cron({
     name: 'trial-check',
-    pattern: '0 3 * * *', 
+    pattern: '0 3 */3 * *', 
     async run() {
       try {
         console.time("trialCheck")

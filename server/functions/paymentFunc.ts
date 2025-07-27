@@ -4,7 +4,7 @@ import { paymentSaaS, users } from "../database/schema/shop";
 import type { CheckUSSDResult, headTypes, PaymentRequest } from "../types/types";
 import { createPayloadChecksum, decrypt, encrypt, generateOrderRef } from "./utils/clickpesa";
 import { replaceWith255 } from "./utils/replaces";
-import { logSnagErrors } from "../plugin/app/logSnag";
+import { logSnagErrors, logSnagSuccess } from "../plugin/app/logSnag";
 
 // credentials
 const clientID = process.env.CLICKPESA_CLIENT_ID!;
@@ -114,6 +114,11 @@ export const checkUSSD = async ({ userId, shopId, headers, body }: { userId: str
         const method = checkUSSDResult.activeMethods.find(
             m => m.name.toUpperCase() === paymentMethod.toUpperCase()
         );
+
+        await logSnagSuccess(
+            `Mtandao wa ${paymentMethod} ni ${method?.status} kwenye seva ya ${shopId}`
+            , "checkUSSD"
+        )
         
         if (method && method?.status === 'AVAILABLE') {
             return {

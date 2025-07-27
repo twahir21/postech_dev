@@ -69,6 +69,7 @@ if (!isValidPlan(plan)) return (
   const handlePayment = $(async () => {
     isLoading.value = true;
 
+    // 1. Generate Token
     const genTokenApi = new CrudService("mobile/generate-token");
     const tokenRes = await genTokenApi.get();
 
@@ -80,26 +81,28 @@ if (!isValidPlan(plan)) return (
       return;
     }
 
+    // 2. Check if USSD is available
     const payApi = new CrudService<PaymentRequest>("mobile/check-USSD");
-    const result = await payApi.create({ price: totalPrice.value, duration: duration.value, paymentMethod: paymentMethod.value, plan: plan });
+    const checkResult = await payApi.create({ price: totalPrice.value, duration: duration.value, paymentMethod: paymentMethod.value, plan: plan });
 
-
-    if (!result.success) {
+    if (!checkResult.success) {
       modal.isOpen = true;
-      modal.isSuccess = result.success;
-      modal.message = result.message || 'Huduma ya malipo ina hitilafu kwa sasa, toa taarifa au jaribu tena baadae';
+      modal.isSuccess = false;
+      modal.message = checkResult.message || 'Huduma ya malipo ina hitilafu kwa sasa, tafadhali jaribu tena baadaye.';
+      isLoading.value = false;
+      return;
     }
 
+    // 3. Initiate push USSD payment
     const payNowApi = new CrudService<PaymentRequest>("mobile/USSD-push");
     const payNowResult = await payNowApi.get();
 
 
-
-    if (!payNowResult.success) {
-      modal.isOpen = true;
-      modal.isSuccess = false;
-      modal.message = payNowResult.message || 'Huwezi kufanya malipo bila kuwa na laini ya Tigo au Airtel kwenye kifaa chako.';
-    }
+    modal.isOpen = true;
+    modal.isSuccess = payNowResult.success;
+    modal.message = payNowResult.message || (payNowResult.success
+      ? 'Malipo yameanzishwa kikamilifu. Tafadhali thibitisha kwenye simu yako.'
+      : 'Tatizo kwenye mtandao wako, badili mtandao au jaribu baadae');
 
     isLoading.value = false;
   });
