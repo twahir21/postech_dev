@@ -77,7 +77,7 @@ export const prodData = t.Object({
     }),
     minStock: t.Number({
         maximum: 999999999999.99,
-        minimum: 1,
+        minimum: 0,
         error() {
             return {
                 success: false,

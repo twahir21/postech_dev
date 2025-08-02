@@ -442,7 +442,7 @@ export const head: DocumentHead = {
       // SEO Basic meta tags
       { name: "description", content: "Hakuna kukariri bei, kutunza kumbukumbu kwenye daftari, mahesabu, kufuatilia bidhaa zilizokwisha, na mengine mengi. Rahisisha mauzo, Angalia mwenendo wa faida kila siku, fuatilia madeni, na simamia bidhaa zako kwa ufanisi zaidi leo!" },
       { name: "keywords", 
-        content: "POS, myPostech, mypostech store, postech store, myPosTech, sales management, inventory management, Qwik, e-commerce, point of sale system, POS ya kiswahili, Programu ya Biashara, Stoo, Madeni, Mfumo wa biashara, biashara kidigitali" 
+        content: "POS, postech, myPostech, mypostech store, postech store, myPosTech, sales management, inventory management, Qwik, e-commerce, point of sale system, POS ya kiswahili, Programu ya Biashara, Stoo, Madeni, Mfumo wa biashara, biashara kidigitali" 
       },
       { name: "author", content: "Twahir Sudy" },
       { name: "robots", content: "index, follow" },
@@ -466,11 +466,15 @@ export const head: DocumentHead = {
       { name: "twitter:title", content: "myPosTech - Mfumo bora kwa biashara zote" },
       { name: "twitter:description", content: "Mauzo ya haraka kwa kutumia Mic (sauti), dashibodi ya Kiswahili, na muundo wa kisasa wa simu." },
       { name: "twitter:image", content: "https://mypostech.store/thumbnail2.webp" },
-  
-      // Structured Data (JSON-LD) for enhanced SEO
+    ],
+
+    // Structured Data (JSON-LD) for enhanced SEO
+    scripts: [
       {
-        name: "application/ld+json",
-        content: JSON.stringify(
+        props: {
+          type: "application/ld+json",
+        },
+        script: JSON.stringify(
             {
                 "@context": "https://schema.org",
                 "@graph": [
@@ -483,9 +487,9 @@ export const head: DocumentHead = {
                   {
                     "@type": "LocalBusiness",
                     "name": "myPosTech",
-                    "image": "https://mypostech.store/thumbnail2.web[",
+                    "image": "https://mypostech.store/thumbnail2.webp",
                     "url": "https://mypostech.store",
-                    "telephone": "+255621031195",
+                    "telephone": "+255674291587",
                     "address": {
                       "@type": "PostalAddress",
                       "streetAddress": "Kurasini",
@@ -508,7 +512,7 @@ export const head: DocumentHead = {
                       "@type": "Offer",
                       "url": "https://mypostech.store",
                       "priceCurrency": "TZS",
-                      "price": "0.00",
+                      "price": "5000.00",
                       "availability": "https://schema.org/InStock"
                     }
                   },

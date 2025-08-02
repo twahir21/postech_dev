@@ -260,13 +260,15 @@ export const PayStatus = async ({ userId, shopId, headers }: { userId: string, s
         const options = {method: 'GET', headers: {Authorization: `${resultToken}`}};
 
         const checkStatusData = await fetch(`https://api.clickpesa.com/third-parties/payments/{${orderId}}`, options)
+        console.log(checkStatusData);
         const checkStatus = await checkStatusData.json().catch((err) => {
             return {
                 success: false,
                 message: err instanceof Error ? err.message : "Seva ya malipo imefeli"
             }
         });
-        await logSnagErrors(`PayStatus: ${JSON.stringify(checkStatus)}`, "PayStatus")
+        console.log(checkStatus)
+        // await logSnagErrors(`PayStatus: ${JSON.stringify(checkStatus)}`, "PayStatus")
         return {
             success: true,
             message: "Imeona hali ya malipo uliofanya"

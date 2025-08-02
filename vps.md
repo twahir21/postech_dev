@@ -130,6 +130,19 @@ BEGIN
         EXECUTE 'DROP TABLE IF EXISTS public.' || quote_ident(r.tablename) || ' CASCADE';
     END LOOP;
 END $$;
+or 
+```
+```sql
+-- Connect to your database
+\c postech
+
+-- This will delete ALL objects in the public schema (tables, views, functions, etc.)
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+-- Restore default privileges
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO public;
 ```
 
 ## SETTING UP CONNECTION POOLER 
@@ -140,6 +153,38 @@ by default postgres doesnot support many users so we use:
 2.1 setup:
 ```bash
 sudo apt install pgbouncer
+```
+
+Check if PgBouncer is installed
+```bash
+dpkg -l | grep pgbouncer
+```
+### HOW TO SETUP PGBOUNCER:
+
+1. Edit the pgbouncer configuration file
+```bash
+sudo nano /etc/pgbouncer/pgbouncer.ini
+```
+
+2. replace with
+```bash
+[databases]
+postech = host=127.0.0.1 port=5432 dbname=postech
+
+[pgbouncer]
+listen_addr = 127.0.0.1
+listen_port = 6432
+auth_type = md5
+auth_file = /etc/pgbouncer/userlist.txt
+pool_mode = transaction
+max_client_conn = 100
+default_pool_size = 20
+```
+
+deleting pgbouncer
+```bash
+sudo systemctl stop pgbouncer && sudo systemctl disable pgbouncer && sudo apt remove pgbouncer
+&& sudo apt purge pgbouncer && sudo apt autoremove
 ```
 
 ## 📁 Example: Copy file from VPS to PC
