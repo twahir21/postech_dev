@@ -29,5 +29,15 @@ export const speechPlugin = new Elysia()
 
         if (!shopId || !userId) return;
 
-        return await fallbackExtractor(shopId, `mama juma alikopeshwa pipi za 50 lita sitini na saba na nusu na robo nimemtolea shilingi elfu hamisini na saba`);
+//         const promptSentence  = `
+//         Nimempunguzia mama juma shilingi 10,000 kwenye unga kilo 5
+// `;
+        const promptSentence = "nimenunua unga wa muhogo kilo 6";
+        // normalize
+        const normalizedSentence = promptSentence.toLowerCase()
+                                .replace(/[_'",.?]/g, ' ')  // replace undesired characters with space
+                                .replace(/\s+/g, ' ')      // normalize multiple spaces
+                                .trim();
+
+        return await fallbackExtractor(shopId, normalizedSentence);
     })
