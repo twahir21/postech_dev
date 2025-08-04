@@ -95,6 +95,12 @@ export const CrudPrdComponent =  component$(() => {
     isDeleting.value = true;
     if (!res.success) return;
     products.value = products.value.filter(product => product.id !== productId);
+    isDeleting.value = false;
+
+    // fire the popup
+    modal.isOpen = true;
+    modal.isSuccess = res.success;
+    modal.message = res.message || 'Bidhaa imefutwa kwa mafanikio';
   });
   
 

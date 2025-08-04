@@ -24,7 +24,7 @@ export const Speech = component$(() => {
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      error.value = 'SpeechRecognition API is not supported in this browser.';
+      error.value = 'Browser yako haisapoti, ibadilishe';
       return;
     }
 
