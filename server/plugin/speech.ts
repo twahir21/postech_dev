@@ -3,6 +3,8 @@ import { extractId } from "../functions/security/jwtToken";
 import { handleSpeech } from "../functions/speechFunc";
 import Elysia from "elysia";
 import { fallbackExtractor } from "../robot/fallback";
+import { isPotentialXSS } from "../functions/utils/isXSS";
+import { sanitizeString } from "../functions/security/xss";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -32,7 +34,18 @@ export const speechPlugin = new Elysia()
 //         const promptSentence  = `
 //         Nimempunguzia mama juma shilingi 10,000 kwenye unga kilo 5
 // `;
-        const promptSentence = "nimenunua unga wa muhogo kilo 6";
+        let promptSentence = "nimenunua unga wa muhogo kilo 6";
+
+        // Security check first .... sanitization
+        if (isPotentialXSS(promptSentence)) {
+            return {
+                success: false,
+                message: "Maandishi yako yana vitu visivyo salama. Huwezi kudukua kirahisi hivyo."
+            };
+        }
+
+        // second security check
+        promptSentence = sanitizeString(promptSentence);
         // normalize
         const normalizedSentence = promptSentence.toLowerCase()
                                 .replace(/[_'",.?]/g, ' ')  // replace undesired characters with space

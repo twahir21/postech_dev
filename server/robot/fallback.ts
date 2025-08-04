@@ -3,12 +3,18 @@ import { mainDb } from "../database/schema/connections/mainDb";
 import { products, customers } from "../database/schema/shop"; // Added customers table
 import { redisClient } from "../database/schema/connections/Redis";
 import { extractAction } from "../functions/utils/tense";
+import crypto from 'crypto';
 
 // Improved version with caching strategy and proper error handling
 // Cache keys
 const PRODUCTS_CACHE_KEY = (shopId: string) => `products:${shopId}`;
 const CUSTOMERS_CACHE_KEY = (shopId: string) => `customers:${shopId}`;
-const SENTENCE_CACHE_KEY = (shopId: string, sentence: string) => `sentence:${shopId}:${sentence}`;
+
+// avoid long redis keys by hashing sentence
+const hashSentence = (text: string) => 
+  crypto.createHash('sha1').update(text).digest('hex');
+
+const SENTENCE_CACHE_KEY = (shopId: string, sentence: string) => `sentence:${shopId}:${hashSentence(sentence)}`;
 
 
 export const fallbackExtractor = async (shopId: string, sentence: string) => {
@@ -30,33 +36,6 @@ export const fallbackExtractor = async (shopId: string, sentence: string) => {
             getCachedCustomers(shopId)
         ]);
 
-        if (prdRows.length === 0 || custRows.length === 0) {
-            // fallback to db
-            // 2. Fetch products and customers from DB if not cached
-        const [prdRows, custRows] = await Promise.all([
-            mainDb.select({ name: products.name })
-                .from(products)
-                .where(eq(products.shopId, shopId)),
-                
-            mainDb.select({ name: customers.name })
-                .from(customers)
-                .where(eq(customers.shopId, shopId))
-                
-        ]);
-            console.log("database calling")
-
-
-        if (prdRows.length === 0 || custRows.length === 0) {
-            return {
-                success: false,
-                message: "Hakuna bidhaa au wateja waliyosajiliwa"
-            };
-        }
-
-        
-        }
-        
-
         // 3. Preprocess names (lowercase and trim)
         const productNames = prdRows.map(r => r.name.trim().toLowerCase());
         const customerNames = custRows.map(r => r.name.trim().toLowerCase());
@@ -66,12 +45,12 @@ export const fallbackExtractor = async (shopId: string, sentence: string) => {
         const foundMatches = await findMatches(sentence.toLowerCase(), productNames, customerNames);
 
 
-        // // 5. Cache exact sentence match (TTL 1 hour)
-        // await redisClient.setEx(
-        //     exactSentenceKey,
-        //     3600,
-        //     JSON.stringify(foundMatches)
-        // );
+        // 5. Cache exact sentence match (TTL 1 hour)
+        await redisClient.setEx(
+            exactSentenceKey,
+            3600,
+            JSON.stringify(foundMatches)
+        );
 
         return foundMatches;
 
