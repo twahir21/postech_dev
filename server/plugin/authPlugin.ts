@@ -126,3 +126,28 @@ export const authPlugin = new Elysia()
             }
         }
     })
+    .get("/isLoggedIn", async ({ jwt, cookie }) => {
+        try {
+            const { userId, shopId } = await extractId({ jwt, cookie });
+
+            if (!userId || !shopId) {
+                return {
+                    success: false,
+                    message: "Hakikisha ume login!"
+                }
+            }
+
+            return {
+                success: true,
+                message: "Umefanikiwa kuangalia kama ume login",
+                data: [{ userId, shopId }]
+            }
+        } catch (error) {
+            return {
+                success: false,
+                message: error instanceof Error ?
+                    error.message
+                    : "Hitilafu kwenye seva katika api ya kuangalia kama ume login"
+            }
+        }
+    });
