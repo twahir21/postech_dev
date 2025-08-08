@@ -34,7 +34,7 @@ export const speechPlugin = new Elysia()
 //         const promptSentence  = `
 //         Nimempunguzia mama juma shilingi 10,000 kwenye unga kilo 5
 // `;
-        let promptSentence = "nimenunua unga wa muhogo kilo 6";
+        let promptSentence = "Nimempunguzia mama juma shilingi 10,000 kwenye unga wa muhogo kilo 5";
 
         // Security check first .... sanitization
         if (isPotentialXSS(promptSentence)) {

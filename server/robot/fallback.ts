@@ -65,7 +65,28 @@ export const fallbackExtractor = async (shopId: string, sentence: string) => {
 };
 
 // Optimized matching function
-async function findMatches(sentence: string, productNames: string[], customerNames: string[]) {
+async function findMatches(
+    sentence: string, 
+    productNames: string[], 
+    customerNames: string[]
+): Promise<{
+    success: boolean;
+    message: string;
+    data?:{
+        actionDetected: {
+        action: string;
+        discount: number | null;
+        quantity: number;
+        usedFor: {
+            usedForWhat: string;
+            usedForAmount: number | null;
+        } | null;
+    },
+    sentence: string;
+    products: string;
+    customers: string;
+    }[]
+}> {
     const words = sentence.split(/\s+/);
     const foundProducts: string[] = [];
     const foundCustomers: string[] = [];
@@ -117,23 +138,26 @@ async function findMatches(sentence: string, productNames: string[], customerNam
     if (condition) {
         return {
             success: false,
-            message: "Sentensi yako sio sahihi, hakukuwa na bidhaa iliyopatikana",
+            message: "Sentensi yako sio sahihi, hakukuwa na bidhaa iliyopatikana"
         }
     }
 
     if (actionDetected.action === 'kukopesha' && foundCustomers.length === 0) {
         return {
             success: false,
-            message: "Mteja hajatambulika, kukopesha lazima mfumo umtambue mteja"
+            message: "Mteja hajatambulika, kukopesha lazima mfumo umtambue mteja",
         }
     }
 
     return {
         success: true,
-        products: foundProducts[0],
-        customers: foundCustomers[0],
-        actionDetected: actionDetected ,
-        sentence
+        data: [{
+            products: foundProducts[0],
+            customers: foundCustomers[0],
+            actionDetected: actionDetected,
+            sentence,
+        }],
+        message: "Sentensi imefanikiwa"
     };
 }
 
