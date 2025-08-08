@@ -14,6 +14,7 @@ import { Partiners } from "~/components/Partiners";
 import { InstallPWA } from "~/components/ui/install";
 import { CrudService } from "./api/base/oop";
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
+import { HeroVideo } from "~/components/Video";
 
 
 export default component$(() => {
@@ -270,15 +271,7 @@ export default component$(() => {
 
               <InstallPWA />
 
-              <Link
-                href="#video"
-                class="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-700 to-green-900 text-white rounded-full shadow-2xl animate-pulse hover:animate-none transition text-sm sm:text-base"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M6.5 5.5v9l8-4.5-8-4.5z" />
-                </svg>
-                Tazama Video
-              </Link>
+              <HeroVideo />
             </div>
 
           </div>

@@ -252,10 +252,6 @@ export default component$(() => {
                 </div>
               )}
             </div>
-
-              <div class="relative">
-                <Typing />
-              </div>
             
             {/* tooltip  */}
             <div class="relative">
@@ -329,6 +325,15 @@ export default component$(() => {
                   </div>
                 </div>
               )}
+            </div>
+
+            <div class="relative">
+              <Typing />
+            </div>
+
+            {/* Receipt */}
+            <div class="relative text-xl pt-2" title="Oda nyingi ...">
+              ✍️
             </div>
 
 

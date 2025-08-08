@@ -131,9 +131,9 @@ const selectSuggestion = $((name: string) => {
       <button
         onClick$={togglePopup}
         class="text-xl pt-0.5 mt-1.5"
-        title="Andika..."
+        title="Oda moja..."
       >
-        ✍️
+        🚀
       </button>
 
       {showPopup.value && <div class="fixed top-16 right-0 w-full max-w-sm bg-[#EEEFE0] border p-4 rounded-xl shadow-md z-50">
@@ -161,7 +161,7 @@ const selectSuggestion = $((name: string) => {
       {/* Textarea + Autocomplete Dropdown */}
       <div class="relative">
         <textarea
-          placeholder="Mfano: nimemkopesha ali maziwa lita kumi na sita"
+          placeholder="Mfano: nimemkopesha ali maziwa lita kumi na sita au nimeuza ngano kilo 2"
           bind:value={inputText}
           rows={3}
           class="w-full p-2 rounded border text-lg bg-white"

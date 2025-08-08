@@ -92,7 +92,12 @@ if (!isValidPlan(plan)) return (
 
     // 2. Check if USSD is available
     const payApi = new CrudService<PaymentRequest>("mobile/check-USSD");
-    const checkResult = await payApi.create({ price: totalPrice.value, duration: duration.value, paymentMethod: paymentMethod.value, plan: plan });
+    const checkResult = await payApi.create({ 
+      price: totalPrice.value, 
+      duration: duration.value, 
+      paymentMethod: paymentMethod.value, 
+      plan: plan
+    });
 
     if (!checkResult.success) {
       modal.isOpen = true;
