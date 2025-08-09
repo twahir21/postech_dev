@@ -237,7 +237,7 @@ export const prodDel = async ({userId, shopId, productId, headers}: {userId: str
 
 export const prodSearch = async ({ shopId, userId, query }: {shopId: string, userId: string, query: string }): Promise<{ success: boolean; data?: { name: string }[]; message: string}> => {
   try {
-
+    
     const rows = await mainDb
       .select({ name: products.name })
       .from(products)

@@ -3,7 +3,12 @@ import { Toast } from "~/components/ui/Toast";
 import { SendIcon } from "lucide-qwik";
 import { CrudService } from "~/routes/api/base/oop";
 
-export const Confirmation =  component$(() => {
+interface ChildProp {
+    text: string;
+}
+
+export const Confirmation =  component$<ChildProp>(({ text }) => {
+    console.log("Text: ", text)
   // State management
   const isLoading = useSignal(true);
   const responseData = useSignal<ResponseDataFallback | null>(null);
@@ -34,7 +39,7 @@ export const Confirmation =  component$(() => {
   // Fetch Data from the server
   useVisibleTask$(async () => {
     try {
-      const api = new CrudService<ResponseDataFallback>('fallback');
+      const api = new CrudService<ResponseDataFallback>(`fallback?text=${encodeURIComponent(text)}`);
       const response = await api.get();
 
       if (!response.success) {

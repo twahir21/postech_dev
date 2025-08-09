@@ -173,18 +173,6 @@ useVisibleTask$(async ({ track }) => {
           <p class="text-xl font-bold">{analyticsStore.sales}/=</p>
         </div>
 
-
-        {/* --------------------------------
-                    JUMLA YA MANUNUZI
-        -------------------------------- */}      
-        <div class="bg-pink-200 text-pink-800 p-4 rounded-2xl shadow text-center">
-            <h3 class="text-sm flex items-center justify-center">
-              <span role="img" aria-label="return" class="pr-1.5">🛒</span> 
-              Jumla ya Manunuzi
-            </h3>
-            <p class="text-1xl font-semibold">{analyticsStore.purchases}/=</p>
-        </div>
-
         {/* --------------------------------
                     MATUMIZI YA JUMLA 
         -------------------------------- */}      
