@@ -1,9 +1,9 @@
 import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import { CrudService } from "../api/base/oop";
 import { Toast } from "~/components/ui/Toast";
 import { SendIcon } from "lucide-qwik";
+import { CrudService } from "~/routes/api/base/oop";
 
-export default component$(() => {
+export const Confirmation =  component$(() => {
   // State management
   const isLoading = useSignal(true);
   const responseData = useSignal<ResponseDataFallback | null>(null);
@@ -64,7 +64,7 @@ export default component$(() => {
   return (
     <>
       <button
-        class="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-200 hover:text-gray-900 text-sm transition duration-300 ease-in-out"
+        class="px-4 py-2 hover:text-gray-500 text-sm transition duration-300 ease-in-out cursor-pointer"
         onClick$={$(() => {
           modalPopup.value = true;
         })}

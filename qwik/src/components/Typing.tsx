@@ -1,15 +1,14 @@
 import { $, component$, useContext, useSignal, useStore } from '@builder.io/qwik';
-import { SendIcon } from 'lucide-qwik';
 import { CrudService } from '~/routes/api/base/oop';
 import { Toast } from './ui/Toast';
 import { RefetchContext } from './context/refreshContext';
+import { Confirmation } from './Comfirmation';
 
 export const Typing = component$(() => {
   const inputText = useSignal('');
   const suggestions = useSignal<string[]>([]);
   const showSuggestions = useSignal(false);
   const showPopup = useSignal(false);
-  const isLoading = useSignal(false);
 
 
   const modal = useStore({
@@ -89,38 +88,6 @@ const selectSuggestion = $((name: string) => {
   showSuggestions.value = false;
 });
 
-
-
-
-  const handleSubmit = $(async () => {
-    isLoading.value = true;
-    const allowedActions = [
-      'nimeuza', 'niliuza', 'nilimuuzia','nauza', 'nimemuuzia',
-      'nimenunua', 'nimeongeza', 'niliagiza', 'nimemnunulia',
-      'nimetumia', 'nilitumia', 
-      'nimemkopesha', 'namkopesha', 'nilimkopesha'
-    ];
-
-    let text = inputText.value.trim();
-
-    const firstWord = text.split(' ')[0].toLowerCase();
-
-    if (!allowedActions.includes(firstWord)) {
-      text = `nimeuza ${text}`;
-    }
-    const api = new CrudService<{ id?: string; text: string }>("speech");
-
-    const result = await api.create({ text });
-
-    modal.isOpen = true;
-    modal.isSuccess = result.success;
-    modal.message = result.message || (result.success ? 'Umefanikiwa' : 'Hitilafu imetokea, jaribu baadae');
-
-
-    showPopup.value = false;
-    isLoading.value = false;
-  });
-
   // popup
   const togglePopup = $(() => {
     showPopup.value = !showPopup.value;
@@ -185,7 +152,8 @@ const selectSuggestion = $((name: string) => {
 
       <div class="flex justify-between items-center mt-3">
         <button onClick$={togglePopup} title='Funga'>❌</button>
-        <button onClick$={handleSubmit} title="Tuma" disabled={isLoading.value}><SendIcon /></button>
+        {/* <button onClick$={handleSubmit} title="Tuma" disabled={isLoading.value}><SendIcon /></button> */}
+        <Confirmation />
       </div>
 
     </div>}
