@@ -139,7 +139,6 @@ export const cleanResets = async () => {
   }
 }
 
-
 export async function cleanupOldData() {
   try {
       // 1. Select all shops and their subscription

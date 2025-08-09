@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import type { exportSet, SalesQuery } from '../types/types';
 import { prodCheck } from './utils/packages';
 import { timeRemainingUntil } from './utils/block';
+import { getNetProfit } from './utils/daily.usage';
 
 
 
@@ -304,6 +305,10 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
           .where(eq(askedProducts.shopId, shopId))
           .orderBy(desc(askedProducts.quantityRequested))
           .limit(1).then(rows => rows[0]?.name ?? "Hakuna");
+
+          // add logic to save netProfit so as to send end of the day.
+          await getNetProfit({ netProfit });
+
 
         console.timeEnd("Analytics");
 

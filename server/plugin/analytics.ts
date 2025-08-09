@@ -18,7 +18,7 @@ const analyticsRoute = new Elysia()
     const { userId, shopId } = await extractId({ jwt, cookie });
     if (!shopId || !userId) return;
 
-    const result = await getAnalytics({ userId, shopId })
+    const result = await getAnalytics({ userId, shopId });
 
     return result;
   })
