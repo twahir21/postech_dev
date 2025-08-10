@@ -20,7 +20,6 @@ const analyticsRoute = new Elysia()
     if (!shopId || !userId) return;
 
     const result = await getAnalytics({ userId, shopId });
-    await sendDailyReportCron();
 
     return result;
   })

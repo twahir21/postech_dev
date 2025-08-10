@@ -15,3 +15,5 @@
 ####
 tarehe 1/8 kuagiza mzigo na kuingia nao nane nane.
 
+## go viral
+- nenda media ruhusu maswali live na eleza app yako kiundani kwa public. channel East Africa live and 5 selection.

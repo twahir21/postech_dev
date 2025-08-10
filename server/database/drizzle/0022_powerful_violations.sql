@@ -1,0 +1,1 @@
+ALTER TABLE "graph_data" DROP COLUMN "purchases";

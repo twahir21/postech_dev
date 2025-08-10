@@ -134,6 +134,34 @@
       "when": 1753343354631,
       "tag": "0018_thin_luke_cage",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1754823116452,
+      "tag": "0019_kind_weapon_omega",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1754832941508,
+      "tag": "0020_fat_pyro",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1754835133333,
+      "tag": "0021_purple_zaladane",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1754837839987,
+      "tag": "0022_powerful_violations",
+      "breakpoints": true
     }
   ]
 }

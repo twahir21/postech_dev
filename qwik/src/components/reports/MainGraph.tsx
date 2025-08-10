@@ -2,7 +2,7 @@ import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import ApexCharts from 'apexcharts';
 
 export const ChartCard = component$(({ title, chartId }: { title: string; chartId: string }) => {
-  const filter = useSignal<'week' | 'month' | 'year' >('week');
+  const filter = useSignal<'day' | 'week' | 'month' | 'year' >('day');
 
   return (
     <div class="bg-gradient-to-br from-green-50 via-blue-50 to-yellow-50 rounded-2xl shadow p-4 border">
@@ -16,6 +16,7 @@ export const ChartCard = component$(({ title, chartId }: { title: string; chartI
                 filter.value = (e.target as HTMLSelectElement).value as typeof filter.value;
               }}
             >
+              <option value="day">Siku iliyopita</option>
               <option value="week">Wiki iliyopita</option>
               <option value="month">Mwezi uliopita</option>
               <option value="year">Miezi 6 iliyopita</option>

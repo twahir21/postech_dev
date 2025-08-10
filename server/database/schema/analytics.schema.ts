@@ -1,7 +1,7 @@
 // tables for 6 graphs and do cron job for computation 
 // and check if data reaches a week unlock the week function 
 
-import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 
 // -------------------------------------------------
@@ -41,5 +41,20 @@ export const dailySales = pgTable("daily_sales", {
     totalPurchases: text("total_purchases"),
     totalExpenses: text("total_expenses"),
     netProfit: text("net_profit"),
-    shopId: uuid("shop_id")
+    shopId: uuid("shop_id"),
+    createdAt: timestamp("created_At").defaultNow(),
+})
+
+// -------------------------------------------------
+//              GRAPH DATA
+// -------------------------------------------------
+
+export const graphData = pgTable("graph_data", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    date: text("date"),
+    sales: text("sales"),
+    expenses: text("expenses"),
+    profit: text("profit"),
+    shopId: uuid("shop_id"),
+    createdAt: timestamp("created_At").defaultNow(),
 })

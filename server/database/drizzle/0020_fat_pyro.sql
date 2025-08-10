@@ -1,0 +1,1 @@
+ALTER TABLE "daily_sales" ADD COLUMN "created_At" timestamp DEFAULT now();

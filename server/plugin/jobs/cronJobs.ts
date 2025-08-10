@@ -1,12 +1,13 @@
 import { mainDb } from "../../database/schema/connections/mainDb";
 import { emailVerifications, expenses, notifications, passwordResets, paymentSaaS, products, purchases, returns, sales, shops, shopUsers, supplierPriceHistory, users } from "../../database/schema/shop";
-import { and, eq, inArray, lt } from "drizzle-orm";
+import { and, desc, eq, inArray, lt, sql } from "drizzle-orm";
 import "dotenv/config";
 import { retentionPeriods, type SubscriptionLevel } from "../../functions/utils/packages";
 import { notifyTrialEnd } from "../email/trialEnd.email";
 import { sendDelWarning } from "../email/backup.email";
 import { logSnagErrors, logSnagSuccess } from "../app/logSnag";
 import { sendDailyReportEmail } from "../email/report.email";
+import { dailySales, graphData } from "../../database/schema/analytics.schema";
 
 export const clearVerifiedEmails = async() => {
 
@@ -312,13 +313,52 @@ export const sendDailyReportCron = async () => {
     .innerJoin(shopUsers, eq(users.id, shopUsers.userId))
     .innerJoin(shops, eq(shops.id, shopUsers.shopId));
 
-    console.log("Emails: ", emails);
-
-    for(const email of emails){
-      await sendDailyReportEmail({ email: email.email, shopName: email.shopName });
+    // for safety for emails
+    if (emails.length === 0) {
+      return;
     }
 
-    // await sendDailyReportEmail();
+    for(const email of emails){
+          // select daily report
+    const dailyReport = await mainDb 
+          .select({
+            faida: dailySales.netProfit,
+            matumizi: dailySales.totalExpenses,
+            mauzo: dailySales.totalSales,
+            shopId: dailySales.shopId
+          }).from(dailySales)
+          .innerJoin(shopUsers, eq(dailySales.shopId, shopUsers.shopId))
+          .innerJoin(users, eq(shopUsers.userId, users.id))
+          .limit(1)
+          .orderBy(desc(dailySales.createdAt))
+          .then(r => r[0]);
+                    
+      await sendDailyReportEmail({ 
+        email: email.email, shopName: email.shopName,
+        netProfit: dailyReport
+      });
+
+      // save a single data
+        await mainDb.insert(graphData).values({
+          profit: dailyReport.faida,
+          expenses: dailyReport.matumizi,
+          sales: dailyReport.mauzo,
+          date: sql`now()`,
+          shopId: dailyReport.shopId
+        })
+      // * important to add graphs data here
+
+      // delete the data in table (later in chunks)
+      const dataLength = await mainDb.select({
+        id: dailySales.id
+      }).from(dailySales).then(d => d.length);
+
+      if (dataLength < 1000) await mainDb.delete(dailySales);
+      else await logSnagSuccess(`
+        The length of data to be deleted is ${dataLength} in dailySales table`,
+      "sendDailyReportCron")
+    }
+    
   } catch (error) {
         await logSnagErrors (error instanceof Error
               ? error.message

@@ -6,7 +6,8 @@ import {
   cleanupOldData,
   cleanResets,
   notifyBeforeEnds,
-  cleanCancelledPayments
+  cleanCancelledPayments,
+  sendDailyReportCron
 } from './cronJobs';
 
 export const bgJobsPlugin = new Elysia()
@@ -101,3 +102,17 @@ export const bgJobsPlugin = new Elysia()
     }
   }))
 
+// job for sending daily report
+  .use(cron({
+    name: 'send-daily-report',
+    pattern: '0 23 * * *', 
+    async run() {
+      try {
+        console.time("send-daily-report")
+        await sendDailyReportCron();
+        console.timeEnd("send-daily-report")
+      } catch (error) {
+        console.error('[Cron] Send daily report failed:', error);
+      }
+    }
+  }))

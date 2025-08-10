@@ -1,46 +1,96 @@
-<!DOCTYPE html>
-<html lang="sw">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ripoti ya Faida ya Leo</title>
-</head>
-<body style="margin:0; padding:0; font-family:Arial, sans-serif; background-color:#f5f5f5; color:#000;">
-  <div style="max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:8px; overflow:hidden;">
 
-    <!-- Header -->
-    <div style="padding:20px; text-align:center; border-bottom:1px solid #ddd;">
-      <img src="https://www.mypostech.store/newLogo.webp" alt="PosTech Logo" style="max-width:80px; height:auto; display:block; margin:0 auto;">
-      <h1 style="margin:10px 0 5px; font-size:20px; font-weight:600;">Ripoti ya Faida ya Leo</h1>
-      <p style="margin:0; font-size:14px; color:#555;">${currentDate}</p>
-    </div>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Ufutaji wa taarifa za zamani</title>
+        <style>
+            body {
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .header {
+                background-color: #1e293b;
+                color: white;
+                padding: 20px;
+                text-align: center;
+                border-radius: 5px 5px 0 0;
+            }
+            .content {
+                padding: 25px;
+                background-color: #f9f9f9;
+                border-left: 1px solid #ddd;
+                border-right: 1px solid #ddd;
+            }
+            .footer {
+                padding: 15px;
+                text-align: center;
+                font-size: 12px;
+                color: #777;
+                background-color: #eee;
+                border-radius: 0 0 5px 5px;
+                border: 1px solid #ddd;
+                border-top: none;
+            }
+            .button {
+                display: inline-block;
+                padding: 12px 25px;
+                background-color: #1e293b;
+                color: white;
+                text-decoration: none;
+                border-radius: 4px;
+                font-weight: bold;
+                margin: 20px 0;
+            }
+            .button:hover {
+                background-color: #303641;
+            }
+            .logo-container {
+            text-align: center;
+                margin-bottom: 20px;
+            }
 
-    <!-- Content -->
-    <div style="padding:20px;">
-      <p style="margin:0 0 20px; font-size:15px;">Habari ${shopName},<br>
-      Hii ni ripoti ya miamala yako ya leo:</p>
-
-      <div style="margin-bottom:12px; padding:12px; border:1px solid #ddd; border-radius:6px;">
-        <strong>Mauzo:</strong>
-        <span style="float:right;">TSh 1,250,000/=</span>
-      </div>
-
-      <div style="margin-bottom:12px; padding:12px; border:1px solid #ddd; border-radius:6px;">
-        <strong>Matumizi:</strong>
-        <span style="float:right;">TSh 350,000/=</span>
-      </div>
-
-      <div style="padding:12px; border:1px solid #ddd; border-radius:6px;">
-        <strong>Faida:</strong>
-        <span style="float:right; color:green;">TSh 900,000/=</span>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div style="padding:15px; text-align:center; font-size:13px; color:#555; border-top:1px solid #ddd;">
-      <p style="margin:0;">Kama kuna hitilafu yoyote, tafadhali wasiliana nasi kupitia 0674291587</p>
-      <p style="margin:5px 0 0;">© 2025 MyPosTech. Biashara yako, Teknolojia yetu.</p>
-    </div>
-  </div>
-</body>
-</html>
+            .logo-container .logo {
+                max-width: 70px;
+                height: auto;
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://www.mypostech.store/newLogo.webp" alt="PosTech Logo" class="logo">
+            </div>
+            <h1>Ufutaji wa taarifa za zamani</h1>
+        </div>
+        
+        <div class="content">
+            <p>Habari <strong>"${shopName}"</strong>,</p>
+            
+            <p>Katika Sera yetu ya uhifadhi wa Taarifa, Tutafuta taarifa zako za zamani ndani ya <strong>siku ${warningDays}</strong>.</p>
+            
+            <p>Kifurushi chako kinasapoti muda wa <strong> ${monthsToKeep === 1 ? "mwezi" : "miezi"} ${monthsToKeep}</strong></p>
+            
+            <p>Kama unataka kuhifadhi taarifa zako, Pakua nakala (copy) yake kabla ya tarehe ya ufutaji</p>
+            
+            <center>
+                <a href="#" class="button" download>
+                    Pakua nakala yako (PDF)
+                </a>
+            </center>
+            
+            <p>Baada ya kufikia tarehe ya kufuta, taarifa haziwezi kurudishwa.</p>
+                    
+            <p>Best regards,<br>
+            MyPosTeach Team</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 myPosTech. All rights reserved.</p>
+        </div>
+    </body>
+    </html>

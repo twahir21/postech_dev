@@ -16,14 +16,14 @@ export const getNetProfit = async ({
 }, shopId: string) => {
   try {
     // insert to database
-    await mainDb.update(dailySales).set({
+    await mainDb.insert(dailySales).values({
       date: sql`now()`,
       totalSales: netProfit.totalSales.toString(),
       totalPurchases: netProfit.totalPurchases.toString(),
       totalExpenses: netProfit.totalExpenses.toString(),
       netProfit: netProfit.netProfit.toString(),
       shopId
-    });
+    });    
     
   } catch (error) {
     return {

@@ -1,6 +1,15 @@
 import nodemailer from "nodemailer";
 
-export const sendDailyReportEmail = async ({ email, shopName }: { email: string; shopName: string; }) => {
+export const sendDailyReportEmail = async ({ 
+  email, shopName, netProfit 
+}: { 
+  email: string; shopName: string; 
+  netProfit: { 
+    faida: string | null;     
+    matumizi: string | null;
+    mauzo: string | null;
+  }
+}) => {
 
     // Set current date in Swahili format with TypeScript
     const dateOptions: Intl.DateTimeFormatOptions = { 
@@ -39,17 +48,17 @@ export const sendDailyReportEmail = async ({ email, shopName }: { email: string;
 
       <div style="margin-bottom:12px; padding:12px; border:1px solid #ddd; border-radius:6px;">
         <strong>Mauzo:</strong>
-        <span style="float:right;">TSh 1,250,000/=</span>
+        <span style="float:right;">TSh ${Number(netProfit.mauzo).toLocaleString("en-US")}/=</span>
       </div>
 
       <div style="margin-bottom:12px; padding:12px; border:1px solid #ddd; border-radius:6px;">
         <strong>Matumizi:</strong>
-        <span style="float:right;">TSh 350,000/=</span>
+        <span style="float:right;">TSh ${Number(netProfit.matumizi).toLocaleString("en-US")}/=</span>
       </div>
 
       <div style="padding:12px; border:1px solid #ddd; border-radius:6px;">
         <strong>Faida:</strong>
-        <span style="float:right; color:green;">TSh 900,000/=</span>
+        <span style="float:right; color:green;">TSh ${Number(netProfit.faida).toLocaleString("en-US")}/=</span>
       </div>
     </div>
 
