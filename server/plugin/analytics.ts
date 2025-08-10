@@ -5,6 +5,7 @@ import { salesQueryData } from '../functions/security/validators/data';
 import { exportSales, getAnalytics, graphFunc, salesAnalytics } from '../functions/analyticsFunc';
 import { extractId } from '../functions/security/jwtToken';
 import { checkServiceAccess } from '../functions/utils/packages';
+import { sendDailyReportCron } from './jobs/cronJobs';
 
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
@@ -19,6 +20,7 @@ const analyticsRoute = new Elysia()
     if (!shopId || !userId) return;
 
     const result = await getAnalytics({ userId, shopId });
+    await sendDailyReportCron();
 
     return result;
   })

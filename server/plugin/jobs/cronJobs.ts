@@ -314,6 +314,10 @@ export const sendDailyReportCron = async () => {
 
     console.log("Emails: ", emails);
 
+    for(const email of emails){
+      await sendDailyReportEmail({ email: email.email, shopName: email.shopName });
+    }
+
     // await sendDailyReportEmail();
   } catch (error) {
         await logSnagErrors (error instanceof Error
