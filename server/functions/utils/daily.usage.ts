@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { mainDb } from "../../database/schema/connections/mainDb";
-import { products, purchases, sales } from "../../database/schema/shop";
+import { dailySales } from "../../database/schema/analytics.schema";
 
 export interface NetProfitData {
   totalExpenses: number;
@@ -13,9 +13,17 @@ export const getNetProfit = async ({
   netProfit
 }: {
   netProfit: NetProfitData
-}) => {
+}, shopId: string) => {
   try {
-    console.log("NetProfit: ", netProfit);
+    // insert to database
+    await mainDb.update(dailySales).set({
+      date: sql`now()`,
+      totalSales: netProfit.totalSales.toString(),
+      totalPurchases: netProfit.totalPurchases.toString(),
+      totalExpenses: netProfit.totalExpenses.toString(),
+      netProfit: netProfit.netProfit.toString(),
+      shopId
+    });
     
   } catch (error) {
     return {

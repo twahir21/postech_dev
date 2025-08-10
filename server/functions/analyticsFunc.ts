@@ -307,7 +307,7 @@ export const getAnalytics = async ({ userId, shopId }: { userId: string, shopId:
           .limit(1).then(rows => rows[0]?.name ?? "Hakuna");
 
           // add logic to save netProfit so as to send end of the day.
-          await getNetProfit({ netProfit });
+          await getNetProfit({ netProfit }, shopId);
 
 
         console.timeEnd("Analytics");

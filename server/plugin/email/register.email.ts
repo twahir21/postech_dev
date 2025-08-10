@@ -85,7 +85,7 @@ export const sendMagicLink = async ({ frontendURL, link, email }: { frontendURL:
         <body>
         <div class="container">
             <div class="header">
-                <img src="${frontendURL}/thumbail.png" alt="App Logo">
+                <img src="${frontendURL}/newLogo.webp" alt="App Logo">
                 <h2>Thibitisha Barua Pepe Yako</h2>
             </div>
             <div class="content">

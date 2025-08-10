@@ -71,12 +71,12 @@ export const notifyTrialEnd = async ({ email, shopName, link }: { email: string;
     <body>
     <div class="container">
         <div class="header">
-            <img src="https://www.mypostech.store/thumbail.png" alt="App Logo">
+            <img src="https://www.mypostech.store/newLogo.webp" alt="PosTech Logo">
             <h2>Muda wa Jaribio Umeisha ⏳</h2>
         </div>
         <div class="content">
         <p>
-            Habari <strong>"${shopName}"</strong>,
+            Habari <strong>${shopName}</strong>,
         </p>
         <p style="line-height: 1.6;">
             Jaribio lako la siku 14 kwenye <strong>myPosTech</strong> limeisha. Ili kuendelea kutumia mfumo na kuona ripoti, faida na kufanya mauzo, tafadhali boresha kifurushi chako sasa.

@@ -29,3 +29,17 @@ export const visitorDetails = pgTable("visitor_details", {
     date: text("date"),
     ip: text("ip")
 });
+
+// -------------------------------------------------
+//              SALES DAILY 
+// -------------------------------------------------
+
+export const dailySales = pgTable("daily_sales", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    date: text("date"),
+    totalSales: text("total_sales"),
+    totalPurchases: text("total_purchases"),
+    totalExpenses: text("total_expenses"),
+    netProfit: text("net_profit"),
+    shopId: uuid("shop_id")
+})

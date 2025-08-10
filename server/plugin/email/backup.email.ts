@@ -53,10 +53,23 @@ export const sendDelWarning = async ({ email, shopName, monthsToKeep, warningDay
             .button:hover {
                 background-color: #303641;
             }
+            .logo-container {
+            text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .logo-container .logo {
+                max-width: 70px;
+                height: auto;
+                display: inline-block;
+            }
         </style>
     </head>
     <body>
         <div class="header">
+            <div class="logo-container">
+                <img src="https://www.mypostech.store/newLogo.webp" alt="PosTech Logo" class="logo">
+            </div>
             <h1>Ufutaji wa taarifa za zamani</h1>
         </div>
         

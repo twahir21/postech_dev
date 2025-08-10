@@ -47,10 +47,23 @@ export const sendResetEmail = async ({ email, link }: { email: string; link: str
           text-align: center;
           color: #a0aec0;
         }
+        .logo-container {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+
+        .logo-container .logo {
+          max-width: 70px;
+          height: auto;
+          display: inline-block;
+        }
       </style>
     </head>
     <body>
       <div class="container">
+        <div class="logo-container">
+          <img src="http://localhost:5173/newLogo.webp" alt="PosTech Logo" class="logo">
+        </div>
         <div class="header">
           <h2>Ombi la Kubadili Nenosiri</h2>
         </div>

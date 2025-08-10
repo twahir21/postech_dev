@@ -6,6 +6,7 @@ import { retentionPeriods, type SubscriptionLevel } from "../../functions/utils/
 import { notifyTrialEnd } from "../email/trialEnd.email";
 import { sendDelWarning } from "../email/backup.email";
 import { logSnagErrors, logSnagSuccess } from "../app/logSnag";
+import { sendDailyReportEmail } from "../email/report.email";
 
 export const clearVerifiedEmails = async() => {
 
@@ -298,5 +299,26 @@ export const cleanCancelledPayments = async () => {
               ? error.message
               :  "Hitilafu imetokea kwenye func ya kufuta malipo yaliyoahirishwa",
               "cleanupCancelledPayments");
+  }
+}
+
+// function to send daily report
+export const sendDailyReportCron = async () => {
+  try {
+    const emails = await mainDb.select({
+      email: users.email,
+      shopName: shops.name
+    }).from(users)
+    .innerJoin(shopUsers, eq(users.id, shopUsers.userId))
+    .innerJoin(shops, eq(shops.id, shopUsers.shopId));
+
+    console.log("Emails: ", emails);
+
+    // await sendDailyReportEmail();
+  } catch (error) {
+        await logSnagErrors (error instanceof Error
+              ? error.message
+              :  "Hitilafu imetokea kwenye func ya kutuma dailyReport",
+              "sendDailyReportCron");
   }
 }

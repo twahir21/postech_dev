@@ -48,24 +48,37 @@
             .button:hover {
                 background-color: #303641;
             }
+                    .logo-container {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+
+        .logo-container .logo {
+          max-width: 70px;
+          height: auto;
+          display: inline-block;
+        }
         </style>
     </head>
     <body>
         <div class="header">
+                        <div class="logo-container">
+                <img src="http://localhost:5173/newLogo.webp" alt="PosTech Logo" class="logo">
+            </div>
             <h1>Ufutaji wa taarifa za zamani</h1>
         </div>
         
         <div class="content">
             <p>Habari <strong>"${shopName}"</strong>,</p>
             
-            <p>Katika Sera yetu ya uhifadhi wa taarifa, Tutafuta taarifa zako za zamani ndani ya <strong>siku ${warningDays}</strong>.</p>
+            <p>Katika Sera yetu ya uhifadhi wa Taarifa, Tutafuta taarifa zako za zamani ndani ya <strong>siku ${warningDays}</strong>.</p>
             
-            <p>Kifurushi chako kinasapoti muda <strong> miezi ${monthsToKeep}</strong></p>
+            <p>Kifurushi chako kinasapoti muda wa <strong> ${monthsToKeep === 1 ? "mwezi" : "miezi"} ${monthsToKeep}</strong></p>
             
             <p>Kama unataka kuhifadhi taarifa zako, Pakua nakala (copy) yake kabla ya tarehe ya ufutaji</p>
             
             <center>
-                <a href="https://example.com/download-backup/12345" class="button">
+                <a href="#" class="button" download>
                     Pakua nakala yako (PDF)
                 </a>
             </center>
