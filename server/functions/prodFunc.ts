@@ -5,6 +5,7 @@ import { debts, expenses, products, purchases, sales, supplierPriceHistory } fro
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import { calculateTotal, formatFloatToFixed } from "./security/money";
 import { prodCheck } from "./utils/packages";
+import { getSearchProducts } from "../database/cache/prod.cache";
 
 // implementing crud for products 
 export const prodPost = async ({ body, headers, shopId, userId }: {body: productTypes, headers: headTypes, shopId: string, userId: string }) => {
@@ -237,19 +238,13 @@ export const prodDel = async ({userId, shopId, productId, headers}: {userId: str
 
 export const prodSearch = async ({ shopId, userId, query }: {shopId: string, userId: string, query: string }): Promise<{ success: boolean; data?: { name: string }[]; message: string}> => {
   try {
-    
-    const rows = await mainDb
-      .select({ name: products.name })
-      .from(products)
-      .where(
-        eq(products.shopId, shopId) &&
-        ilike(products.name, `%${query}%`)
-      )
-      .limit(10);
+
+    // redis 
+    const redisData = await getSearchProducts(shopId, query);
       
     return {
       success: true,
-      data: rows,
+      data: redisData,
       message: "Umefanikiwa kupata bidhaa."
     }
   } catch (error) {
