@@ -4,7 +4,7 @@ import { extractId } from "../functions/security/jwtToken";
 import { prodDel, prodGet, prodPost, prodSearch, prodUpdate, QrPost } from "../functions/prodFunc";
 import type { productTypes, QrData } from "../types/types";
 import { prodData, prodUpdateValidation, QrPostData } from "../functions/security/validators/data";
-import { clearProductsCache } from "../robot/fallback";
+import { clearProductsCache } from "../database/cache/prod.cache";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 

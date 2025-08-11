@@ -5,7 +5,7 @@ import type { CustomerTypes } from "../types/types";
 import { CustomerDel, customerFetch, customerGet, customerPost, customerSearch, customerUpdate } from "../functions/customerFunc";
 import { customerData } from "../functions/security/validators/data";
 import { checkServiceAccess } from "../functions/utils/packages";
-import { clearCustomersCache } from "../robot/fallback";
+import { clearCustomersCache } from "../database/cache/cust.cache";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 

@@ -1,21 +1,10 @@
-import { eq } from "drizzle-orm";
-import { mainDb } from "../database/schema/connections/mainDb";
-import { products, customers } from "../database/schema/shop"; // Added customers table
 import { redisClient } from "../database/schema/connections/Redis";
 import { extractAction } from "../functions/utils/tense";
-import crypto from 'crypto';
+import { SENTENCE_CACHE_KEY } from "../database/cache/setense.cache";
+import { getCachedProducts } from "../database/cache/prod.cache";
+import { getCachedCustomers } from "../database/cache/cust.cache";
 
 // Improved version with caching strategy and proper error handling
-// Cache keys
-const PRODUCTS_CACHE_KEY = (shopId: string) => `products:${shopId}`;
-const CUSTOMERS_CACHE_KEY = (shopId: string) => `customers:${shopId}`;
-
-// avoid long redis keys by hashing sentence
-const hashSentence = (text: string) => 
-  crypto.createHash('sha1').update(text).digest('hex');
-
-const SENTENCE_CACHE_KEY = (shopId: string, sentence: string) => `sentence:${shopId}:${hashSentence(sentence)}`;
-
 
 export const fallbackExtractor = async (shopId: string, sentence: string) => {
     console.time("fallbackExtractor");
@@ -159,40 +148,4 @@ async function findMatches(
         }],
         message: "Sentensi imefanikiwa"
     };
-}
-
-// Cache helpers
-async function getCachedProducts(shopId: string): Promise<{ name: string }[]> {
-    const cacheKey = PRODUCTS_CACHE_KEY(shopId);
-    const cached = await redisClient.get(cacheKey);
-    if (cached) return JSON.parse(cached);
-
-    const freshData = await mainDb.select({ name: products.name })
-        .from(products)
-        .where(eq(products.shopId, shopId));
-
-    await redisClient.setEx(cacheKey, 86400, JSON.stringify(freshData)); // 24h cache
-    return freshData;
-}
-
-async function getCachedCustomers(shopId: string): Promise<{ name: string }[]> {
-    const cacheKey = CUSTOMERS_CACHE_KEY(shopId);
-    const cached = await redisClient.get(cacheKey);
-    if (cached) return JSON.parse(cached);
-
-    const freshData = await mainDb.select({ name: customers.name })
-        .from(customers)
-        .where(eq(customers.shopId, shopId));
-
-    await redisClient.setEx(cacheKey, 86400, JSON.stringify(freshData)); // 24h cache
-    return freshData;
-}
-
-// Cache busters (call these when products/customers change)
-export async function clearProductsCache(shopId: string) {
-    await redisClient.del(PRODUCTS_CACHE_KEY(shopId));
-}
-
-export async function clearCustomersCache(shopId: string) {
-    await redisClient.del(CUSTOMERS_CACHE_KEY(shopId));
 }
