@@ -291,7 +291,6 @@ export const customerSearch = async ({ shopId, userId, query }: {shopId: string,
         eq(customers.shopId, shopId) &&
         ilike(customers.name, `%${query}%`)
       )
-      .limit(10);
       
     return {
       success: true,
