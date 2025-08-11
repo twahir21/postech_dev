@@ -193,5 +193,5 @@ scp root@123.45.67.89:/root/db.sql ~/Downloads/
 ```
 ### 📁 Example: Copy folder (add -r)
 ```bash
-scp -r root@123.45.67.89:/root/myproject ~/Desktop/
+scp -r root@91.99.199.122:/root/table_exports ~/Desktop/
 ```

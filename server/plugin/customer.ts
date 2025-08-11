@@ -5,6 +5,7 @@ import type { CustomerTypes } from "../types/types";
 import { CustomerDel, customerFetch, customerGet, customerPost, customerSearch, customerUpdate } from "../functions/customerFunc";
 import { customerData } from "../functions/security/validators/data";
 import { checkServiceAccess } from "../functions/utils/packages";
+import { clearCustomersCache } from "../robot/fallback";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -50,6 +51,9 @@ export const CustomersPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
+        // clear customer caches in Redis
+        await clearCustomersCache(shopId);
+
         return await customerPost({
             body: body as CustomerTypes,
             userId,
@@ -70,6 +74,9 @@ export const CustomersPlugin = new Elysia()
             return { success: false, message: "Mteja anahitajika." };
         }
 
+        // clear customer caches in Redis
+        await clearCustomersCache(shopId);
+
         // Logic to delete the product by ID
         return await CustomerDel({ userId, shopId, headers, customerId });
     })
@@ -83,6 +90,9 @@ export const CustomersPlugin = new Elysia()
             set.status = 400;
             return { success: false, message: "Mteja anahitajika." };
         }
+
+        // clear customer caches in Redis
+        await clearCustomersCache(shopId);
 
         return await customerUpdate({
             body: body as CustomerTypes,

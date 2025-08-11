@@ -4,6 +4,7 @@ import { extractId } from "../functions/security/jwtToken";
 import { prodDel, prodGet, prodPost, prodSearch, prodUpdate, QrPost } from "../functions/prodFunc";
 import type { productTypes, QrData } from "../types/types";
 import { prodData, prodUpdateValidation, QrPostData } from "../functions/security/validators/data";
+import { clearProductsCache } from "../robot/fallback";
 
 const JWT_SECRET = process.env.JWT_TOKEN || "something@#morecomplicated<>es>??><Ess5%";
 
@@ -32,6 +33,8 @@ export const prodPlugin = new Elysia()
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
 
+        // delete cache in Redis per shop
+        await clearProductsCache(shopId);
 
         return await prodPost({
             body: body as productTypes,
@@ -53,6 +56,9 @@ export const prodPlugin = new Elysia()
             return { success: false, message: "Product ID is required." };
         }
 
+        // delete cache in Redis per shop
+        await clearProductsCache(shopId);
+
         // Logic to delete the product by ID
         return await prodDel({ userId, shopId, headers, productId });
     })
@@ -67,6 +73,9 @@ export const prodPlugin = new Elysia()
             return { success: false, message: "Product ID is required." };
         }
 
+        // delete cache in Redis per shop
+        await clearProductsCache(shopId);
+
         return await prodUpdate({
             body: body as productTypes,
             userId,
@@ -80,6 +89,9 @@ export const prodPlugin = new Elysia()
     .post("/get-data", async ({ jwt, cookie, body, headers }) => {
         const { userId, shopId} = await extractId({ jwt, cookie});
         if (!shopId || !userId) return;
+
+        // delete cache in Redis per shop
+        await clearProductsCache(shopId);
 
 
         return await QrPost({ 

@@ -174,7 +174,7 @@ export default component$(() => {
             // { name: "Mengineyo", emoji: "🧿" },
             { name: "Madeni", emoji: "💳" },
             { name: "Matumizi", emoji: "💸" },
-            { name: "Ripoti", emoji: "📉" },
+            // { name: "Ripoti", emoji: "📉" },
             { name: "Bidhaa", emoji: "📦" },
             { name: "Wateja", emoji: "👥" },
             { name: "Zinazoulizwa", emoji: "⭐" },
