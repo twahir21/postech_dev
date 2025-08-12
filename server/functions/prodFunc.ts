@@ -6,6 +6,7 @@ import { and, desc, eq, ilike, sql } from "drizzle-orm";
 import { calculateTotal, formatFloatToFixed } from "./security/money";
 import { prodCheck } from "./utils/packages";
 import { getSearchProducts } from "../database/cache/prod.cache";
+import { redisClient } from "../database/schema/connections/Redis";
 
 // implementing crud for products 
 export const prodPost = async ({ body, headers, shopId, userId }: {body: productTypes, headers: headTypes, shopId: string, userId: string }) => {
@@ -96,107 +97,233 @@ export const prodPost = async ({ body, headers, shopId, userId }: {body: product
 }
 
 
-export const prodGet = async ({
-    userId,
-    shopId,
-    query,
-    set,
-    headers,
-  }: {
-    userId: string;
-    shopId: string;
-    query: ProductQuery;
-    set: { status: number };
-    headers: headTypes;
-  }) => {
-    const page = parseInt(query.page || "1");
-    const limit = parseInt(query.limit || "10");
-    const search = query.search || "";
-    const offset = (page - 1) * limit;
+// export const prodGet = async ({
+//     userId,
+//     shopId,
+//     query,
+//     set,
+//     headers,
+//   }: {
+//     userId: string;
+//     shopId: string;
+//     query: ProductQuery;
+//     set: { status: number };
+//     headers: headTypes;
+//   }) => {
+//     const page = parseInt(query.page || "1");
+//     const limit = parseInt(query.limit || "10");
+//     const search = query.search || "";
+//     const offset = (page - 1) * limit;
   
-    // Build product filter
+//     // Build product filter
+//     const where = and(
+//       eq(products.shopId, shopId),
+//       search ? ilike(products.name, `%${search}%`) : undefined
+//     );
+
+
+//     // Build Redis cache key — include shopId, page, limit, search
+//     const cacheKey = `products:${shopId}:p${page}:l${limit}:s${search}`;
+
+  
+//     try {
+//       // Step 1: Create deduplicated subquery for latest purchase per product
+//       const latestPurchase = mainDb
+//         .select({
+//           productId: purchases.productId,
+//           priceBought: purchases.priceBought,
+//           rowNumber: sql<number>`ROW_NUMBER() OVER (PARTITION BY ${purchases.productId} ORDER BY ${purchases.createdAt} DESC)`,
+//         })
+//         .from(purchases)
+//         .where(eq(purchases.shopId, shopId))
+//         .as("latestPurchase");
+  
+//       const latestOnly = mainDb
+//         .select({
+//           productId: latestPurchase.productId,
+//           priceBought: latestPurchase.priceBought,
+//         })
+//         .from(latestPurchase)
+//         .where(sql`row_number = 1`)
+//         .as("latestOnly");
+  
+//       // Step 2: Count total products
+//       const total = await mainDb
+//         .select({ count: sql<number>`count(*)` })
+//         .from(products)
+//         .where(where)
+//         .then((rows) => Number(rows[0].count));
+  
+//       // Step 3: Fetch paginated product list + latest priceBought via LEFT JOIN
+//       const rows = await mainDb
+//         .select({
+//           id: products.id,
+//           name: products.name,
+//           priceSold: products.priceSold,
+//           stock: products.stock,
+//           shopId: products.shopId,
+//           minStock: products.minStock,
+//           status: products.status,
+//           unit: products.unit,
+//           createdAt: products.createdAt,
+//           updatedAt: products.updatedAt,
+//           priceBought: latestOnly.priceBought, // ✅ Deduplicated result
+//         })
+//         .from(products)
+//         .where(where)
+//         .leftJoin(latestOnly, eq(products.id, latestOnly.productId))
+//         .orderBy(desc(products.createdAt))
+//         .limit(limit)
+//         .offset(offset);
+  
+//       // Step 4: Return result
+//       if (rows.length === 0) {
+//         set.status = 204;
+//         return { success: false, data: [], total };
+//       }
+  
+//       set.status = 200;
+//       return {
+//         success: true,
+//         data: rows.map((row) => ({
+//           ...row,
+//           priceSold: Number(row.priceSold),
+//           priceBought: row.priceBought !== null ? Number(row.priceBought) : null,
+//         })),
+//         total,
+//       };
+//     } catch (error) {
+//       return {
+//         success: false,
+//         message: error instanceof Error
+//                   ? error.message
+//                   : sanitizeString("Hitilafu imetokea kwenye seva")
+//       }
+//     }
+//   };
+  
+
+
+export const prodGet = async ({
+  userId,
+  shopId,
+  query,
+  set,
+  headers,
+}: {
+  userId: string;
+  shopId: string;
+  query: ProductQuery;
+  set: { status: number };
+  headers: headTypes;
+}) => {
+  const page = parseInt(query.page || "1");
+  const limit = parseInt(query.limit || "10");
+  const search = query.search || "";
+  const offset = (page - 1) * limit;
+
+  // Build Redis cache key — include shopId, page, limit, search
+  const cacheKey = `products:${shopId}:p${page}:l${limit}:s${search}`;
+
+  try {
+    /** ---------- Step 1: Check cache ---------- */
+    console.time("getProducts");
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      const parsed = JSON.parse(cachedData);
+      set.status = 200;
+      console.log("Cached data found!")
+      console.timeEnd("getProducts");
+      return parsed;
+    }
+
+    /** ---------- Step 2: Build product filter ---------- */
     const where = and(
       eq(products.shopId, shopId),
       search ? ilike(products.name, `%${search}%`) : undefined
     );
-  
-    try {
-      // Step 1: Create deduplicated subquery for latest purchase per product
-      const latestPurchase = mainDb
-        .select({
-          productId: purchases.productId,
-          priceBought: purchases.priceBought,
-          rowNumber: sql<number>`ROW_NUMBER() OVER (PARTITION BY ${purchases.productId} ORDER BY ${purchases.createdAt} DESC)`,
-        })
-        .from(purchases)
-        .where(eq(purchases.shopId, shopId))
-        .as("latestPurchase");
-  
-      const latestOnly = mainDb
-        .select({
-          productId: latestPurchase.productId,
-          priceBought: latestPurchase.priceBought,
-        })
-        .from(latestPurchase)
-        .where(sql`row_number = 1`)
-        .as("latestOnly");
-  
-      // Step 2: Count total products
-      const total = await mainDb
-        .select({ count: sql<number>`count(*)` })
-        .from(products)
-        .where(where)
-        .then((rows) => Number(rows[0].count));
-  
-      // Step 3: Fetch paginated product list + latest priceBought via LEFT JOIN
-      const rows = await mainDb
-        .select({
-          id: products.id,
-          name: products.name,
-          priceSold: products.priceSold,
-          stock: products.stock,
-          shopId: products.shopId,
-          minStock: products.minStock,
-          status: products.status,
-          unit: products.unit,
-          createdAt: products.createdAt,
-          updatedAt: products.updatedAt,
-          priceBought: latestOnly.priceBought, // ✅ Deduplicated result
-        })
-        .from(products)
-        .where(where)
-        .leftJoin(latestOnly, eq(products.id, latestOnly.productId))
-        .orderBy(desc(products.createdAt))
-        .limit(limit)
-        .offset(offset);
-  
-      // Step 4: Return result
-      if (rows.length === 0) {
-        set.status = 204;
-        return { success: false, data: [], total };
-      }
-  
-      set.status = 200;
-      return {
-        success: true,
-        data: rows.map((row) => ({
-          ...row,
-          priceSold: Number(row.priceSold),
-          priceBought: row.priceBought !== null ? Number(row.priceBought) : null,
-        })),
-        total,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error instanceof Error
-                  ? error.message
-                  : sanitizeString("Hitilafu imetokea kwenye seva")
-      }
-    }
-  };
-  
 
+    /** ---------- Step 3: Latest purchase subquery ---------- */
+    const latestPurchase = mainDb
+      .select({
+        productId: purchases.productId,
+        priceBought: purchases.priceBought,
+        rowNumber: sql<number>`ROW_NUMBER() OVER (PARTITION BY ${purchases.productId} ORDER BY ${purchases.createdAt} DESC)`,
+      })
+      .from(purchases)
+      .where(eq(purchases.shopId, shopId))
+      .as("latestPurchase");
+
+    const latestOnly = mainDb
+      .select({
+        productId: latestPurchase.productId,
+        priceBought: latestPurchase.priceBought,
+      })
+      .from(latestPurchase)
+      .where(sql`row_number = 1`)
+      .as("latestOnly");
+
+    /** ---------- Step 4: Count total ---------- */
+    const total = await mainDb
+      .select({ count: sql<number>`count(*)` })
+      .from(products)
+      .where(where)
+      .then((rows) => Number(rows[0].count));
+
+    /** ---------- Step 5: Fetch products ---------- */
+    const rows = await mainDb
+      .select({
+        id: products.id,
+        name: products.name,
+        priceSold: products.priceSold,
+        stock: products.stock,
+        shopId: products.shopId,
+        minStock: products.minStock,
+        status: products.status,
+        unit: products.unit,
+        createdAt: products.createdAt,
+        updatedAt: products.updatedAt,
+        priceBought: latestOnly.priceBought,
+      })
+      .from(products)
+      .where(where)
+      .leftJoin(latestOnly, eq(products.id, latestOnly.productId))
+      .orderBy(desc(products.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    if (rows.length === 0) {
+      set.status = 204;
+      return { success: false, data: [], total };
+    }
+
+    const result = {
+      success: true,
+      data: rows.map((row) => ({
+        ...row,
+        priceSold: Number(row.priceSold),
+        priceBought: row.priceBought !== null ? Number(row.priceBought) : null,
+      })),
+      total,
+    };
+
+    /** ---------- Step 6: Cache in Redis ---------- */
+    await redisClient.setEx(cacheKey, 86400, JSON.stringify(result)); // cache for 24h
+
+    set.status = 200;
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : sanitizeString("Hitilafu imetokea kwenye seva"),
+    };
+  }
+};
+
+export const delProdGetCache = async(shopId: string) => await redisClient.del(`products:${shopId}:*`);
 
 export const prodDel = async ({userId, shopId, productId, headers}: {userId: string, shopId: string, productId: string, headers: headTypes}) => {
     try{

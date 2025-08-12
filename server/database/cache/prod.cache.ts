@@ -9,6 +9,7 @@ import { products } from "../schema/shop";
 const PRODUCTS_CACHE_KEY = (shopId: string) => `products:${shopId}`;
 const SEARCH_PRODUCTS_CACHE_KEY = (shopId: string) => `allproducts:${shopId}`;
 
+
 // 2. Get cached products
 export async function getCachedProducts(shopId: string): Promise<{ name: string }[]> {
     const cacheKey = PRODUCTS_CACHE_KEY(shopId);

@@ -1,7 +1,7 @@
 import jwt from "@elysiajs/jwt";
 import Elysia from "elysia";
 import { extractId } from "../functions/security/jwtToken";
-import { prodDel, prodGet, prodPost, prodSearch, prodUpdate, QrPost } from "../functions/prodFunc";
+import { delProdGetCache, prodDel, prodGet, prodPost, prodSearch, prodUpdate, QrPost } from "../functions/prodFunc";
 import type { productTypes, QrData } from "../types/types";
 import { prodData, prodUpdateValidation, QrPostData } from "../functions/security/validators/data";
 import { clearProductsCache, clearSearchProductsCache } from "../database/cache/prod.cache";
@@ -36,6 +36,7 @@ export const prodPlugin = new Elysia()
         // delete cache in Redis per shop
         await clearProductsCache(shopId);
         await clearSearchProductsCache(shopId);
+        await delProdGetCache(shopId);
 
         return await prodPost({
             body: body as productTypes,
@@ -60,6 +61,8 @@ export const prodPlugin = new Elysia()
         // delete cache in Redis per shop
         await clearProductsCache(shopId);
         await clearSearchProductsCache(shopId);
+        await delProdGetCache(shopId);
+
 
         // Logic to delete the product by ID
         return await prodDel({ userId, shopId, headers, productId });
@@ -78,6 +81,7 @@ export const prodPlugin = new Elysia()
         // delete cache in Redis per shop
         await clearProductsCache(shopId);
         await clearSearchProductsCache(shopId);
+        await delProdGetCache(shopId);
 
         return await prodUpdate({
             body: body as productTypes,
@@ -96,6 +100,7 @@ export const prodPlugin = new Elysia()
         // delete cache in Redis per shop
         await clearProductsCache(shopId);
         await clearSearchProductsCache(shopId);
+        await delProdGetCache(shopId);
 
 
         return await QrPost({ 
